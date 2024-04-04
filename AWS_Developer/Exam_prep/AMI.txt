@@ -1,0 +1,19 @@
+Amazon Machine Image
+	Public:
+		AWS provided
+	Private:
+		Egy EC2 instance személyre szabása:
+			Saját szoftverek
+			Configurációk
+			OS
+			Monitoring
+		Előnye a gyorsabb boot time, mert minde előre össze van csomagolva.
+		
+		Egy adott regióra készül, de átmásolható.
+		AMIs are built for a specific AWS Region, they're unique for each AWS Region. 
+	You can't launch an EC2 instance using an AMI in another AWS Region, but you can copy the AMI to the target AWS Region and then use it to create your EC2 instances.
+		
+	Marketplace:
+		Pénzért is vásárolható		
+	
+		

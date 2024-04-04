@@ -1,0 +1,100 @@
+Vpc:
+	Virtual Private Cloud	
+		Provides Isolated Environment 
+		Region-hoz kötött.
+		Egy logikai konstrukció.
+			Subnetek tartoznak alá.
+			Egy subnet et AZ(Data Center)-hoz kötött.
+			Egy AZ-hoz több subnet is tartozhat.
+		VPC is a virtual network that is dedicated to your account. 
+		So you can't spread a VPC across multiple accounts, and it's yours to do with what you please, and that includes IP addressing. 
+		If you have two VPCs in your account they 
+		can talk to each other, but only once you establish that routing method to get data between them.
+			
+			Networking:
+				Public and private addresses
+				Preserved across reboots
+				Multiple IPs can  be assigned to an instance
+				Define and attach multiple network interfaces to one instance
+				IPv6 support
+				
+			Security: (csak RULE-okat tartalmaz)
+				Security Groups (Gyakorlatilag tűzfalak ki/be menetre)
+				Vannak Inbound és Outbound Rule-ok
+				PORTok elérhetőségét és IP tartományokat(IPv4, IPv6) ír le.
+				ACL (Access-control list)
+				Egy SecurityGroup több Instance hoz is tartozhat és egy Instance is tartozhat több security group alá. M:N 
+				Reassign groups on the fly
+				Assign groups to VPC and EC2 instances
+				Ingress & egress filtering 
+				Alapból minden bejövő forgalom blokkolt, minden kifelé menő engedélyezett
+				Groupok egymásra is hivatkozhatnak h ki engedélyezett v tiltott
+				
+				Type	Protocol	Port Range	Source		Description 
+				HTTP	TCP		80		0.0.0.0	java app
+				SSH	...		22		122.149.168.85/32
+				Custom..
+		A VPC az Internet Gateway(IGW) segítségével megy ki (IGW csak VPC-hez csatolható)	
+			Példák amiket be lehet tenni a VPC-be:
+				AWS Data Pipeline
+				EC2
+				Elastic Beanstalk
+				Elastic Load Balancing
+				Elastic Cache
+				WAS OpsWorks
+				RDS 
+				Redshift
+				Workspaces
+		
+		NAT: Network Address Translation: ezen keresztül egy belső IP cím kétirányú kapcsolatot tud létrehozni egy ezen a Subneten kívüli hálózattal.		
+		Elastic Ip: megmaradnak az IP-k ebben. Hozzá tudjuk csatolni akár instanceokhoz is, így amikor azok újraindulnak ugyanazt a fenntartott Elastic IP-t kapják. 
+		Korlátozott Elastic Ip áll rendelkezésre.	
+
+		Mihez csatlakozhat a VPC?
+			Internet
+			VPC Gateway IPSec(tunnel) - Hogy vállalkozáshoz csatlakozzon(Corporate Network)
+			Direct Connect(?)
+			
+		//?Private subnetből úgy megyünk ki a netre, hogy rámutatunk egy NAT Instance-re, ami rámutat egy IGW-re. De mi ebben a táblában nem vagyunk benne mint fogadó fél.	
+			
+			
+	• High Availability: Run instances for the same application across multi AZ
+		• Auto Scaling Group multi AZ
+		• Load Balancer multi AZ		
+			
+			
+			
+	VPC endpoint:
+	
+		VPC endpoints are virtual devices. 
+		They are horizontally scaled, redundant, and highly available Amazon VPC components that allow communication between instances in an Amazon VPC
+		and services without imposing availability risks or bandwidth constraints on network traffic. 
+		There are two types of VPC endpoints:
+
+			‣ Interface endpoints:
+
+			‣ Gateway endpoints:	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

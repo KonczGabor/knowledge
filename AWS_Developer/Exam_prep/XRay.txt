@@ -1,0 +1,64 @@
+Debugging in production
+Visual analysis of our application
+
+ /* Old way:
+ 	Test Locally
+ 	Add log statements everywhere
+ 	Re-deploy in production
+ 	
+ 	(Log formats can differ)
+ */	
+
+Tracing: Follow the path of a request
+
+How to enable
+
+	Az EventBridge SDK ezeket tudja elkapni (IAM rights needed to be able to write into X-RAY):
+		Calls to AWS services
+		HTTP(S) requests
+		DB calls
+		Queue calls (SQS)
+
+	Install X-Ray daemon or enable X-Ray AWS integration
+		Daemon in this case: a low level (UDP) packet interceptor
+		Minden 1 másodperc elteltével küld egy batch-et az X-Raynek
+		
+		
+	Lambda-ba már nekünk be van építve.
+	
+	Minél több adatot küldünk be X-Ray be, annál többet fizetünk.
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

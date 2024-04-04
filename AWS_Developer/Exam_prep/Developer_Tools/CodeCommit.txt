@@ -1,0 +1,7 @@
+CodeCommit: similar to GIT
+		Like BitBucket or GitHub it's a git repository service
+		Encrypted
+		Scalable
+		Redundant
+		No limit
+		

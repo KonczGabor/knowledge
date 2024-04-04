@@ -1,0 +1,28 @@
+Minden API hívást monitoroz és megőriz 90 napig. 
+Alapból be van állítva.
+
+Ezeket nézi:
+	Console
+	CLI
+	SDK
+	AWS Services
+	
+Elküldi a CW logba, vagy S3-ba.	
+
+	Event Types:
+	
+		Management Event
+			ex: Configuring security (IAM Attach policy)
+				Config rukes for routing data (EC2 subnet)
+				Setting up logging
+			set by def.
+			
+		Data Events
+			not set by def
+			S3 
+			Lambda	
+			
+		CloudTrail Events
+			fizetős, mert okosan monitorozza a write eventeket a CloudTrailInsights-szal.	
+			90 nap alaből, de elküldhető az Athena-ba további analízisre.			
+				

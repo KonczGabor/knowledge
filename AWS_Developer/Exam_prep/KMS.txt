@@ -1,0 +1,18 @@
+KMS: Key management service		
+S3 objectek NEM DEFAULT titkosítása, theát egyedi KMS -szervice által történő kódolás pénzbe kerül.
+
+Region-höz kötött a KEY, de lehet létrehozni olyat is ami több Region közt is működik.
+
+A kulcsok használati kvótája (létrehozás, enc, dec) régiókon átívelő. 
+	Beüthet a Throttling <- ExponencialBacOff
+
+TLS
+	Az adatot mielőtt átküldjük titkosítjuk, és mikor fogadjuk, akkor visszafejtjük
+	Ehhez TLS certificate-eket alakalmazunk, ami az SSL modernebb változata.
+	Encryption in flight megbizonyosodik arról h nincs man-in-the-middle. 
+		Az üzenet több szerveren áthaladhat és fontos h csak a végső cél állomás legyen képes visszafejteni az üzeneteünk.
+		
+		
+		
+		
+		

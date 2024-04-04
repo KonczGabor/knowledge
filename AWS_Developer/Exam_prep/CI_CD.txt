@@ -1,0 +1,13 @@
+	Source -> Build -> Test -> Deploy -> Monitor (AWS X-Ray, Amazon CloudWatch)
+	Amazon definíciója szerint a CI megáll a Buildnél, 
+	A CD kiegészíti egészen a Deployig.
+	Tehát:
+		CI: Source -> Build
+		CD: Source -> Build -> Test -> Deploy
+		
+		
+	To Deploy your code in the cloud: Elastic Bean Stalk
+		Deploy applications without worrying about the details of the underlying technologies
+		Loadbalancer, Autoscaleing
+	To Manage infrastructure: AWS OpsWorks (Chef recipes)
+	To Define infrastructure: AWS CloudFormation

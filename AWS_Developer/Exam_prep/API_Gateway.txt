@@ -1,0 +1,17 @@
+API Gateway:
+		To expose your services to the world
+		Auto scaling	
+		Monitoring
+		Maintain
+		Secure
+
+		Mint egy országút, amin a lehajtók az APIk, amik APPokhoz vezetnek.
+
+		Integration Types:
+			Lambda
+				Proxy: Authentication, manage Privileges(user based restrictions)
+			HTTP
+			Private
+			Mock
+
+		Cognito: Mobil userek autentikációjára without IAM users.

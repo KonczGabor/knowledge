@@ -1,0 +1,3 @@
+JMESPath is a query language for JSON
+
+aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].[Placement.AvailabilityZone, Tags[?Key=='Name'].Value | [0], InstanceId, State.Name]'

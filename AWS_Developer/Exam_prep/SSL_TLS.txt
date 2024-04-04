@@ -1,0 +1,8 @@
+SSL:/TLS:
+	SSL: Secure Socket Layer
+	TLS: Transport Layer Scurity (newer than SSL)
+	SSL Certificate lehetővé teszi h az LB és a Clientek közt a forgalom titkosítva legyen (in-flight encryption). 						
+	Ilyen tanúsítványokat Certificate Authorities, ek adnak ki és ezt csatolhatjuk az LB-nkehz
+	Expirálódnak. 
+	ACM: AWS Certificate Manager kezeli az SSL-eket is.
+	SNI:Server Name Indication. Lehetővé teszi h a szerver több weboldalt is kiszolgálhasson, amik különböző SSL-eket kérnek.

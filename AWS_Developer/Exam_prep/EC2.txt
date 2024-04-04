@@ -1,0 +1,74 @@
+EC2: Elastic Compute Cloud: Run and manage Virtual Servers. EC2 Container Service is able to manage Docker containers. 
+	
+	Scaling:
+		Vertical: Minőség (általában adatbázisok méretnövelése miatt)
+		Horizontal: Mennyiség (increase number of instances. Scale out: növelni, Scale in: csökkenteni)
+		AMI: Amazon Machine Image
+			Az image-ekből jön létre maga az instance
+			
+			Nem lehet őket Region-ök közt megosztani, mindegyik adott Region-höz kötött.
+			
+			The ElasticBlockStore volumes are constrained to an availability zone, you cannot share an EBS volume across zones. 
+			
+			To log in
+				$ssh -i privateKeyFile.pem ec2-user@publicIPv4address
+				A "-i" jelenti h most egy kulcsot fogunk megadni
+				Az "ec2-user" pedig egy predefined user az Amazon ezen instance-aiban.
+			
+			Egy meglévő EC2 instancból ha létrehozunnk egy AMI-t, akkor az tartalmazni fogja a User Data-ban megadott bootsrapping utasításokat.
+			Csak a deltát, a többletet kell hozzáadni az újhoz.	
+				
+	Pricing:
+		Region-ként	
+		Nem minden Régió egyenlő költségű			
+	
+	
+	Instance types: https://instances.vantage.sh/
+	
+		Virtuális gép példányok:
+			M: áltálános célú
+			C: számítás
+			R: Memória igény
+			H: Vinyó
+			G: GPU
+	
+		/* naming convention:  m5.2xlarge
+			m: instance class
+			5: genereation
+			2xlarge: size with instance class: */
+			
+		General: balance (balance between Compute, Memory, Networking)
+		Compute: more virtualCpu
+		GPU:3Drendering
+		GPU Compute: Bitcoin mining
+		Memory optimized: rapid acces in-memory db - big amount for data
+		Storage optimized: High disk I/O
+		
+	Bootstrap script(configure at first launch)
+		Bootstrapping: launching commands when the machine starts	
+		Configure Instance->(Advanced details) User data alatt érhető el(!)
+		
+	EC2 purchasing options:
+		Reserved (1 year OR 3 //not between, just these two options are available)	
+			Reserved Instances: long workloads (databases)
+			Convertible Reserved Instances: long workloads with flexible instances
+			Scheduled Reserves Instances: example-every Thursday between 3 and 6 pm
+		Spot Instances: short workloads, cheap, can lose instances (less reliable)
+			Ez egy tőzsde, ahol el is veszíthetem, ha az ára az átlag alá megy.
+			Csak olyan dolgokat szabad itt tárolni, amik nem baj ha elvesznek.
+			Mire jó?:
+				Batch Jobs
+				Data analysis
+				Image processing
+				Distributed workflows
+				Flexible start/end time
+				
+		Dedicated Hosts: book an entire PHYSICAL server, control instance placement.
+			3 year preiod reservation
+			BYOL: Bring Your Own License
+			Per host billing
+			
+		Dedicated instances: Soft version of Dedicated Hosts
+			PHYSICAL server
+			Per instance billing	
+			

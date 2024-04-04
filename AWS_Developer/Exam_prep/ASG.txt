@@ -1,0 +1,34 @@
+Auto Scaling Group
+
+	Scaling policies:
+		-Dynamic
+			Target Tracking
+				Egyszerű felállítani: A CPU kihasználtásg legyen 40% körüli
+			Simple / Step scaling
+				CloudWatch alarm-ra van rákötve (Ha a CPU kihasználtság nagyobb mint 70, addj hozzá 2 unitot. Vagy ha kisebb mint 30, vegyél el egyet.)		
+		
+		-Scheduled 
+			Ehhez már kell a Cloud Watch Alarm, h elcsattanjon a Trigger. Pl.Minden péntek délután csökkentsd
+		
+		-Predictive
+			Elemzi a histórikus adatokat. Sejtést állít fel (prognosztizál). Scheduled scaling actions hoz létre.	
+			
+Cooldown period: Defaultból 300 sec. Ha létrehoztunk vagy töröltünk instancot akkot az ASG nem hoz létre és nem is terminál instancokat ennyi ideig.	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+				

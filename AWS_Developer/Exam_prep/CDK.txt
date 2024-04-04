@@ -1,0 +1,7 @@
+AWS CDK: Cloud Development Kit
+	App creating order:
+		1, Create the app from a template provided by AWS CDK
+		2, Add code to the app to create resources within stacks
+		3, Build the app (optional)
+		4, Synthesize one or more stacks in the app 
+		5, Deploy stack(s) to your aws account

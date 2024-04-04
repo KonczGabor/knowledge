@@ -1,0 +1,96 @@
+65 kérdés 130 perc 
+
+Lehetséges kérdések:
+	
+	Hogyan jönnek létre az instanceok a min/max capacity konfig szerint
+	
+	Hogyan néz ki egy Role anatomy:
+	
+	
+	ECS Task Definition anatómiája
+		Image Name
+		Port binding for container and hosts
+		Memory and CPU req
+		ENV variables
+		Network information
+		IAM Role
+		Logging config
+	
+	
+	EBS rolling strategies-ből akár kettő is lehet.
+		188-as videó.
+	
+	CloudFormation outputs: -how to link tamplates together? V:205
+	
+	CloudFormation template paramteres, and functions: V 207
+		!Ref
+			Paraméterre hivatkozva nnak értékével tér vissza
+			Erőforrásra hivatkozva annak physical ID-jával (EC2 ID)		
+			
+		!GetAtt
+			Get Attribute: returns a value for a specified attribute of this type.
+				-AvailabilityZone
+				-PrivateDnsName
+				-PiblicIP
+				...	
+			usage:
+				!GetAtt myOwnEC2Instance.AvailabilityZone	
+				
+		!FindInMap		
+			!FindInMap [MapName, TopLevelKey, SecondLevelKey]	
+		
+		!ImportValue
+		
+		!Join
+			!Join [":", [a,b,c,]]  => a:b:c
+			
+		!Sub
+			 - String: "Your string with ${Variable1} and ${Variable2}"
+			   Variable1: "value1"
+			   Variable2: "value2"	
+		
+		Conditions: 	//Itt a "!" nem a tagadást jelenti, hanem h ez egy operátor.
+			!And
+			!Equals
+			!If
+			!Not
+			!Or
+			
+			Conditions:
+ 			 CreateProdResources: !Equals [!Ref EnvironmentType, prod]
+			//In this example, the condition CreateProdResources will be true if the value of the parameter EnvironmentType is prod.
+		
+		
+ 	X-Ray API calls have to be know! Read/Write policies (Video: 260)
+ 	
+ 	Video:
+ 	
+	 	281: Lambda Event Source mapping
+	 	285: mi a fasz ez az event Source mapping is miért ilyen bonyolult és van sok fajtája és miért épül ennyire a shardokra és queue-kra?!
+	 	
+	 	292: CloudFront Function vs. Edge
+			
+		313: Lamba Limits 
+			
+		426: Elég high lvl tudni, max 1 kérdés a 426 -ból AWS Directory Service.	
+		
+		444
+	
+	DIA: 
+		177
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

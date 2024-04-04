@@ -1,0 +1,18 @@
+CloudFormation: provides you with an easy to use language and method to provision an entire infrastructure, including compute instances, databases, and load balancers at the click of a button.	
+	AWS CloudFormation is a tool in order to create environments from a template, so it allows you to for example, you have this application you wanna deploy, it requires a few instances in EC2, it maybe it needs to be in its own VPC, it needs some Load Balancer, a DynamoDB table, things like that. 
+	CloudFormation allows you to instantiate all of these things with a template all at once.
+	AWS CloudFormation enables you to create and provision AWS infrastructure deployments predictably and repeatedly.
+	Terms:
+		Template: az environment leírása(Blueprint for the Stack h hogy nézzen ki) Json v YAML
+		Stack: Collection of resources
+		Change Set: its a plan h hogy fog kinézni az új instance a bevezetendő válzotások hatására.
+		Stack set: in case of cross-region related operations, use a set of stacks
+		
+		AWS CloudTrail: ezzel lehet logolni a CloudFormation hívásokat.
+			Ezekre adhat választ:
+				Ki állította le az adott instance-t
+				Ki változtatta meg a security group configját?
+				Jön valamilyen kérés ismeretle IP címről?
+				Milyen kérések lettek deny-olva permission-ök hiányában?	
+		
+		RevisionControl: A templatek history-ját manageli.

@@ -1,0 +1,86 @@
+LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalmat a backend különböző részei között (pl EC2 instances). A Userek tehát csak a LoadBalancerrel intefészelnek közvetlenül (Single point of access).
+	Periódikusan ellenőrzi az instance-ok állapotát (Health check)	
+		/health -> response 200(OK)
+	Kieszközli a "stickiness-t" cookie-kkal
+		Egy client mindig ugyanahhoz az instancehoz lesz redirectedelve az LB által. 
+			Ez így felboríthatja a balanceot. A Target Groupban kell engedélyezni és h mennyi ideig.
+			Application-based:
+				Custom cookie:
+					A Target generálja
+					Bármilyen egyediattribútum alapján történhet a generálás
+					A cookie nevének egyedinek kell lennie Target Groupponként
+				Application cookie:
+					Az LB generálja:
+						Ez lesz a neve: AWSALBAPP	
+			Duration-based:
+				Az LB generálja
+	Cross Zone Load Balancing:
+		Minden AZ egyenlő eséllyel lesz hozzárendelve a requesthez:		
+			"A"(AZ) 50% probability 2 darab EC2 instance: 10-10% probability
+			"B"(AZ) 50% probability 8 darab EC2 instance: 10-10-10-10-10-10-10-10% probability 
+	
+	Without Cross Zone Load Balancing:		
+		AZ-k között arányosan, utána azokon belül arányosan az instanceokhoz:
+			"A"(AZ) 50% probability 2 darab EC2 instance: 25-25% probability
+			"B"(AZ) 50% probability 8 darab EC2 instance: 6.25-6.25-6.25-6.25-6.25-6.25-6.25-6.25% probability			
+	
+	Load Balancer types on Amazon:
+	
+	
+		-Classic(v1 old generation-2009)
+			HTTP(Layer 7), HTTPS(Layer 7), TCP(Layer 4)
+			Cross LB between AZ is disabled by default
+			Nem tud SNI-t: (Server Name Indication) SSL-t még tud adni, de csak egyet.
+			
+			
+			
+		-Application(v2 new gen-2016)	
+			HTTP, HTTPS, WebSocket
+			Great for containers and micro services.
+			Különböző routok közt is tud irányítani:
+				one.example.com
+				other.example.com
+			Cross load balancing between AZ is always enabled
+				Maga subneteket kell kiválasztani az Availability Zone-okokn belül.
+			Tud SNI-t: Server Name Indication
+			Target grouppok közt is tud iránítani:
+			
+				Pathok közt:
+					example.com/users
+					example.com/posts
+				Hostname-ek között is		
+				
+				Ezek különböző TG-okra mutathatnak.
+				
+			Source IP-k közt is tud.
+			
+			Amit nem tud: Client's location (Geography) 			
+				
+				
+				
+				
+		-Network(v2 new gen-2017)
+			Network Load Balancers expose a public static IP (1 per AZ), whereas an Application or Classic Load Balancer exposes a static DNS (URL)
+			TCP, TLS(Secure TCP), UDP
+			Cross LB between AZ is disabled by default. Fizetős.
+			Tud SNI-t: Server Name Indication
+			
+		
+		
+		
+		
+		-Gateway (Internet Gateway and Gateway Load Bancer are different things.):
+			operates at the third layer of the Open Systems Interconnection (OSI) model, the network layer. It listens for all IP packets across all ports and forwards traffic to the target group that's specified in the listener rule. It is able to maintains stickiness.
+		
+		
+			GENEVE protocol: Generic Network Virtualization Encapsulation (Geneve) is a network encapsulation protocol created by the IETF in order to unify the efforts made by other initiatives like VXLAN and NVGRE, with the intent to eliminate the wild growth of encapsulation protocols.
+		
+		A Gateway Load Balancer endpoint is a VPC endpoint that provides private connectivity between virtual appliances in the service provider VPC, and application servers in the service consumer VPC. The Gateway Load Balancer is deployed in the same VPC as that of the virtual appliances. These appliances are registered as a target group of the Gateway Load Balancer.
+			
+			
+	LB-ket is lehet horizontállisan scale-elni, nem azonnal történik.
+	Troubleshooting:
+		4XX Errors: Client miatt
+		5XX Erroers: Application miatt
+	
+	Monitoring: Minden requestet monitoroz az LB, amiről a CloudWatch könnyedén tud metrikát generálni

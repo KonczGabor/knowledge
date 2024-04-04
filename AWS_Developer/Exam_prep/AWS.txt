@@ -1,0 +1,804 @@
+
+	    
+	
+Network Services
+	The network services allow your application’s components to interact with each other and also connect your application to the Internet and private networks. Examples of network services include the following:
+
+	Amazon Virtual Private Cloud (VPC): Allows you to connect your application with private network ranges, connect those private ranges with the Internet, and assign public IP addresses
+
+	AWS Direct Connect: A private optical fiber connection service that connects your on-premises sites with AWS
+
+	AWS Virtual Private Gateway: A component of VPC that provides the capability for establishing VPN connection with your on-premises sites
+
+	Amazon Route 53: The next-generation, API-addressable Domain Name Service (DNS) from AWS
+
+	Amazon CloudFront: The caching and Content Delivery Network (CDN) service in the AWS cloud. Ha pl betesszük egy S3 elé, akkor már spóroltunk (Latency, Cost).
+
+	Amazon Elastic Load Balancing (ELB): Allows load balancing of traffic across AWS Elastic Compute Cloud (EC2) instances, AWS Elastic Container Service (ECS) containers, or other IP addressable targets
+	A Load Balancerek olyan szerverek amik a egyenletesen szétterítik a bejövő kérelmeket több kiszolgáló felé(EC2 instance). 
+	A usererek gyakorlatilag a Load Balancerekkel állnak kapcsolatban.
+	Periódikusan figyelik az instancok állapotát.
+	Nem csak instanceok, konténerek közt is lehetséges balance-olni.
+		Kimondottan Docker és Amozon ECS ek esetén ragyog. De EC2k közt is hasznos.
+	Load balancerek static host name-mel bírnak.
+	
+	Az app szerver nem látja a client IP-jét direktben.	
+	
+	Applicaion Load Balancer (ALB)
+		HTTP/HTTPS és Websocketek esetén
+		hostname/path alapján is tud routolni
+		ECS, Docker esetén
+		Tud SNI-t: Server Name Indication
+	Network Load Balancer 
+		Ultra High performance esetén
+		TCP esetén
+		Direktben látják a client IPjét
+		Tud SNI-t: Server Name Indication
+		
+	ASG (Auto Scaling model): Minimum and Maximum instances. 
+		Ez maga ingyenes, maga a példányokért kell fizetni.
+		Cloud watch Alarm (based on policies[by CPU, requests, netwok on-out usage]) tudja figyelmeztetni a scale out/in-ekre.
+		Az új pédlányok autómatikusan regisztrálódnak az LB-hez.
+		Paraméterek amiket figyelhetünk:
+			CPU használat
+			Network használat
+			Custom metrikák (belépett Userek)
+			schedule
+			
+			
+	Auto Scaling Group vs Target Group:
+		Target Group: ba bármilyen típusú instancok beletartozhatnak, míg Auto Scaling Group-ba egy adott típusú instance populálódik, törlődik.
+	
+
+Compute Services
+	You have a lot of flexibility when it comes to compute services in AWS. The following are examples of compute offerings in AWS:
+
+	Amazon Elastic Cloud Computing (EC2): Provides the ability to deploy and operate virtual machines running Linux and Windows in the AWS cloud
+
+	Amazon Elastic Container Service (ECS): Provides the ability to deploy, orchestrate, and operate containers in the AWS cloud
+
+	Amazon Elastic Kubernetes Service (EKS): Provides the ability to deploy, orchestrate, and operate Kubernetes clusters in the AWS cloud
+
+	Amazon Lambda: Provides the ability to process simple functions in the AWS cloud	
+		Szerver felügyelet és management nélkül tudunk kódot futtatni
+		Csak a futtatás idejéért fizetünk
+		Nem tud docker containereket futtatni vele
+				
+				
+Databases
+Several different database services are available from AWS. Like the storage services, the database services have been designed to fit different types of data and enable you to choose the correct database type to get the most out of the AWS platform. The following are examples of database services:
+
+	Amazon Relational Database Service (RDS): RDS is a fully managed relational database service for deploying and managing Amazon Aurora, PostgreSQL, MySQL, MariaDB, Oracle, and Microsoft SQL Server databases in AWS.
+
+	Amazon ElastiCache: This is a fully managed caching service for deployment of Redis or Memcached in-memory data stores in AWS.
+
+	Amazon DynamoDB: This is a fully managed nonrelational database service in AWS. Similar to MongoDb.
+
+	Amazon DynamoDB Accelerator (DAX): DAX is a fully managed caching service for DynamoDB.
+
+	Amazon RedShift: This is a fully managed data warehousing service for deployment of petabyte-scale data clusters at very low cost. 
+	Valamilyen üzleti logika alapján analitikákat tud előállítani.		
+
+
+Developer Tools
+AWS provides a full set of tools that allow you to migrate your complete development to managed services in AWS. Among the most notable examples are the following:
+
+	AWS CodeCommit: This Git-compatible version control repository offers unlimited capacity and high availability at a very affordable price point.
+
+	AWS CodeBuild: This fully managed build service can help you automate builds and can integrate with most build tools commonly used in development.
+
+	AWS CodeDeploy: This fully managed deployment service can deploy your artifacts to a working environment.
+
+	AWS CodePipeline: This fully managed code workflow orchestration service can help automate your complete CI/CD pipeline.
+
+
+
+	AWS CodeStar: This fully managed CI/CD service can help you get started in minutes. It enables you to deploy a CI/CD pipeline from predesigned templates and add users to the project so you can start work fast.	
+
+
+		
+	
+$ cat .aws/credentials
+[default]
+aws_access_key_id = AKIA4TKFDVDJIIKERD5R
+aws_secret_access_key = y3VYmHupCY9uDVUt8U	
+
+To Create JSON skeleton:
+$ aws s3api create-bucket --generate-cli-skeleton
+
+What Security Role is?
+	A role is a piece of metadata that can be specified in a request for authentication, and in return IAM can provide the requestor with temporary credentials that allow the requestor to perform actions that he or she would usually not be able to perform. 
+	This means that using a role is essentially a way to elevate a user’s access level without needing to store credentials that allow elevated access. This process is called role assumption.
+			
+			
+Service roles:
+		With the role assumption API, call you can specify the length of the temporary credential validity from 15 minutes up to 12 hours. By default, the credentials issued via role assumptions are valid for 60 minutes.
+		
+	A role-ok tartalmazzák a policy-ket.
+		 A policy is essentially a document that contains a statement. 
+		 In the statement, you have an effect (either allow or deny), an action, and a resource. 
+		 A policy can additionally have an identity principal specified and a condition that determines the effect.
+		 
+Access control lists (ACLs): Although ACLs are not IAM objects, they can be used in combination with IAM policies to determine the access to a particular resource in AWS. ACLs are very coarse access control mechanisms that can be applied to some AWS objects, such as S3 buckets. 
+ACLs are always treated as public and cannot define access for any IAM entities within the syntax.
+ACLs do not use JSON and are defined at the resource level in a similar manner as resource policies.		
+
+you can use Direct Connect and a virtual gateway (VGW) to connect your VPC to your on-premises network. 
+
+
+////EC2 -Virual machine: instance, ECS konténerek: task, Labmda: function
+
+	
+
+
+
+
+
+
+---------------------------------------------------------- Test 1 ----------------------------------------------------------
+
+1. Which of these is not a feature of cloud computing, as defined by the National Institute of Standards and Technology (NIST)?
+	Rapid elasticity
+
+	Self-service capability
+
+		Application agility
+
+	Broad network access
+
+2. Which of the following is AWS responsible for?
+
+	Updating the EC2 operating system
+
+		Securing the hypervisor
+
+	Encrypting RDS databases
+
+	Configuring security group rules
+
+3. Which of these services is designed with unlimited storage capacity?
+
+	RDS
+
+		
+		
+
+	EBS
+
+	An EC2 instance store volume
+
+4. When is an RDS database considered highly available?
+
+	Always. An RDS database is inherently highly available.
+
+	Only when an RDS database is replicated to another database on the same instance.
+
+	Only when an RDS database has replicas in the same availability zone.
+
+		Only when an RDS database has replicas in two availability zones.
+
+5. When accessing AWS, which of these is true?
+
+		All calls to AWS are API calls, regardless of the access method. // All management calls to all services in AWS are API calls, which means both humans and machines can access AWS services.
+
+	Calls through the CLI are API calls, whereas calls through the Management Console and the SDK are direct invocations.
+
+	Calls through the CLI and the SDKs are API calls, whereas calls through the Management Console are direct invocations.
+
+	Calls through the SDK are API calls, whereas calls through the Management Console and the CLI are direct invocations.
+
+6. Which of these services gives you the ability to run virtual machines in the cloud?
+
+	VMM
+
+	Systems Manager
+
+	Lambda
+
+		EC2
+
+7. Which of these responsibilities are customers responsible for? (Choose two.)
+
+		Creating and managing SSH keys
+
+	Securing the hypervisor
+
+		Enabling HTTPS on the Apache server
+
+	Decommissioning storage devices
+
+8. Which of the following most accurately describes IaaS in the cloud?
+
+	Compute, networking, storage, and platforms in the datacenter
+
+	Compute, networking, and storage solutions across a VPN
+
+		Compute, networking, and storage solutions as a service
+
+	Compute, networking, storage, and platforms as a service
+
+9. You can access AWS services through the API by using the following credentials:
+
+	An IAM-generated SSH secret key and public key
+
+	An IAM-generated username and password
+
+	An IAM-generated API secret key and API key
+
+		An IAM-generated secret key and an access key ID
+
+10. What is the smallest component of the AWS global architecture?
+
+	A hypervisor
+
+		A datacenter
+
+	An availability zone
+
+	A region			
+
+---------------------------------------------------------- Test 2 (Security) ----------------------------------------------------------
+
+
+1. When using IAM, to which of the following IAM principles can you assign long-term credentials?
+
+		User
+
+	Group
+
+	Role
+
+	Policy
+
+2. When delivering federated access to an application, how does the user gain access to AWS services?
+
+	Via delegated policy based on the user’s group or pool membership
+
+		Via role assumption based on the user’s group or pool membership
+
+	Via federated policy based on the user’s group or pool membership
+
+	Via shared role based on the user’s group or pool membership
+
+3. When assigning strict permissions for accessing S3 to a mobile application, how could you lock down the permissions to exactly one action?
+
+	Allow the action in the bucket policy for all users. All other actions are implicitly denied.
+
+	Allow the action in the bucket policy for all users. Explicitly deny all other actions by using a “Not” condition.
+
+	Allow the action in the role policy. All other actions are implicitly denied.
+
+		Allow the action in the role policy. Explicitly deny all other actions by using a “Not” condition.
+
+4. Encryption in transit can be achieved through which of the following?
+
+	TLS
+
+	Client-side encryption
+
+	IPsec VPN
+
+		All of these answers are correct.
+
+5. You are writing code for a mobile application. You need to allow the application to access an S3 bucket. What would be the most secure way to access the AWS resource?
+
+	Create an ACL and apply it to the bucket. Create a bucket policy that allows the ACL access to the bucket.
+
+		Create an IdP that authenticates the user of the application and provides it with a role. Create a bucket policy that allows the role access to the bucket.
+
+	Create an IdP that authenticates the user of the application and provides it with a role. Create an IAM policy with access to S3 and attach it to the role.
+
+	Authenticate the user of the application through IAM and provide it with a role. Create an IAM policy with access to S3 and attach it to the role.
+
+6. To allow an application on an EC2 instance to use S3, which of the following is the safest way to distribute credentials?
+
+	Using secret access key and access key ID in the ./aws/credentials file
+
+	Storing credentials in the code
+
+	Using the environment variables
+
+		Using a role
+
+7. For which of the following can you use IAM? (Choose all that apply.)
+
+		Authenticating and authorizing access to the AWS Management Console
+
+		Authenticating and authorizing access to RDS databases
+
+	Authenticating and authorizing access to EC2 operating systems
+
+	All of the above
+
+8. What is the maximum number of IAM users?
+
+	Unlimited
+
+	10,000
+
+		5000
+
+	50,000
+
+9. Which service encrypts all data at rest by default?
+
+	S3
+
+	RDS
+
+		Glacier
+
+	SQS
+
+10. Which of the following objects can Groups contain?
+
+		Users
+
+	Roles
+
+	Other groups
+
+	All of these answers are correct.
+
+
+---------------------------------------------------------- Test 3 ----------------------------------------------------------
+
+
+1. VPC A is peered to VPC B. VPC B is peered to VPC C. You have set up routing in VPC A, which lists the VPC C subnet as a subnet of VPC B. You are trying to ping an instance in VPC C from VPC A, but you are not getting a response. Why?
+
+		Transient connections are not supported by VPC peering.
+
+	Your security groups of the VPC C instance do not allow incoming pings.
+
+	You need to create an NACL in VPC C that will allow pings from VPC A.
+
+	The NAT service in VPC B is not configured correctly.
+
+2. You are tasked with migrating an EC2 instance from one availability zone to another. Which approach would be the best to achieve full data consistency?
+
+	Shut down the instance. Then restart the instance and select the new availability zone.
+
+	Keep the instance running. Select Migrate to AZ in the instance actions and select the new availability zone.
+
+		Shut down the instance, create a snapshot, start a new instance from the snapshot, and select the new availability zone.
+
+	Keep the instance running. Create a snapshot with the no-shutdown option. Start a new instance from the snapshot and select the new availability zone.
+
+3. You are required to select a storage location for your MySQL database server on an EC2 instance. What AWS service would be the most appropriate for such an object?
+
+	RDS
+	
+		EBS
+
+	EFS
+
+	S3
+
+4. With ECS, what allows you to control high availability of a containerized application?
+
+	Placement of ECS tasks across ECS instances
+
+	Placement of ECS tasks into an ECS cluster
+
+	Placement of ECS instances across regions
+
+		Placement of ECS instances across availability zones
+
+5. Which scripting languages are supported in a CloudFormation template? (Choose two.)
+
+		YAML
+
+	Ruby DSL
+
+		JSON
+
+	Python
+
+6. To set up a route from an on-premises location to a VPC subnet through Direct Connect, which of the following do you need to use?
+
+	RIPv2
+
+	RIPv1
+
+	Static routing
+
+		BGP
+
+7. To change the number of instances in an Auto Scaling group from 1 to 3, which count do you set to 3?
+
+	Percentage
+
+	Maximum instances
+
+		Desired instances
+
+	Running instances
+
+8. To maximize IOPS in an EBS volume, which of the following would you need to select?
+
+		Provisioned IOPS volume
+
+	General purpose volume
+
+	Disk-backed volume
+
+	Dedicated IOPS volume
+
+9. To automate the infrastructure deployment of a three-tier application, which of the following options could you use? (Choose all that apply.)
+
+		CloudFormation
+
+		CLI
+
+	CloudTrail
+
+		OpsWorks Stacks
+
+10. Which of the following compute options would be best suited for a tiny 100 MB microservices platform that needs to run in response to a user action?
+
+		Lambda
+
+	EC2
+
+	ECS
+
+	EKS
+	
+---------------------------------------------------------- Test 6 Development ----------------------------------------------------------
+
+	
+1. Which AWS service allows you to create a fully automated CI/CD toolchain that can be triggered simply with a commit to a repository?
+
+	CodeBuild
+
+	CodeCommit
+
+	CodeDeploy
+
+		CodePipeline
+
+2. What factor would make you choose continuous delivery over continuous deployment?
+
+		Ownership of production
+
+	Speed of delivery
+
+	Resource consumption
+
+	Size of packages
+
+3. Which command would you use to upload newly committed changes to the CodeCommit repository?
+
+		git push
+
+	aws codecommit push
+
+	aws codecommit upload
+
+	git upload
+
+4. Which of the following is a cloud-based IDE and requires the user to run the environment in EC2?
+
+	CI/CD
+
+		Cloud9
+
+	CodeDeploy
+
+	CloudCode
+
+5. What are the stages of continuous integration?
+
+	Code and test
+
+	Plan, code, and build
+
+		Plan, code, build, and test
+
+	Plan, code, build, test, and deploy to staging
+
+6. What is the name of the specification document used by CodeDeploy?
+
+	codedeploy.json
+
+	buildspec.yml
+
+		appspec.yml
+
+	appspec.json
+
+	codedeploy.yml
+
+7. What is the name of the specification document used by CodeBuild?
+
+	buildspec.json
+
+		buildspec.yml
+
+	appspec.yml
+
+	appspec.json
+
+	codebuild.yml
+
+8. Which of the following is not true with pipelines?
+
+	Stages can have parallel execution.
+
+	Transitions can be encrypted.
+
+	Stages can have sequential execution.
+
+		Stages cannot include manual steps.
+
+9. What needs to be done on the EC2 side when deploying code to an EC2 instance with CodeDeploy? (Choose two.)
+
+		The CodeDeploy agent needs to be installed.
+
+	A role with the permissions to access CodeDeploy must be assigned to the EC2 instance.
+
+	A role with the permissions to access CodeBuild must be assigned to the EC2 instance.
+
+	The incoming port 443 needs to be opened for the agent to communicate with the service.
+
+		A role with the permissions to access the package repository must be assigned to the EC2 instance.
+
+10. What is the biggest object size that can be stored to CodeCommit?
+
+	10 GB (but as a multipart file)
+
+	5 GB
+
+		2 GB
+
+	Unlimited
+
+11. What kind of action(s) would be suitable for the AfterInstall stage of a CodeBuild process?
+
+	Installation of prerequisites
+
+		Temporary file cleanup and file permission changes
+
+	Starting of the application
+
+	Stopping of the application	
+
+
+
+---------------------------------------------------------- Test 7 Migrating ----------------------------------------------------------
+
+
+1. What is the maximum supported size of an S3 multipart upload?
+
+	500 MB
+
+	5 GB
+
+		5 TB
+
+	500 GB
+
+2. Which of the following is not a supported SMS migration source?
+
+	VMware
+
+	Hyper-V
+
+		KVM
+
+	Azure
+
+3. What needs to be created before you can start a VM import with the AWS VM Import/Export service?
+
+	An import S3 bucket with the appropriate ACL
+
+	An import EBS volume of the appropriate size
+
+	An import EC2 instance of the appropriate size
+
+		An import role with the appropriate permissions
+
+4. What is the maximum capacity of a Snowmobile system?
+
+		100 PB
+
+	100 TB
+
+	1 PB
+
+	1 ZB
+
+5. Which AWS services are supported as the targets for a DataSync migration? (Choose all that apply.)
+
+		EFS
+
+	EBS
+
+		S3
+
+	RDS
+
+6. Which of the following is the easiest approach to migrating an application to AWS?
+
+	Refactoring
+
+		Lift-and-shift
+
+	Rewriting
+
+	Replacing
+
+7. DMS supports both heterogeneous and homogenous migrations from on premises to AWS, from AWS to on premises, and from EC2 to RDS. Which tool or tools do you need to use to allow for a DMS heterogenous migration? (Choose two.)
+
+	DMS Advanced
+
+		SCT
+
+	S3
+
+		Redshift
+
+8. In an S3 multipart upload, what is the smallest number of segments for a 10 GB file?
+
+	1
+
+		2
+
+	10
+
+	1024
+
+9. In AWS DMS, what is required to connect the source and target databases and perform the migration?
+
+	DMS connector
+
+		DMS replication instance
+
+	DMS Schema Conversion Tool
+
+	DMS account
+
+10. What steps need to be taken to successfully import a running VM to AWS?
+
+	Create a disk snapshot and run VM Import/Export on the running VM disk image.
+
+	Power off the instance and run VM Import/Export on the powered-off VM.
+
+		Power off the instance, create an image and upload it to S3, and run VM Import/Export on the S3 key.
+
+	Create a disk snapshot, upload it to S3, and then run VM Import/Export on the S3 key.
+
+
+---------------------------------------------------------- Test 8 Monitoring and Troubleshooting ----------------------------------------------------------
+
+
+
+1. To enable encryption, which action needs to be taken on a newly created CloudTrail trail?
+
+	CloudTrail trails cannot be encrypted.
+
+	Enable encryption when creating the trail.
+
+	Select S3-KMS as the encryption mechanism.
+
+		None. All trails are encrypted by default with SSE-S3.
+
+2. To handle a 503 error, it is recommended to do which of the following?
+
+		Implement exponential back-off
+
+	Search through the AWS forums for the payload returned
+
+	Open a ticket on AWS support
+
+	Check your credentials
+
+3. To monitor several important indicators of application performance, you can create a custom CloudWatch _____.
+
+	graph
+
+	queue
+
+		dashboard
+
+	alarm
+
+4. Which service combination would you use to notify an administrator of a change in the state of your environment?
+
+	Config, CloudTrail, SNS
+
+	Config, CloudTrail, SQS
+
+		Config, CloudWatch Alarms, SNS
+
+	Config, CloudWatch Alarms, CloudTrail
+
+5. A user has terminated an instance. How can you determine from what IP this deletion call came?
+
+	Check the VPC flow log.
+
+		Check the CloudTrail log.
+
+	Check the ELB connections log.
+
+	You can’t. The originating IP address of the user is not recoded in AWS.
+
+6. Which service would enable you to easily determine whether any security policies with publicly open ports exist?
+
+	CloudTrail
+
+		AWS Config
+
+	VPC port logs
+
+	CloudFormation
+
+7. A 403 response in AWS indicates which of the following?
+
+	This response is for AWS service control only.
+
+	A service request cannot be made at this time.
+
+		A policy is not allowing the user to perform any action over an AWS resource.
+
+	The object does not exist.
+
+8. Which of the following is not a characteristic of CloudWatch logs?
+
+	You can collect logs from applications and operating systems.
+
+	They allow you to alert with conditions based on log content.
+
+	Logs can be uploaded via the CloudWatch logs agent, CLI, or API.
+
+		Retention time is limited to 15 months.
+
+---------------------------------------------------------- Small 1 ----------------------------------------------------------
+In AWS which security aspects are the customer's responsibilitiy?
+		A Life-cycle management oof IAM credentials
+	Decommissioning storage devices
+		Security Group ACL (Access control List) settings
+		Encrypton of EBS (Elastic Block Store) volumes
+	Controlling physical access to compute resources
+		Patch management of EC2 instances
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+

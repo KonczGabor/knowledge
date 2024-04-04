@@ -1,0 +1,2 @@
+-CodeDeploy:
+		Can do blue/green deployment.

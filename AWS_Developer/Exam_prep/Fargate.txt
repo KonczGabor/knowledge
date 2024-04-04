@@ -1,0 +1,128 @@
+
+	Fargate: Run containers without having to manage servers or clusters => ⚜Serverless
+	
+	
+	ECS Cluster (theretically very close to Kubernetes):
+		Egy logikai csoportosítás ami egybefog Taskokat, servic-eket és megoszt kapacitásokat egy közös beállítások mentén.
+		
+		Az egész lényege a Task, ami egy példányosított Task Definition 
+		
+		A Service maga az ECS, ami sechdulál is, h mindig fussanak optimálisan Taskok
+	
+	
+	AWS ECR (Elastic Contanier Registry [Private] + ECR Public Gallery) ~= Docker HUB
+	
+	Fargate + Elastic File System (Multi AZ) = Serverless
+	
+	
+	//S3-at mint file system nem lehet felcsatolni
+	
+	Mind az ECS, mind a Fargate ugyanazt a Task Definition-t használja.
+	
+	• Launch typból létezik EC2 Instance és Fargate type. 
+		Mindkettő élhet ugyanabban az ECS Clusterben (Sőt, már meglévő instance-okat is behúzhatunk)
+		Össze lehet őket kötni Elastic File Systemmel (Serverless. Pay as u go)
+		S3 -at, mint Filse System nem lehet mountolni ECS Task számára.
+	
+		Egy Taskor el lehet indítani Hibrid módban, hogy egyszerre épülhet Fargatre es EC2-re
+	
+	• Instance Profile Role vs ECS Task Role:
+		‣ Az Instance profile role magának a konténer működéséhez szükséges (Hogy tudjon imageket lehúzni, logolni, és hívni az ECS-t)
+		‣ A Task Role mágnak a futtatandó feladat számára biztosít jogosúltságokat h tudja használni az AWS service-eit.
+	
+	Minden Tasknak, saját Task Role jön létre
+		Miért? Mert minden task más AWS serviceket használhat
+		Itt egy IAM Role-t lehet megadni.
+		
+	
+	Egy Task-nak size a van, ami CPU ÉS Memory -t jelent.
+	
+	♦ ECS (Elastic Container Service)
+		ECS Taskokat indít amik egy ECS Clusterben élnek.
+		Mi választjuk ki az EC2 launch type-ot és manageljük az instancokat, de ezek ECS specifikus instanceok.
+			Ezek az EC2 instancok mind futtatniuk kell egy ECS Agent-et, ami egy containerben van.
+			
+		Amikor létrehozunk egy új containert, akkor a már futó EC2-k egyikében fog létrejönni. 	
+		
+		IAM Role for ECS Task:
+			EC2 instance számára delegálunk egy , EC2 Instance Profile-t:
+				Ezeket a konténebrben lévő ECS Agentek fogják használni.
+					Ezekkel a beállításokkal lesz hívva a CloudWath logs (Ide logolnak a konténerek), ECR és az ECS
+	
+	
+		
+	
+	
+	♦ Fargate esetén nem mi manageljük az infrastruktúrát (nem hozunk létre EC2-ket), azaz minden serverless lesz.
+		• Nekünk a Task Definition-öket kell létrehozni
+		• És meghatározni a CPU/RAM igényt
+	
+	
+	♦ Mi alapján AUTO Scelelhetjük a az ECS taskokat?
+		‣ Átlagos CPU felhasználás
+		‣ Átlagos RAM felhasználás
+		‣ Application Load Balancer-re beérkező request
+		
+		Mi alapján TargetTrackingelhetünk (CloudWAtch metric-en alapul)
+		StepScaling - by CloudWatch Alarm
+		SEcheduled Scaling - date, time, predictable scaling
+	
+	
+	♦ EC2 Launch Type Auto Scaling EC2 Instances
+		AutoScaling Group Scaling
+	
+	
+	
+	ECS Service Auto Scaling (task level) NEM EGYENLŐ az EC2 Auto Sacling-gel (EC2 instance level) 
+	
+	
+	♦ ECS Service vs Task:
+	
+		Service: A magasabb szintű szervezeti egység, mely magába folglalja a Taskokat
+			A folymatos rendelkezésére állást biztosítja azáltal h kezeli a rendelkezésre álló taskok számát a task definició alapján.
+			Monitorozza h taskok állapotát és scaleli (placement strategies), újraindítja őket és elosztja a terhelést a Load Balancer-e segítségével.
+			
+		Task: Ez a legkisebb deployolható egység a clusterbe, ami egy vagy több konténeren élhet.
+			
+		
+		
+		
+	ecs.config file	
+	
+	
+	A Host port is the container's port. It have to be set to 0 to the ECS will be able to configure dynamically
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

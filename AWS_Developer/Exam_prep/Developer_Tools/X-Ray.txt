@@ -1,0 +1,24 @@
+X-Ray: Megmutatja h épp hol tart a kódunk, mely AWS servicen.
+		Egyszerűvé teszi h analizáljuk az elosztott rendszerek viselkedését azáltal
+		nyomon követjük a requesteket,
+		az exceptionoket és
+		profilozzuk a lehetőségeket.
+		
+		Interceptorok: a bejövö HTTP requsteket monitorozzák
+		Client handlers: AWS servicek egymás közötti kommunikációját trackeli
+		Külső webservicek hívogatását is megfigyeli, valamint
+		az SQL kéréseket.
+		
+		
+		
+X-Ray:
+	Monitoring tool (segíti a fejlesztőt h analizálja/debuggolja az elosztott rendszert productionben)
+		Makes it easy for developers to analyze the behavior "of their distributed applications "by providing request tracing, exception collection, "and profiling capabilities." 
+		Interceptor to track HTTP, AWS servic communication traffic
+		Exception collection
+		Profiling capabilities
+		
+		Létre tud hozni Service Map-eket (aerchitektúra rajz a service-ekről és resource-okról)
+		Azonosítja a bugokat
+		Azonosítja bottlenecket
+		Analízist készít, vizualizálja azt.

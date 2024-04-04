@@ -1,0 +1,168 @@
+Route 53:
+		//Meaning of the name: destination for DNS server requests: TCP or UDP port 53
+		
+		
+		Top Level Domain (TLD): .com, .us, .gov
+		Second LEvel Domain (SLD) amazon.com, google.com 
+		
+		Fully qualified domain name: api.www.example.com   
+		
+		Managed DNS (Domain Name System) service
+		Szabályok és adatok gyűjteménye a clientek számára h egyszerűbben tudják használni a server-t URL-ek segítségével.
+		LoadBalancereknek is tud aliasokat adni.
+		
+		Route 53 Record elemei:
+			Domain/subdomain name - example.com
+			Record Type: A, AAAA
+			Value: 12.34.56.78
+			Routing policy: how Route 53 response to querries
+			TTL: amount of time the record cached at DNS Resolvers.
+		
+		Egy domain alá recordsetek tartozhatnak.
+		Record types:
+			• A: maps a Hostname to IPv4
+			
+			• AAAA: maps a Hostname to IPv6
+			
+			• CNAME: maps a hostname to any other hostname (app.mydomain.com => blabla.anything.com)
+				Csak NEM Root domain-re működik. Itt az "app" és a "blabla" a nem root.
+					A root a mydomain.com és az anything.com
+				Root domain és nem rootdomain-ekre is működik
+				Ingyenes
+				Native health check
+				
+			• NS: Name Servers for the Hosted Zone -Controls how traffic is routed for a domain
+			
+		Alias:
+			Egy hostname-et mappael egy AWS resource-re
+			Ingyenes
+			Autómatikusan felismeri ha egy resource IP-je megváltozik. Pl ha az ELB-ünk IP-ja megváltozik
+			A CNAME-mel ellentétben a top node-re is rá lehet tenni, lp.: example.com
+			Ha AWS resource-ra mutat, akkor mindig A(IPv4), vagy AAAA(IPv6)
+			A TTL(Time To Live)-et a Route53 állítja be, mi nem nyúlhatunk hozzá (nem tud lejárni).
+			
+			Mi lehet egy ALias targetje?
+				Elastic Load Balancer
+				Amazon CloudFront
+				Amazon API Gateway
+				Elastic Beanstalk
+				S3 Websites (Not Buckets!)
+				VPC Interface endpoint
+				Global Accelarator
+				Route53 Record(same hosted zone) 
+			Mi nem lehet?:	
+				EC2 DNS name
+			
+		TTL: Time to live: A DNS küldi vissza a responsban, h ennyi ideig hagyjon békén a kliens(böngésző) és szolgálja ki magát abból amit küldtem. 
+		A böngésző meg megnézi mindig a cache-ét h benne van-e a requestelt URL IP-je.	
+		Tehát a Local DNS Server (vagy a cég, vagy az internet service provider üzemelteti) tárolja a TTL cache-ében a címet(example.com). 
+			Ha nincs ott akkor indul el a Root DNS Serverhez
+				Ha ott sincs, akkor csak annyit tud mondani h tduja hol mely serveren vannak a .com-ok, és megadja ennek a Name service-nek az ip-jét.
+					Ez a server a TopLevelDomain Server
+						Ha ő se tudja az ip-t, akkor viszont meg tudja modani hogy kinél van pontosan és megadja a Second Level Domain Server IP-jét (Amazon Registrar)
+		Ennek a körbekilincselésnek az elkerülése végett tárolja el a Local DNS server a pontos IP-ját a webcímnek.	
+			Megkapjuk et a címet a TTL-lel együtt és böngészőnk leátolja azt is. Tehát egészen a domanin cím tulajdonosától vándorolódik el a TTL egészen a user böngészőjéig.
+				És amíg a webcímhez tartozó TTL le nem jár nem is fog requestet küldeni a a Local DNS Serverhez.		
+				
+				
+		High: 24hr, Low: 60 sec
+		
+		Hosted Zone: 
+			Container for records that define how to route traffic to a domain and its subdomains
+				Public:
+					Olyan rekordok amik megmondják hogyan irányítsunk forgarlmat az internetre/ről
+				Private:
+					Virtual Private Cloudon-belül (private domain names)
+					
+		
+		Routing policies:
+				• Simple:
+					‣ Typically, route traffic to a single resource
+					‣ Can specify multiple values in same record
+						 If multiple values are returned, a random one is chosen by the client
+					‣ When Alias enabled, specify only one AWS resource
+					‣ Can’t be associated with Health Checks 
+					
+				• Weighted
+					‣ Control the % of the requests that go to each specific resource
+					‣ Assign each record a relative weight (don’t need to sum up to 100)
+					‣ DNS records must have the same name and type
+					‣ Can be associated with Health Checks
+					‣ Use cases: load balancing between regions, testing new application versions…
+					‣ Assign a weight of 0 to a record to stop sending traffic to a resource
+					‣ If all records have weight of 0, then all records will be returned equally
+
+
+				• Failover
+					Tartalék, amire fallbackelhetünk
+				
+				
+				• Latency based
+					‣ Redirect to the resource that has the least latency close to us
+					‣ Super helpful when latency for users is a priority
+					‣ Latency is based on traffic between users and AWS Regions
+					‣ Germany users may be directed to the US (if that’s the lowest latency)
+					‣ Can be associated with Health Checks (has a failover capability)
+				
+				• Geolocation
+					  ‣ This routing is based on user location
+					  ‣ Specify location by Continent, Country or by US State (if there’s overlapping, most precise location selected)
+				
+				• Geoproximity (using Route 53 Traffic Flow feature)	
+					Összeköti a usereket és az erőforrásokat a geolokációjuk alapján.
+						Egy értékkel be lehet állítani h az adott erőforrás felé mennyi forgalom terelődjön 
+							(plusz - több, minusz - kevesebb)
+					A Traffic Flow-t be kell állítani:
+						Ez egy grafikus editor a complex routing policy döntési fák létrehozására.
+						Verziókezelt.
+						Traffic Flow Policy-t állít elő végül.	
+		
+				
+				
+				• Multi-Value 
+					‣ A forgalmat több lehetséges resourcehoz irányítja, de végül egy lesz a befutó
+					‣ NEM Load Balacer!
+					‣ Can be associated with Health Checks (return only values for healthy resources)
+				
+					
+HTTP Health Checks are only for public resources !	
+	‣ You can create a CloudWatch Metric and associate a CloudWatch Alarm, then create a Health Check that checks the alarm itself	
+
+• Health Checks pass only when the endpoint responds with the 2xx and 3xx status codes
+• Health Checks can be setup to pass / fail based on the text in the first 5120 bytes of the response
+• Configure you router/firewall to allow incoming requests from Route 53 Health Checkers			
+					
+Health Check can monitor:
+
+	Csak 
+
+	1. Health checks that monitor an endpoint (application, server, other AWS resource)
+	2. Health checks that monitor other health checks (Calculated Health Checks)
+	3. Health checks that monitor CloudWatch Alarms (full control !!) – e.g., throttles of
+		DynamoDB, alarms on RDS, custom metrics,
+		… (helpful for private resources)			
+					
+					
+					
+					
+					
+					
+			
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					

@@ -1,0 +1,21 @@
+Elastic Beanstalk: Ez egy orchestraion service
+
+		De gyakorlatilag csak egy eye-candy a Clod Formation fölött, mert minden oda kerül letárolásra, egy template-be, amiből eventek feedelődnek egymás után.
+		Run code
+		Run and manage web apps
+		Ez egy olyan absztrakciós réteg, melynek az a feladata hogy összeköttetést biztosítson az oprendszer, vagy szerver és az alkalmazásod között.
+			Gyakorlatilag tud adni egy EC2 instancot beállítva a security-t, load balancingot
+			Tud csatlakozni SQL és NoSQL adatbázisokhoz, Blue(old)/Green(new) deployment
+		Cél: Rapid Application Development 	
+		Ki kell választani h milyen Platformot kérünk (Java, Go, Node,..)
+		eb --a parancs a cli-on
+		
+		Blue/Green Concept : To Swap new Platform version (Mindkettő egyszerre fut, csak az URL-t kell átirányítani.)
+		Létrehozni mégegy environmentet, arra rárakni a frissebb platformot, arra ugyanazt az applicationt, maj az url-t átirányítani a még futó régiről az új platformra
+		
+		
+	Két Tier közül kell vűlasztani:
+		WebServer (Http requestek handle-ölés leginkább)
+		Worker environment (háttérben fut és mondjuk adatokat húz ki SQS-queue-ból)	
+		
+		

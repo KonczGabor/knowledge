@@ -1,0 +1,9 @@
+-CodeStar: Automate the whole process, has a GUI
+
+Codestar
+	Templates for web applications/web services
+	Project resources are configured to work together
+	Assign project team members the roles they need to access tools and resources
+	No IAM management is necessary
+	Has Issue management Session
+	Önmagának is létrehoz egy külön instance-ot ahol működik őkelme.

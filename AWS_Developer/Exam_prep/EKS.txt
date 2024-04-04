@@ -1,0 +1,49 @@
+EKS:
+	Elastic Container Service for Kubernetes:
+		Deploy manage and scale containarized applications using Kubernetes
+		
+	Az ECS alternatívája, open source, de más az API-ja.	
+	
+	
+	
+      Az EKS-t el lehet indítani EC2 és Fargate módba:
+      	‣ EC2: deploy mód
+      	‣ Fargete: serverless mód
+      	
+      	
+      Kubernetes is cloud agnostic (Azure, GCP, AWS, ...)
+      
+      	EKS Node-ok gyakorlatilag az EC2 instance-ok
+      	Az EKS pod-ok gyakorlatilag az ECS taskok
+	
+		Node típusok:
+			
+			• Managed Node Groups:
+				‣ Manage-el ve vannak a node-ok
+				‣ ASG-ben vannak
+				‣ Elérhetőek az On_Demand és a Spot instance-ok
+				
+			• Selg-managed nodes:	
+				‣ Mode customization and more control
+				‣ Mi hozzuk létre
+				‣ ASG-ben vannak
+				‣ Vannak olyan Amazon AMI-k, amik EKS-re vannak optimalizálva, de saját machine image-et is építhetünk 
+	
+			• Fargate mód:
+				‣ No maintenance required: no node manage
+	
+	
+		Data Volumes:
+			Need to specify a StorageClass manifes in the EKS Cluster
+				Az itt definiált erőforrásnak impelementálnia kell a Container Storage Interface-t
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

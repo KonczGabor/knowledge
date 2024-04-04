@@ -1,0 +1,12 @@
+IAM 
+Route53 (DNS Service)
+CloudFront (Contenet Deliver Network)
+WAF (Web Application Firewall)
+
+
+
+Region Scoped:
+	EC2
+	Elastic Beanstalk
+	Lambda
+	Rekognition

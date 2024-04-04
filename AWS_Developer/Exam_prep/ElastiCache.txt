@@ -1,0 +1,35 @@
+ElastiCache: In-Memory db
+	High performance
+	Low latency	
+	Csökkenti a read intensive folyamatokat, amiket amúgy a db-nek kéne tűrnie.
+	Működése:		
+		Először az app az in-memory db-hez fordul,
+		ha ott van a data, akkor "cache hit" történik, visszadjuk az app-nak.  
+		Ez a happy path.
+		
+		Ha nincs ott a data ("cache miss"), akkor fodulunk a db-hez,
+		visszaadjuk az app-nak, majd beírja az app a cache-be.
+		
+		Közben folyamatosan fut egy cache invalidating strategy, ami csak a legaktuálisabb adatokat hagyja bent.
+			LRU:Last Recenty Used
+			TTL:Time To Live
+		
+		//Ha írás történik a db-be azt is be kell írni a cache-be. 
+		Ezekek sajnos mind hállózatterhelések, de valamit valamiért.
+		
+	Elastic Cache Replication:
+		1, Cluster mode disabled(to scale read performance and failover):
+			Adott egy Shard
+				Abban egy primary node (írás-olvasás)
+					<=> async kapcsolat
+				0-5 Replica (csak olvasás)
+		2, Cluster mode enabled(to scale write performance. Az adat fel van darabolva több shard között)
+			ezekben pedig ugyanaz játszódik le:	
+				Adott egy Shard
+				Abban egy primary node (írás-olvasás)
+					<=> async kapcsolat
+				0-5 Replica (csak olvasás)
+				
+			Egy clusterben max 500 node lehet		
+		
+	User Session-ök szinkronizálására is hasznos különböző instanceok között 

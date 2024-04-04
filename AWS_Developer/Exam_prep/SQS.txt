@@ -1,0 +1,103 @@
+SQS:
+
+	Nincs limit h mennyi üzenet lehet a csőben
+	Nincs limit az áteresztőképességre (throughput) -ezt nem tudom mit akar jelenteni pontosan 
+	Simple Queue Service
+		manged
+		Queue: Items Awaiting Attention
+		Secure
+		Scalable
+		Durable (Replicated between multiple servers)
+		
+		Delivery Types:
+			Standard: 
+				Legalább egyszer mergérkezik, néha több másolat is létrejöhet belőle.
+				A Sorrend nem garantált
+				"Unlimited" átfolyás
+			FIFO
+				Batchelve 3,000MPS
+					Anélkül 300
+				Biztos h csak egyszer lesz feldolgozva
+				A sorrend szigorúan tartott.
+				A queue neve csak .fifo-ra végződhet.
+				
+		Dead Letter Queue: 
+			Azon üzenetek sora, amiket addott próbálkozás szám szerint senki sem tudott feldolgozni
+			Debuggolásnál hasznos.
+		
+		Visibility Timeout:
+			Akkor kezdődik, amikor az előző message-t kivettük(Pull strategy) a sorból.
+			A Consumernek kell processzálnia és törölni a Timeout időablakon belül.
+			Ha nem törli ki, akkor újra ő lesz az aktuális.
+			A Consumer extendálhatja az időablakot, ha még midnig processzál.
+			Ha egy Consumer egy adott időablakon belül nem tudja feldolgozni(nem muszáj) és törölni, akkor egy másik Consumer még elérheti.
+			
+		Messange Retention period (Meddig maradnak élve az üzenetek a q-ban)
+			Min 1 min
+			Def 4 days
+			Max 14 days	
+	
+		Message size:
+			Min 1KB
+			Def 256KB
+			Max 256KB
+		
+		FIFO q ban nincs üzenet késleltetsésére opció. Simple-ben 15 perc a max.	
+			
+		Szerver oldali tikosítás elérhető, az üzenet tartalmát igen, a metadatát(TimeStamp, QueueName, Id) nem tikosítja. //Kínában a messagebody-t sem LoL!!!	
+		
+		5 perc, mire a metrikák aktualizálódnak a CloudWatch-ban.
+		
+		Lehetnek duplikált messagek
+		
+		A Consumer pullol, majd meghívja a queue api ján a delete-t.
+		
+		Valud usecase, ha elekezdenek a sorban felgyülemleni az uzenetek, akkor egy CloudWatchMetric ami figyeli sor hosszát, ami triggerel egy CloudWatch Alarmot, amit üzen egy AutoScalingGroupnak,
+		hogy EC2 instancokat kérünk még. 
+		
+	
+	Security:
+		Encryption:
+			In-flight: HTTPS API
+			At-rest: KMS
+			Client side en/decryption
+					
+					
+	Long Polling:
+		
+		Long polling in Amazon Simple Queue Service (SQS) is a feature that allows consumers of SQS messages to retrieve messages from a queue with reduced cost and lower latency compared to short polling.
+
+		In short polling, when a consumer requests messages from a queue, if there are no messages available, SQS returns an empty response immediately. This can lead to increased costs and latency as the consumer might need to repeatedly poll the queue.
+
+		On the other hand, long polling allows the consumer to request messages from the queue for a longer duration (up to a maximum of 20 seconds) before the request times out. If there are no messages available in the queue when the request is made, SQS will wait up to the specified duration for messages to become available. Once a message is available or the request times out, SQS returns the response to the consumer.
+
+		Long polling helps reduce the number of empty responses, which can lead to cost savings and lower latency, especially in scenarios where message arrival rates are unpredictable or sporadic.				
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

@@ -1,0 +1,19 @@
+SNS:
+	Simple Notification Service
+	Be lehet állítani triggereket a S3 bucketekhez is vele.
+	Publis-Subscriber/Provider-Consumer
+	A Publisher(ek) egy Topic-ra tesz(nek)(Push strategy) az üzenetet, ahonnan több különböző helyere is elkerülhet
+		SQS
+		HTTP endpoints
+		email
+	
+	A Subscriberek Filterekkel(JSon formatted objects) kapcsolódhatnak a Topicra, h csak arról kapjanak értesítést, ami érdekli őket.
+	
+	CloudWatch metrikákat az SNSből 5 percenként frissülnek.
+		
+	Kik lehetnek subscriberek?
+		SQS
+		Lambda
+		Email-Json
+		HTTP(S)
+		SMS	

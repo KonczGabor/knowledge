@@ -1,0 +1,11 @@
+MFA Delete
+	This is an additional layer of security IF we DON'T have S3 Versioning
+	Because it's a pemanent deletion
+	
+	Suspend Versioning must be authenticated by MFA
+	
+	This option only can be turned on/of by the owner.
+	
+	To use MFA Delete, Versioning must be swithced on
+	
+	Talán csak CLI-ből lehet engedélyezni? Ez nem biztos.

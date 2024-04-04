@@ -1,0 +1,1 @@
+Storage Gateway: Hybrid Storage Integration, azaz a local data-inakt ezen keresztül tudjuk begyűrni az AWS be.

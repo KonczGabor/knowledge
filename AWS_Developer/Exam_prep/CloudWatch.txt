@@ -1,0 +1,382 @@
+CloudWatch Metrics:
+	Minden AWS Service számára biztosít metrikákat.
+	
+	• Metrics: Collect and track key metrics
+	• Logs: Collect, monitor, analyze and store log files
+	• Events: Send notifications when certain events happen in your AWS
+	• Alarms: React in real-time to metrics / events
+		- A metric Filter Triggereli az Alarmot
+		- A filterek nem retroaktívak-azaz utólag nem sűlnek el, csak az újonnan érkező adatokra (tehát amik a filter létrehozása után történtek).
+		- Tehát egy general use-case:
+			Az EC2-ben futó CloudWatch Logs Agent beküldi az adatot a CW Logs-ba, ott fenn akad egy filteren, az szól egy CW alarmnak, ami hívja az SNS topicot.
+	
+		- Ezeket az állapotokat vehet fel egy Alarm:
+			‣ OK
+			‣ INSUFFICIENT_DATA
+			‣ ALARM
+		
+		- Általában kiknek üzen egy Alarm?
+			‣ EC2 (indulon el, álljon le)
+			‣ ASG
+			‣ SNS
+		
+		- Egy alarm lehet composite, azaz más alarmokra épülő <= reduce "alarm noise" 
+			pl.: ne üzenj ha a CPU is high and the Network is high, csak ha a CPU is high and the Network is low.
+						
+	
+		- //Ha csak localban akarunk tesztelni egy alarmot akkor használjuk a CLI
+		
+			aws cloudwatch set-alarm-state 
+			--alarm-name myalarm 
+			--state-value ALARM
+			--state-reaseon "myReason"
+			
+			utasítását.
+	
+	• CW Synthetics Canary
+		Egy headless browser ami egy Node.js v Python scriptet futtat ami ellenőrzi a Route 53 endpointokat, pl hogy az azt kiszolgáló EC2 hogy teljesít.
+			Ha nem jól, akkor a módosítja a R53-at hogy másik instance-ot hívjon.	
+			- Futhat egyszer, vagy regularly
+			- Készíthet screenshotot h mi tört el.
+			- Tesztelheti a REST API read/write funkióit. 
+			- Broken link checker
+			- Canary Recorder: Felvehetünk vele egy user interakciót, ami egy scriptet generál le, ami később visszajátszható.
+			- GUI Workflow Builder: megbizonyosodhatunk róla h az action valójában megtörtént-e.
+			
+			 
+	A CW Api-jának PutMetricData endpointján teszünk be adatokat.
+		Az adatott metrikát beküldhetjük h elmúlt 2 hét és a következő 2 óra között történt. //(Hogy ennek mi értelme?)
+	
+	A Metrika egy custom absztrakció, ami egy változó monitorozása (CPU, Network felhasználás).
+		‣ A Dimenzió ennek a metrikának egy attribútuma, pl az instanceID, environment, ...
+			Max 30 dimenziója lehet egy metrikának.
+		‣ Minden metrika egy namespace alá tartozik. 
+			az AWS service-ek szerint, de sajátot is létrehozhatunk.
+		‣ Minden metrikának van timestamp-je.
+		‣ A metrikákat ki lehet húzni egy Dashboard-ra.
+		‣ A resolution a gyakorisága h milyen gyorsan frissítjük:
+			Standard: 60 sec
+			High resolution: 1/5/10/30 sec => higher cost
+		
+		
+		//A free tier 10 metrikát enged.
+				
+	
+	• Hogyan monitorozzunk EC2-t?
+		//alapból 5 percenként fut, de additional
+		//memória használat alapból nem megy ki, ki kell pusholni az instanceból, mint custom metrika.
+		Az instance-nak rendelkeznie kell permissionnel h küldhesse a logokat a CloudWatch-nak
+		
+		
+		
+	• CloudWatchLogs:
+		Először létre kell hozunk egy Group-ot.
+		Log stream: egy adott endpointról/instance-ról érkező adatok.	
+		Megadhatjuk az expiration-t.
+		
+		
+		♦ CloudWatch Logs Insights:
+			UI service to get graphical represenation by a querry language 	based on CW Logs.
+				Exportálhatóak az eredmények.
+				Maga a lekérdezés kitehető Dashboardra.
+				Csak akkor fut, ha mi elindítjuk a lekérdezést.
+					Ellentéte a Live Tail, ami real time mutatja a log streameket. Ez fizetős.
+		
+		- Hová tud exportolni? 
+			‣ S3: Nem real time, 12 órán belül lenyom egy API-CreateExportTask batch processt. 
+			
+			Ha real time-ot akarunk, akkor a Logs Subscriptions-t kell használni helyette.
+		
+			‣ Kines
+		
+			
+		
+	• EventBridge:
+		- Chron jobs in the cloud:	
+			Pl.: minden órában süss el egy triggert, ami meghív egy lambda function-t.
+		
+		- React to event pattern:
+			Pl: Root user bejelentkezik a konzolra, vagy valamilyen API hívás (based on Cloud Trail)
+		
+		
+		Egy event doksi jön létre JSON-ben, amit át lehet küldeni gyakorlatilag mindenre.
+		
+		- Az AWS servicek a Default Event Bus-ra írnak (erre lát rá maga az EventBridge), de az EventBridge rá tud pakolni a Partner Evenet Busra (és innentől a lehetőségek végtelenek). 
+			Leginkább integrated SAAS partners:
+				- DataDog	
+				- Aut0
+		
+		- De Custom Event Bust is létrehozhatunk.
+		
+		- Minden esemény achiválásra kerül és az archive-ból visszajátszható (replya archive events -handy for debugging, find bugs)
+		
+		♦ Schema Registry:
+			- Ez egy olyan service ami legyártja ez Event template-jét.
+			- Verziókezeltek a sémák.
+
+		
+		- Accountok között a Central Event Bus segítségével kommunikálunk (Multi-account Aggregation), amire rá kell tenni egy resource policy-t ami megengedi az "al-account"-nak h publish-elhessen rá.
+			
+		
+	♦ X-RAY:
+		Visual analysis for our application.
+		Nagyon hasznos sok microservice közti kommunikációra (Following a request, define as a Tracing)	
+			A tracing segments-ekből, 
+				azok sub-segments-ekből állnak.
+			Annotations can provide additional information.
+				key-value data to use filters on traces more easily.
+			Metadata
+				szintén key-value, de nem indexelt és nem seach-re használjuk.	
+			
+			Mivel kompatiblis?
+				Lambda
+				EBS
+				ECS
+				Gateway
+				EC2 (even on premise)
+				
+			Sampling:
+				Az adatmennyiség beállítása h mennyit engedünk át vizsgálat szempontjából.
+					Egyenesen arányos költség.
+				By default:
+					Minden másodperc első requestje (Reservoir) és
+					a hátralevő időben elküldöttek 5%-a (Rate).
+						Debug esetén a rate-et fel lehet tenni maxra, csak ne felejtsük el visszaállítani.
+				Az alaklmazást nem kell újraindítani h módosítjuk a sampling rule-okat, a daemon tudni fogja, ha megváltoztak.
+		
+		How to be enable?
+			1. Beimport SDK 
+			2. Install X-Ray daemon (low lvl UDP packet interceptor) or enable X-Ray AWS Integration.
+			3. Apps/EC2 have to have IAM rights to write data to X-Ray
+		
+		
+			With Elastic Beanstalk:
+				 lépések:
+					1, Az X-Ray daemon már include-olva van, csak engedélyezni kell az .ebextensions/xray-daemon.config-ban:
+						aws:elasticbeanstalk:xray:
+							XRayEnabled: true
+					2, A kódba fordítsuk bele az X-Ray SDK-t		
+					3, Adjunk az EC2-nek megfelelő IAM permission-t hogy a daemon hívhassa az X-Ray service function-öket	
+						az aws-elasticbeanstalk-ec2-role policy elég jó erre, mert tartalmazza a szükséges permissionöket.
+					
+					
+			With ECS (3 lehetőség):
+				‣ Container as a Daemon: Adott egy ECS Cluster, és azon belül minden egyes EC2-ben fut egy erre a célra dedikált container, amiben a daemon agent fut.
+				‣ Container as a "Side car": Minden egyes App containerhez tartozik egy X-Ray Sidecar container, ami csatlakozik a networkre és ebben fut az X-Ray daemon.
+				‣ Fargate Cluster: Minden Fargate Task on belüli App containerhez tartozik egy sidecar. 
+					Gyakorlatilag ugyanaz, mint a "Container as a Side car" csak itt van egy külső Task réteg.
+					
+					1, A Task Definition-ban az X-Ray sidecar portmappingját be kell állítani:
+						"name": "xray-daemon"
+						"portmappings": [
+							{
+								"hostport": 0,
+								"containerPort": 2000,
+								"protocol": "udp"
+							}
+						]		 	
+		
+					2, Az application ENV-eiben be kell kell konfigolni az dameon-t, mert az SDK-nak szüksége van rá:
+						"environment": [
+							{"name": "AWS_XRAY_DAEMON_ADDRESS",
+							 "value": "xray-daemon:2000"	
+							}
+						]
+					
+					3, Az app Network config-jaban össze kell kötni a 2 endpointot:
+						"links": [
+							"xray-daemon"
+						]
+		
+		Viszgára tudni kell:
+			• Write API (used by X-Ray daemon) managed policy:
+				5 line items:
+					‣ xray:PutTraceSegments
+						Uploads segment documents to X-Ray
+					‣ xray:PutTelemetryRecords
+						daemon upload telemetry, helps with the metrics
+					‣ xray:GetSamplingRules
+						retrieve all sampling rules (to know what/when to send)
+					‣ xray:GetSamplingTargets
+					‣ xray:GetSamplingStatisticSummaries
+			
+			
+			• Read API
+				10 (9 Get, + 1 Batch) line items:
+					‣ xray:GetSamplingRules
+					‣ xray:GetSamplingTargets
+					‣ xray:GetSamplingStatisticsSummaries
+					‣ xray:BatchGetTraces
+						Retrieves a list of traces specified by ID. Each trace is a collection of segment documents that originates from a single request
+					‣ xray:GetServiceGraph
+						Provides the main graph
+					‣ xray:GetTraceGraph
+						Retrieves a service graph for one or more specific trace IDs.
+					‣ xray:GetTraceSummaries
+						Retrieves IDs and annotation for traces available for a specified time frame using and optional filter. To get full traces, pass the trace IDs to BatchGetTraces.
+					‣ xray:GetGroups
+					‣ xray:GetGroup
+					‣ xray:GetTimeSeriesServiceStatistics
+					
+			
+			
+	♦ OpenTelemetry:
+		Ez egy open source project amihez az AWS készített egy disztrót	ami API-k, library-k, agentek és collectorok halmaza.
+		Cél: metadatákat gyűjtsön AWS resource-okból és service-ekből (lehet on-premise is).
+		Ezeket a trace-eket és metrikákat továbbítja több AWS service-nek és AWS partnernek (DataDog).
+				
+		A különbség az X-RAY és az AWS Distro for OpenTelemetry között h az OT egy standardizált open source API Telemetry-re és több destination-re küld egyidejüleg.	
+			Be tud küldeni X-RAY be is akár
+				
+			
+	♦ AWS CloudTrail:
+		Provides governance, compliance and audit for yor AWS account.
+		Alapból engedélyezve van
+		Az eventek 90 napig örződnek meg alapból, de átmozgathatjuk őket S3-ba, és ♦Athena-val elemezhetjük őket.
+		Esemény historyt szolgáltat úgy hogy az összes API callt monitorozza ami az accounton belül történik:
+			‣ Console
+			‣ SKD
+			‣ CLI
+			‣ AWS Services
+		
+		A logokat át lehet mozgatni a CW Logs-ba, vagy S3-ba
+		A Trail az események láncolata.
+			Lehet őket személyre szabni:
+				- Regiók közti
+				- Egy addott Regióra
+			
+		
+		Az eventek típusai:	
+			• Management: Olyan műveletek, amelyeket AWS Resource-okon hajtottak végre:
+				Pl.: IAM polcy-t csatoltak valamihez
+					‣ Read Event: Nem modify-olja a resource-ot: valaki kilistázza az összes IAM usert.
+					‣ Write Event: Valaki kitöröl egy Dynamo DB táblát
+					
+			• Data Event: Ezek alapból nem logolódnak, mert túl sok lenne	
+				Mik ezek az események?:	
+					- S3 Object lvl activity: (GetObject, DeleteObject, PutObject) ezek is R/W választhatók.
+					- Lambda functions (hányszor lett meghívva)
+					
+					
+			• CloudTrail Insights Events:
+				Egy fizetős szolgáltatás ami monitorozza az eseményeket és figyelmeztet minden szokatlan aktivitásra:
+					- inaccurate resource provosioning
+					- hitting service limits
+					- burst of IAM actions
+					- karbantartási szünetek		
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+							
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

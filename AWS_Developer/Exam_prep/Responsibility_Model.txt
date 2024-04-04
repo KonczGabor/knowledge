@@ -1,0 +1,34 @@
+Responsibility model:
+	AWS
+		Host OS
+		Virtualization
+		Physical security
+		
+	You	
+		Management of the guest OS
+		Application software
+		Rule configuration of the AWS provided firewall
+		Laws and reulations surrunding your chosen services //Jogi környezet
+		
+	Patch management
+		AWS
+			is responsible for patching the infrastructure
+			Host OS
+			Virtualization
+			Phisical security
+			Relieves your operation burden
+			
+		You	
+			Guest OS (updates/patching)
+			Applications
+			Databases
+			Identity & access management
+			Rule configuration on AWS firewalls
+			Networks
+			Laws and resctrictions 
+			
+	Configuration management
+		AWS
+			maintains the configuration of the devices
+		You
+			Guest OS, DBs, APPs

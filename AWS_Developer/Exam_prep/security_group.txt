@@ -1,0 +1,24 @@
+Egy security groupban (ami gyakorlatilag egy firewall in/outband szabályzat) a következő resourceok élhetnek:
+
+
+AWS Security Groups are basically virtual firewalls for your EC2 instances to control inbound and outbound traffic at the instance level. While they are primarily associated with EC2 instances, they are not limited to just EC2 instances. Security groups can also be associated with other resources in AWS that can initiate or receive internet traffic, such as:
+
+RDS Instances: You can associate security groups with Amazon Relational Database Service (RDS) instances to control access to databases.
+
+Elastic Load Balancers (ELB): Security groups can be used with ELB to control access to the load balancer from the internet or within a VPC (Virtual Private Cloud).
+
+Lambda Functions: When executed within a VPC, AWS Lambda functions can use security groups to manage traffic flow.
+
+Elasticsearch Service: If deployed within a VPC, Amazon Elasticsearch instances can be associated with security groups to regulate access to the service.
+
+Elastic Container Service (ECS) Tasks and Services: For deployments within a VPC, ECS tasks and services can use security groups to control access to containers.
+
+Amazon EC2 Container Instances: These instances, which are part of the ECS, can have security groups applied to control network access.
+	
+	
+	It's important to distinguish that while security groups can be associated with various AWS resources, they operate at the instance or resource level within a VPC, not at the subnet level. That function is served by Network Access Control Lists (NACLs).
+	
+	
+Egy erőforrást több Security Groupba-is be lehet tenni, ilyenkor azok metszetét kapja, a legkevésbé megengedőt.	
+
+//inbound = ingress, outbound = egress

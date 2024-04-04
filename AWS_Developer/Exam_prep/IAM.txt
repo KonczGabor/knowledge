@@ -1,0 +1,105 @@
+IAM:
+	Identity and Access Management
+		To log in to a server/web console/access an API
+		Identity: Who are using
+		Access: What can u do
+		Managemenet: Administration of
+		
+			Federated identity
+			Fine-grained permissions
+			Multi-factor authentication
+			
+				Its FREE and GLOBAL
+				Replicated Worliwide
+				
+				IAM Components:
+					Users :Has a name, Its an entity, but not always have to be a person
+						Access Types:
+							Programmatic Access: Aces Key with Secret Access Key			
+							AWS Management Console
+							Have a Policy to accatched
+							
+					Groups: Collection of users, with a name what can be changed, but not recommended due to static references.
+						Users
+						Have a Policy to attached
+						
+						Egy ember több csoportba is tartozhat. 
+						
+						Egy ember nem muszáj h egy csoportba is tartozzon akár. 
+							Egy emberhez is lehet directben dediálni policy-t, ez az "inline policy"
+							
+						Egy csoportba csak emberek tartozhatnak, más csoportok nem. 
+						
+						Ha egy user több gropuba is tartozik, akkor ugyanazon resourcehoz a megengedőbb jogot fogja kapni.
+						Csoportokhoz és emberekhez egyaránt lehet policy-ket kötni.
+				
+					Roles:Set of permissions (Ezek nem csak embereknek[User], hanem AWS resource-oknak(EC2), service(Lambda)-eknek is adhatók)
+					
+					Policies: Set of permissions
+						Effect: Permit or deny
+						Action: What to do
+						Resource
+						Condition
+						
+					Identity providers: To integrate external identity database
+		
+						Can be created by:
+							Copy of AWS policy
+							Policy Wizard
+							Self-defined
+							
+						IAM can be accessed via
+							AWS Management Console
+							AWS CLI: Az AWS API-val beszélget. 
+								Utasítások anatomiája: aws s3 cp rainbow.png s3://abucket/images
+									aws
+									s3: service
+									cp: subcommand							
+									
+										
+							AWS SDKs: set of language specific libraries(API-s)
+							IAM HTTP API					
+				
+		Policy  (-set of permissions):
+		
+			Hozzárendelhető:
+				IAM Userhez direktbe (inline)
+				User Group-hoz
+				IAM Role-hoz
+			
+			JSON 
+			
+			részei:
+				Version
+				Id (optional) -identifier of the policy
+				Statement
+					Sid- Statement id
+					Effect: Allow/Deny
+					Principal: [Kik számára]
+					Action: A metódusok, amikre az Effect hat: s3:GetObject, s3:PutObject
+					Resource: Amilyen erőforrásra vontakozik: Itt s3
+					Conditon(optional)-if feltétel: mikor legyen maga ez az egész vonatkozás igaz.
+					
+	MFA: Multi Factor Authentication:
+		Via 
+			Virtual MFA device:
+				Google Authenticator(phone only)
+				Authy(multi device)
+			Hardware Key 
+				Universal 2nd Factor(U2F) Security key
+					YubiKey(3rd party)	
+				Gemalto
+				AWS GovCloud							
+							
+	To identify who is using your application, you can use either a user or a role.
+	When creating a user, you can assign long-term credentials; in contrast, a Role does not have any credentials assigned to it but can be used to retrieve temporary credentials. 
+	A Role essentially allows you to temporarily delegate access to users and systems that would otherwise not have access to the AWS services. 
+
+	IAM Security Tools:
+		IAM Credential Report:(account lvl)
+			Kilistázza az accountom alatt lévő userek státuszát és különböző credential-jait.
+		IAM Acces Advisior:(user lvl):
+			Adott userek számára milyen service jogok lettek kiosztva és azok a servicek mikor kerültek használatra.	
+			Könnyen meg lehet találni a nem jól testre szabott permissionöket.	
+			
+	Magának a root user-ben kell engedélyezni h adhassunk ki más usereknek jogot a Billing & Cost Dashboard-hoz.	

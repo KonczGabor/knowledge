@@ -1,0 +1,32 @@
+Elastic Container Service
+	
+	
+	2fajta launch typ-je van: 
+	
+	EC2
+		Launch Docker Containers on AWS = Launc ECS Tasks on ECS Cluster
+		
+		A Cluster tartralmazza az EC2 instanceokat
+		
+		Minden EC2 instance tartalmaz egy Docker Agent-et, ami az ECS Service-szel és egy Clusterrel kommunikál
+		
+		Ezkbe az EC2 -kbe kerülnek a az ECS konténerek
+		
+		
+	Fargate	
+		There are no EC2 instances to manage
+		It's all serverless
+		We just have to create task definitions
+		Autoscales by default and number of tasks we define
+
+S3 nem csatolható fel ECS Taskekhez.
+		
+
+
+
+EFS (Elastic File System) mindkettőhöz csatolható.
+
+
+//Service is long running, Task is standalone, and terminatas (.:batch job)
+
+IAM Role-okat az ECS-nek, annak TAskDefinitionjében hozunk létre.

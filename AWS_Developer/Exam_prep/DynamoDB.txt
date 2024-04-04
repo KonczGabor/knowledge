@@ -1,0 +1,33 @@
+DynamoDB:
+	Best Practices:
+		https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html
+		
+	NoSql databse, similar to Mongo	
+	Key-Value similar to JSon dictionary
+	Nem kell méretet allokálni neki, csak Read Capacity Unitot és Write Capacity Unitot
+	Fault tolerant between AZs
+	Scale upDown without downtime
+	Eventually consistent reads
+	
+	MATEK:
+		https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html
+	
+	Core components:
+		Table: Collection of data, contains multiple items
+		Item: Similar to ros. Contains multiple attributes. No limit tof items.
+		Attributes: Similar to Columns. Key-Value pairs describing the Item.
+		Primary Key: Uniquely identifies the item.
+		
+	RCU: (Read Capacity Units) fajtái:
+		Strongly (4KB-os blokk 1 másodperc alatt)
+		Eventually consistent (2 darab 4 KB-os blok 1 másodperc alatt)
+		Transactional (Egy 4KB-os blokkok 2 másodperc alatt)
+		
+	WCU: (Write Capacity Units) fajtái: 
+		Normál: (1KB-os blokk 1 másodperc alatt)	
+		Transactional (Egy 1KB-os blokkok 2 másodperc alatt)
+		
+	Video 337: 
+		https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300318#reviews
+		Transactional costs
+			

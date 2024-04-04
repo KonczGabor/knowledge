@@ -1,0 +1,112 @@
+ 1 SateMachine to 1 Workflow
+ 	Worklow can be:
+ 		Order fulfillement
+ 		Data processing
+ 		Web application
+ 		
+ 	Written in JSON
+ 	
+ 	Visualized workflow
+ 	
+ 	Nem csak a Consolról lehet elindítani hanem:
+ 		SDK
+ 		API GateWay
+ 		EventBridge
+ 		CloudWatch Event
+ 		
+ 	Meg tud hívni:
+ 		Lambda
+ 		Batch
+ 		ECS
+ 		DynamoDB
+ 		SNS
+ 		SQ
+ 		Egy másik Step Function
+ 		
+ 	ASL (Amazon State Language) to define worfklow
+ 	
+ Consolon 3 nagy tab-ja van
+ 	Design
+ 	Code
+ 	Config	
+ 	
+ 	Minden errort magában a StepFunction-ben kell lekezelni logikával, nem a kiszervezett taskban (Application Code), mert az olyan, mintha minden jó lett volna.
+ 		Retry
+ 		Catch 
+ 	
+ 	Ha valami külső, vagy 3rd party resource válaszára várunk, arra a ".waitForTaskToken"-nel hivatkozhatunk (~Promise).
+ 	
+ StepFunction is tud pollolni magának taskokat a GetActivityTask API-n keresztül.
+ 	Vagy meg tudja oldani a kapott feladatot: SendTaskSuccess
+ 	Vagy nem: SendTaskFailure
+ 	
+ 	  
+ 	
+Step Functionöknek 2 fajtája van (Videó 418):
+	
+	Standard:
+		Max.Duration: 1 év max
+	
+	
+	
+	
+	Express:
+		Max.Duration: 5 perc max.
+		
+		Lehet:
+			Sync: Legfeljebb egyszer hogy megfut garantálva van
+			Async Lagalább egyszer hogy megfut garantálva van
+			
+			
+AppSync: GraphQL Schema resolver
+	Honnan hozhat adatokat?
+		DynamoDB
+		Aurora
+		OpenSearch
+		Lambda -> Anything
+		HTTP 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	

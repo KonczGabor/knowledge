@@ -1,0 +1,205 @@
+RDS:
+	Relation Database:
+	
+		Amazon Aurora
+			compatible with PostgreSQL, MySQL, kevesebb mint egy 1$ naponta
+			Kimondottan az AWS felhőre optimalizált, így 5X gyorsabb mint a MySQL,
+			és 3X mint a Postgres 
+			Aurora maga egy cluster, amiben instancok vannak, általában egy writer és több reader. A writerbe cask írunk, a readerből csak olvasunk.
+			A mérete autómatikusan tud nőni 64 TB-ig.
+			Több ReadReplicát is tud kezelni, autoscale-eli őket.
+			Writer (to Master) és Reader(from read replicas) Endpointon keresztül lehet kommunikálni veleű
+			
+			• Automatic fail-over
+			• Backup and Recovery
+			• Isolation and security
+			• Industry compliance
+			• Push-button scaling
+			• Automated Patching with Zero Downtime
+			• Advanced Monitoring
+			• Routine Maintenance
+			• Backtrack: restore data at any point of time without using backups
+			
+			Security:
+				• At-rest encryption:
+				• Database master & replicas encryption using AWS KMS – must be defined as launch time
+				• If the master is not encrypted, the read replicas cannot be encrypted
+				• To encrypt an un-encrypted database, go through a DB snapshot & restore as encrypted
+				• In-flight encryption: TLS-ready by default, use the AWS TLS root certificates client-side
+				• IAM Authentication: IAM roles to connect to your database (instead of username/pw)
+				• Security Groups: Control Network access to your RDS / Aurora DB
+				• No SSH available except on RDS Custom
+				• Audit Logs can be enabled and sent to CloudWatch Logs for longer retention
+				
+			Proxy:
+				• Fully managed database proxy for RDS
+				• Allows apps to pool and share DB connections established with the database
+				• Improving database efficiency by reducing the stress on database resources (e.g., CPU, RAM) and minimize open connections (and timeouts)
+				• Serverless, autoscaling, highly available (multi-AZ)
+				• Reduced RDS & Aurora failover time by up 66%
+				• Supports RDS (MySQL, PostgreSQL, MariaDB, MS SQL Server) and Aurora (MySQL, PostgreSQL)
+				• No code changes required for most apps
+				• Enforce IAM Authentication for DB, and securely store credentials in AWS Secrets Manager
+				• RDS Proxy is never publicly accessible (must be accessed from VPC)
+				
+			ElastiCache:
+				• The same way RDS is to get managed Relational Databases…
+				• ElastiCache is to get managed Redis or Memcached
+				• Caches are in-memory databases with really high performance, low latency
+				• Helps reduce load off of databases for read intensive workloads
+				• Helps make your application stateless
+				• AWS takes care of OS maintenance / patching, optimizations, setup, configuration, monitoring, failure recovery and backups
+				• Using ElastiCache involves heavy application code changes
+			
+		mysql
+			Free Tier
+			Opens source community
+			6 TB
+			Automated backup
+			Support cross-platform replicas between Regions
+
+		PostgreSQL
+			Free Tier
+
+		Oracle
+
+		MariaDB
+			Free Tier
+			6 TB
+			Support cross-platform replicas between Regions
+			Global Transaction IDs:
+
+		Microsoft SQL Server
+			Free Tier
+			
+	Snapshot vs Backup:
+		Snapshot is manually triggered by the user, Backup is automated.	
+		
+	Read repilcas: for read scalability (They are only for reads = sql SELECT)
+		Van egy Main instance és read replicák. A main és a replikák közt async szinkronizáció történik, így az alakalmazás szemszögépből egy READ eventually-consistent-nek számít, mert elő állhat olyan állapot h a mainbe beíródott, az adott read replikába pedig még pont nem. 
+		
+		Ha a Read Replicák különböző AZ-kban is vannak, de egy azon Region-ön belül, a köztük történő szinkronizáció ingyenes.
+		Region-ok közt pedig már fizetős.
+		
+		
+		Can create in:
+			Within the same AZ
+			Cross AZ
+			Cross Region
+		Encryption: AWS KMS-AES-256
+			Ha a master nem encrypted, akkor a read replikákat nem lehet encrypteddé tenni.	
+			In-flight encryption:
+				SSL-lel lehet, amihez kell a certificate.
+				
+			Ha snapshotoljuk a titkosított rdb-t, az titkosított marad.
+			Ha snapshotoljuk a titkosítatlan rdb-t, az titkosítatlan marad.
+			
+				Mit tegyünk ha titkosítatlan db-t titkosítottá akarunk tenni?
+					1. Készítsünk snapshotot a titkosítatlan db-ről.
+					2. Másoljuk le a titkosítatlan snapshotot és állítsuk be az új snapshotnál a titkosítást.
+					3. Hozzunk létre új db-t a titkosított snapshotból.
+					4. Irányítsuk rá az appot az új, már titkosított db-re.		
+		
+		AZ-k közt a sync ingyenes.		
+		Cross Region replikák közti szinkronizációért már kell fizetni.
+		
+		Read replikák közt a frissítés aszinkron, Multi AZ esetén szinkron!
+		
+		RDS Security - Network & IAM
+			Általában privát subnetekbe tesszük a a db-t. 
+			IAM-based authentication can be used to log into RDS MySQL & PostgreSQL
+			
+			Vagy:
+				Létezik egy olyan h RDS service. Ezt meg lehet kérni egy API-n:
+					GetAuthToken() h adjon az EC2 instancenak egy tokent, amit
+					SSL titkosítással továbbnyújt a MySql db-nek. 
+					(Minden más kommunikáció is legyen lehetőleg titkosított az ec2i és rdb között titkosított)	
+					
+					
+		Caching strategies:
+			• Lazy Loading(Cache-Aside, Lazy Population): Ha nincs valami a cacheben, akkor a DB-hez fordulunk, onnan kivesszük, beírjuk a cachebe és visszaadjuk a választ
+				Hátránya h a cache nem mindig aktuális, mert lehet h közben egy másik folyamat már újat írt a db-be.
+			• Write Through: Amikor írással fordulunk a DB-hez, akkor egyúttal a cache-be is írunk autómatikusan, így az adat mindig naprakész lesz. 
+				Hátránya h az írás mindig költséges és h sok felesleges record kerül a cache-be, mert lehet h nem fogjuk soha használni onnan
+				
+		Cache karbantartó stratégiák:
+			• Explicit delete. Ez nem egy staratégia, ez egy önkényes beavatkozás.
+			• LRU (Last Recenty Used) Megtelet a cache memória, kitöröljük azokat, amiket a legrégebben használtak.
+			• TTL (Time To Live)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+			
+				
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					

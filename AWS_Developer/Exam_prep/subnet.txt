@@ -1,0 +1,15 @@
+Egy subnet egy AZ-hez kötött.
+Egy subnet a VPC egy bizonyos IP tartománya.
+
+"Subnet: A subnet is a range of IP addresses in your VPC. Subnets are used to divide an AWS VPC and cannot span more than one Availability Zone. However, a single VPC can contain multiple subnets, each located in a different Availability Zone for high availability and fault tolerance."
+
+A NACL (Network Access Control List) egy további biztonsági réteg, ami egy subnethez kötött és kontrollálja a forgalmat. Tehát a Security Grouppal ellentétben nem instance szinten, hanem magasabban, SubNet szinten dolgozik.
+
+Tehát ha a NACL-ben letiltjuk a HTTP-t, azt már a security groupban sem fogjuk elérni.
+
+Minden subnetnek rendelkeznie kell NACL-lel. Ha nem hozunk létre, megkapja a VPC defaultját.
+
+Az EC2 instancok subnetekben ülnek.
+
+//A lényeg h a subnet és a security group olyan értelemeben overlappoló fogalmak h ugyanazon erőforrásokra vonatkozhatnak. Minden EC2nek, egy subnetben kell ülnie, ami egy AZ hez kötött.
+De másik AZ másik security grupjában ülő EC2 megkaphatja ugyanazt a security groupot 

@@ -1,0 +1,53 @@
+STS - Security Token Service
+
+	Allow grant limited and temporary access to AWS resources (max 1 hr)
+	
+	AssumeRole: to create cross-account-access. 
+		Megmondhatjuk h kik(principals) érhessék el ezt a role-t.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

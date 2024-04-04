@@ -1,0 +1,7 @@
+Ports to know:
+	22 = SSH: (Secure Shell)-log into Linux instances.	//Régi windowsokon PUTTY	// CTRL-D to Exit		
+	21 = FTP: (File Transfer Protocol)-upload files into a files share.		
+	22 = SFTP: (Secure FTP) uploading files using SSH.
+	80 = HTTP: acces unsecured webistes.
+	443 = HTTPS: acces secured webistes.	
+	3389 = RPD (Remote Desktop Protocol)-log into a Windows instance

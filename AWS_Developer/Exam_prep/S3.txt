@@ -1,0 +1,206 @@
+S3:
+	Simple Storage Service 
+	
+		Maga egy bucket végtelen méretü lehet és végtelen mennyiségű objektet tartalmazhat.
+			Egy objekt mérete ami nem haladhatja meg az 5TB-ot.
+			Ha 5 GB-nál nagyobb file-t szeretnénk feltölteni, azt "multi-part" uploaddal kell megtenni.
+				Valójában már 100 megánál nagyobb fileok esetén is ajánlott.
+			
+		
+		Egy bucket nem tartalmazhat más bucketeket, gyakorlatilag maga a koncepció az h flat legyen a struktúra.
+			Hogy mímeljük a faszerkezetet a file(itteni definíció szerint object) nevekben szokás ezt feltüntetni: image/sajt.jpg
+	
+	
+		Maga a szolgáltatás mindenhonnan elérhető, az adat 3 AZ-ban is le van tárolva, de a bucket Region-höz kötött, az alapján számlázódik.
+		
+		Fine-grained permissions /bucket lvl/object lvl
+		
+		
+		Consistency of data:
+			Read-after-wright consistency for new objects //9.1_3:40
+		
+		Lifecycle managmenet: gyakorlatilag CRON job h mit csináljon a fileokkal
+		
+		3 Class közül válaszhatunk a deklarálásnál:
+			Standard
+			Standard-Infrequent Acces:
+				Akkor amikor ritkán kell, de akkor nagyon gyorsan..
+			Zone-Infrequent Access:
+				Ez csak egy AZ-ban van eltárolva, tehát kisebb a durability-je mint a többinek
+			Reduced Redundancy Storage:
+				Legacy
+		
+		
+		Naming Convention:
+			• No uppercase, No underscore
+			• 3-63 characters long
+			• Not an IP
+			• Must start with lowercase letter or number
+			• Must NOT start with the prefix xn--
+			• Must NOT end with the suffix -s3alias
+			
+			
+		Az S3 Object-re rámutat egy key. A key a bucketen belül a full realtive path az objeckttel együtt (maga az object név tehát nem).
+			key = prefix + object name
+			prefix = path to the object (elhagyható, ha a "rootban" van)
+			s3://my-bucket/my_folder1/another_folder/my_file.txt
+				bucket name: s3://my-bucket/
+				prefix: my_folder1/another_folder/
+				object name: my_file.txt
+				key: my_folder1/another_folder/my_file.txt
+				
+		Objects can have:
+			• Metadata (list of text key / value pairs – system or user metadata)
+			• Tags (Unicode key / value pair – up to 10) – useful for security / lifecycle
+			• Version ID (if versioning is enabled)
+				
+				
+				
+S3 Access Logs: A targetnek és a mentés helyének(S3 bucket) ugyanazon a Region-ban kell lenniük.
+	Ha a target egy bucket és a mentés helye ugynazon bucket, akkor infinite loop alakul ki, jó nagy számlával.
+	
+	A targeten engedélyezzük és a célállomás policy-je is updatelve lesz h tudja fogadni a logokat.
+	
+	
+S3 Access Point:
+	Összetett S3 bucket policy-k, ruleok kiszervezése logikák alapján csomópontokba. Több Bucketet össze tudnak fogni.
+	Ezkhez az AccessPointokhoz csatoljuk a policy-ket
+	
+	
+	Bucket Policy:
+		By
+			IAM User
+			Role
+			Cross Account 
+	
+	
+	
+	
+	Versioning
+		Bucket lvl kell megadni
+		Ami még nem volt verziókezelve mielőtt beállítottk a featuret, annak a version-je "null" lesz.
+	
+	
+	
+	
+	Replication
+		CRR: Cross Region Replication
+		SRR: Same Region Replication
+		
+		Ha beállítjuk, akkor csak az újonnan létrehozott fileokról lesz replika.
+		
+		Replication change does not exist. So If I create a file, it will be replicated into a distant bucket, but if this bucket is under replication policy too, a sencod copy from taht obj will not appear into the third bucket.
+	
+	
+	
+	S3 Storage Classes
+
+		• Amazon S3 Standard - General Purpose
+			‣ Used for frequently accessed data
+			‣ Low latency and high throughput
+			‣ Sustain 2 concurrent facility failures
+			‣ Use Cases: Big Data analytics, mobile & gaming applications, content distribution…
+			
+		• Amazon S3 Standard-Infrequent Access (IA)
+			‣ For data that is less frequently accessed, but requires rapid access when needed
+			‣ Lower cost than S3 Standard
+			‣ Use cases: Disaster Recovery, backups
+				
+		• Amazon S3 One Zone-Infrequent Access
+			‣ Use Cases: Storing secondary backup copies of on-premises data, or data you can recreate
+		
+			
+		• Amazon S3 Glacier Instant Retrieval
+			‣ Millisecond retrieval, great for data accessed once a quarter
+			‣ Minimum storage duration of 90 days
+		
+		• Amazon S3 Glacier Flexible Retrieval
+			‣ Expedited (1 to 5 minutes), Standard (3 to 5 hours), Bulk (5 to 12 hours) – free
+			‣ Minimum storage duration of 90 days
+		
+		• Amazon S3 Glacier Deep Archive
+			‣ Standard (12 hours), Bulk (48 hours)
+			‣ Minimum storage duration of 180 days
+		
+		• Amazon S3 Intelligent Tiering
+		
+		
+		
+	Obejct Encryption
+		• Szerver oldalon:
+			‣ Alapból az S3 Managed Key-e dolgozik
+			‣ KMS CMK -val (Customer Managed Key)
+			‣ Customer Provided Key -vel (a kulcsot át kell küldeni, amit csak HTTPS-sen lehet, és maga a kulcs nem tárolódik le.)
+		
+		• Kliens oldalon
+				
+		
+	
+	Encryption in flight (is also called SSL/TLS)
+		Amazon S3 exposes two endpoints:
+			• HTTP Endpoint – non encrypted
+			• HTTPS Endpoint – encryption in flight
+			
+		Ha ki akarjuk erőltetni a HTTPS-t:
+			Akkor létre kell hozni egy policy-t, ami DENY-ol Get Action-t az S3 Resource-on, Condition pedig SecureTransport: false
+	
+	
+	CORS:
+		To enable, we have to attach a JSON configuration file into the bucket.
+	
+	
+	
+	
+	Logging:
+		Minden S3 interactiont lehet monitorozni, csak a végtelen loop elkerülése véget a logok mentési bucketje ne legyen monitorozás alatt.
+	
+	
+	
+	
+	Pre-Signed URL-s: Ha valamilyen temporaly jogosultságokat akarunk adni:
+		File feltöltési lehetőség ideiglenesen
+		Hozzáférés prémium tartalmakhoz ideiglenesen
+		
+		Hogyan?
+			Az Owner legenerálja a pre-signed url-t és odaadja a usernek.
+			//TBC
+	
+	Access Points:
+		An Amazon S3 Access Point is a feature introduced by AWS to simplify managing data access at scale for applications using shared data sets on Amazon S3. 
+		S3 Access Points are named network endpoints attached to buckets that you can use to perform S3 operations (such as PUT, GET, DELETE) on objects. 
+		They offer a way to manage access that is tailored to specific applications, workloads, or users, making it easier to scale access to shared data sets across thousands of applications.
+
+		Each access point enforces distinct permissions and network controls for any request made through it. 
+		You can create access points with policies (Access Point Policy) that enforce specific access patterns and network controls without having to manage multiple bucket policies. 
+		This feature is particularly useful for large-scale applications, where managing individual user permissions can become complex.
+
+		Here are some key features and benefits of using S3 Access Points:
+
+			‣ Fine-grained Access Control: Each S3 Access Point supports its own policy. 
+			This allows for fine-grained access control that is tailored to individual applications or sets of users. 
+			You can define specific access rights independent of the underlying bucket's policy.
+
+			‣ Simplify Shared Data Set Management: For workloads and applications that share data sets in S3, 
+			access points can simplify access management by providing a single point of control for a specific application, group of applications, or users.
+
+			‣ VPC Integration: Access Points can be configured to allow access from a Virtual Private Cloud (VPC) to restrict access to resources within your private network, enhancing security.
+
+			‣ Block Public Access: Like S3 buckets, Access Points can be configured to block public access, regardless of the bucket's settings, 
+			helping to ensure that data isn't accidentally exposed to the internet.
+
+			‣ Ease of Use: By using Access Points, you can reduce the complexity of your bucket policies and more easily manage access to shared data sets. 
+			The ability to create distinct, fine-grained access policies for different applications or use cases helps in maintaining orderly and secure access patterns.
+
+		To use S3 Access Points, you create an access point for your bucket, define the access policy for the access point, 
+		and then provide the access point ARN (Amazon Resource Name) to the applications or users that need access to the S3 resources. 
+		This approach decouples the management of access policies from the S3 buckets themselves, enabling more scalable and manageable access configurations.
+	
+		A VPC Endpoint is needed for to the Access point to be accessable from the internet 
+	
+	
+	
+	
+	
+	
+	
+	

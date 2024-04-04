@@ -1,0 +1,61 @@
+EBS: Elastic Block Store: Hálózati meghajtó amit hozzá lehet csatolni a futó instance-okhoz (Egyikről le, másikra rá) (Egy instancehoz akár többet is lehet, de egy EBS csak egy instancehoz 		csatlakozhat. 1:N //Kivéve ha io1, vagy io2 type EBS).
+
+	A Multi Instance azt jelenti hogy ugyanazt az EBS volume-ot több EC2-re is felcsattinthatjuk, de azoknak még mindig ugyanazon AZ-n belül kell lenniük.
+
+	Availability Zone-hoz kötött (Nem Regionhoz, tehát szűkebb). Ha mégis át akarjuk mozgatni, snapshotolni kell. 
+	Snapshotról is lehet Snapshotot készíteni.  
+	Snapshotból készítjük el az új Volume-ot, ami az EBS instance. 
+	Az adott EC2 instance és az EBS-nak azonos Region-ben kell lenniük.
+	Nem a felhasznált, hanem az igényelt méret utén fizetünk.
+	Előnye az EC2 Instace Store-hoz képest h az EBS permanens.
+	//Hasonló mint egy hálózati USB stick, ez is az előnye h ide-oda lehet dugdosni, de mivel network drive, ezért a latency-vel számolni kell.
+	Az EC2 Root volume-hoz csatolt EBS-t be lehet állítani h az ec2i törlése esetén az ebs-e megmaradjon-e.
+	
+	Aalapból az EC2-höz csatolt EBS törlődik az EC2 terminálása során, de ha mi kézzel hozzáadunk az intancehoz további EBS volume-oket, azok már nem fognak default törlődni az instance-szal együtt.
+	
+	Attributes:
+		Size
+		Throughput
+		IOPS (I/O Ops Per Sec)
+		
+
+	EFS is a Network File System azt érhetjük el vele, mint a az EBS Multi Instance-szal, de ez még jobb.
+		
+	
+AWS Instance Storage offers high-performance, low-latency storage directly attached to the host computer for temporary data storage needs. While it offers significant performance benefits for specific use cases, its ephemeral nature means that it's important to use it judiciously and in conjunction with other AWS storage services for data that needs to be persisted.
+
+
+♦ .ebextensions directory there is a loggin.config where we can adjust the logging policy, env variables, ...
+	‣ minden itt lévő config file-nak YAML/JSON kell lennie
+	‣ .config-ra kell végződjön
+
+♦ To shift envs: EBS -> Actions -> Swap environment Domain
+
+♦ Minden verzió immutable, 1000 a limit. 
+	Life cycle policy: Törlődhetnek a verziók kapacitás, vagy cron szerint, de az éppen futó soha.
+
+
+♦ Eleve S3 ba töltődik fel egy zip ben a becsomagolt alkalmazásunk, abból lesz CloudFormation template.
+	Minden verziónk megmarad S3-ban még ha maga az EBS lifecylcle policy a version-t törölte is. Ezt kikapcsolhatjuk és akkor S3-bül is törlődni fog.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

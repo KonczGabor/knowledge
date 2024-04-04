@@ -1,0 +1,6 @@
+CodeBuild:
+		Ez egy build service ami: 
+			lefordítja a kódot, 
+			megfuttatja a teszteket és
+			deploy ready packageket(.zip) gyárt
+		On-demand scaling	

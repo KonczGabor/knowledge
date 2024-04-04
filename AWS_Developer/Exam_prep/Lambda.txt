@@ -1,0 +1,343 @@
+Lambda:
+	• FAAS: Function as a Service
+	
+	• Serverless executional environment(Containerized-Amazon linux, no reused guarantee )
+	
+	• Minden λ-nek lennie kell egy IAM-Role-nak és azoknak is akik hívni akarják direktbe.
+		
+	• Run code in Response to Events	
+	
+	• Auto Scale. Egészen 10 GB RAM-ig dedikálhatunk erőforrást egy function-nek.
+		Ha növejük a RAM-ot, akkor indirect a CPU és Network teljesítményt is húzzuk.
+		128 MB-től Mb-onként egészen 10 GB-ig skálázhatunk egy λ-t.
+			A háttérben arányosan a CPU-t is húzza magával, azt nem konfigurálhatjuk directbe.
+			Minden elköltött 17
+	
+	• PRICING: 
+		Paying for just the used computing-time (nem fizetünk ha nem fut a kód)
+		Free tier of 1,000,000 AWS Lambda requests and 400,000 GBs of compute time
+			‣ Fizetünk h mennyiszer lett meghívva
+			‣ Fizetünk h mennyi idei futott a function (milisec)
+	
+	Easy Monitoring by CloudWatch.
+	
+	Logging
+	
+	By def saját VPC-ben jön létre, amit az AWS own-ol.
+		Ezért nem is tudja elérni a saját erőroffásainkat a saját VPC-nkben
+	
+	Minden Lambda Functionnek rendelkeznie kell egy IAM Role-lal!
+	
+	Létre kell hozni egy Triggert, ami elsül valahonnan és bevezetni a paramétereket a Lambda-service be.
+	
+	1 Lambda function csak egy 1 VPC-hez csatlakozhat.
+	
+	Language support:
+		Node
+		Java
+		Go
+		Python
+		C#
+	
+	A container image-nek implementálnia kell a Lambda Runtime API-t.
+		ECS/Fargate image-ek en futnak a λ-k.
+	
+	Részei:
+		https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html
+			Handler
+			Context 
+			Logging /All stdout is logged
+			Exceptions
+	
+			Példa:
+				Handler method:
+					exports.myHandler=function(event, context, callback)
+					
+					
+Lambda:
+	Serverless Compute
+	Lifecycle:
+		Develop -> Upload -> Monitor & troubleshoot
+			Pieces of the programming model:
+				Handler, Context, Logging, Exceptions
+				
+	Delete Lambda functions that u are no longer using		
+	Bemenetként nem csak REST API, de SimpleQueueService is remek lehet
+	A külső dependenciákat szervezzük be lokális változókba,
+	Kerüljük a rekurzív kódot		
+	
+Az összes Lambda exacution log letárolásra kerül az AWS CloudWatch Logs-ba.	
+
+X-Ray is nagyon könnyen beköthető.
+	A kódba be kell tenni az X-Rays SDK-t
+		Managed policy AWSXRayDemonWriteAccess
+	
+	
+	
+	
+	Integration with ALB:
+		ALB-n vagy Gateway-en nyitunk egy HTTPS-endpointot
+		A λ-k target group-okon belül kell éljenek.
+		Ez egy szinkron metódus, mert meg kell várni a λ válaszát
+		Az ALB-nek rendelkezni kell a policy-vel h meghívhassa a λ-t, de ez a háttérben beállítódik console-on.
+		
+		
+		Hogyan alakítunk át egy HTTP requestet λ hívássá?			
+			Minden beérkező HTTP request egy JSON-né fordul, amiből λ function paraméterei lesznek.
+			Ugyanez fordítva is igaz, a λ visszatér egy JSON-nal, amibpl az ALB HTTP response-t állít elő.
+			
+			Itt jön be egy érdekes feature, a Multi-Header Values:
+				Ugyanaz a query paraméter különböző értékekkel (?name=foo&name=bar) 
+				egy array-é fordul: "queryStringParameters":{"name":["foo", "bar"]}
+				A Target Group/Attribute-s ban lehet beállítani.
+	
+	
+		Aszinkron kommunikácó esetén (a result nem jön vissza hozzánk):
+			Pl: SNS, S3, CW Events, CodePipeline (elindult, failelt, végzett)
+			Az események egy EventQueue-ra kerülnel
+				Ebből dolgoznak a λ -k.
+					Ha a λ error-ral tér vissza, akkor vár 1 percet, 
+					ha másodszorra is, akkor vár 2 percet,
+					ha harmadjára is akkor beteszi egy DLQ (DeadLetterQueue) -ra  //Max 3 retry attempt létezik tehát.
+						
+			S3 bucket létrehozásánál van EventNotification block-ott lehet hivatkozni a λ-ra.
+	
+		• Event Source Mappging (A λ-nak kell pullolnia a source-ról és válaszolni is fog, tehát szinkron):
+			Kinesis Data Streams
+			SQS @ SQS FIFO queu
+			DyanmoDB Streams
+		
+			Two types:
+				‣ Streams:
+					Kinsesis and DynamoDB
+						Egy iterátort bekonfigolhatunk h vagy a 
+						- shard elejétől, 
+						- egy time-stamptől
+						- vagy az új elemtől
+						induljon. 
+					A processzelt itemek nem kerülnek le a steam-ről, így más consumerek is elérhetik.
+					
+						Batch size it nagyon nagy lehet
+						
+						Starting position:
+							Elejétől
+							Végétől
+							TimeStamptől
+							
+						Concurrent batches per shard. Partion key szinten ki van eszközölve a read order.
+				
+				‣ Queues (van benne FIFO támogatás):
+					Long Pollinggal pllolja az Event Source Mapping az SQS-t, hogy átadhassa egy λ-nak.
+					Megadhatjuk a batch size-ot (1-10 //ez nem biztos) 
+					Batch window: hány másodpercig gyűjtük a recordokat, mielött egy batch-be csomagoljuk őket.
+					Lambda törli a messageet a queue-ról
+					λ-nak addni kell policy-t h olvashasson a queue-ról (AWS LambdaSQSQueueExecutionRole)
+	
+			Ha nem használjuk Disable-re kell tenni, vagy törölni kell őket, mert golyamatosan pullolnak a source-ról.
+				//Disable Trigger-on the Queue
+	
+	
+ • Event Object és a Context Object egymást kiegészítik
+	♦Event Object:
+		JSON document ami az adatokat tartalmazza a λ function számára 
+		A meghívó service-ről is tartalmaz adatot (EventBridge, SQS, SNS)
+		Ezt a JSON-t az adott nyelv runtime-ja objec-té építi
+			event.source
+			event.region
+	
+	♦Context Object:
+		Ez a memória objektum olyan függvényekkel bírm amik információt szolgáltatnak a a hívás, a hívott funkció és az environment részleteiről.
+			context.crequestID
+			context.functionName
+			context.ARN
+			context.MemoryLimit
+
+♦ Destinations:
+	Gyakorlatilag egy olyan DLQ function, ami nem csak a failelt, hanem a sikeres resultokat is gyűjtheti. Tud egyszerre üzemelni egy valós DQL-val.
+		Common use-case h beállítunk egy SQS-t amire a Destination kiteszi a sikeres, másikra a sikertelen eventeket.
+	
+
+♦ λ Environment Variables:
+	key-value parirs in string form 	
+	A consolon direktbe felsorolhatjuk őket.
+	
+	
+♦ Logging and monitoring:
+	CW Logs-ba kerülnek letárolásra, ha be van állítva a policy h írhasson oda.
+	CW Metrics-ben meg a Duration, Concurrent Execution, Invocations, Error countsm Success Rate, Throttles, Aysnc Delivery Failure, ... 
+	
+	
+♦ Enable X-Ray:
+	1, SDK in the code
+	2, IAM Execution Role to write to X-RAY, ehhez kell ez a policy:
+		AWSXRayDaemonWriteAccess	
+	3, Env variables amik bekonfigolják az X-Ray-t:  //Ezek is lehetnek vizsgán
+		_X_AMZN_TRACE_ID: contains the tracing header
+		AWS_XRAY_CONTEXT_MISSING: by default, LOG_ERROR
+		AWS_XRAY_DAEMON_ADDRESS: the X-Ray Daemon IP_ADDRESS:PORT
+	
+	
+♦Customization at the Edge:
+	Edge function: "Előre tolt" kódok, amiket a CloudFront disztibúciókra telepíthetünk ki. Az a célja h csökkentsük a userek számára a latency-t.
+		Pay for what we use
+		Ezeket a function-öket Globally kell deployolni
+		Serverless
+		
+		• Mire használjuk általában:
+			- Website Security and Privacy
+			- Dynamic Web Application at the Edge
+			- Search Engine Optimization (SEO)
+			- Intelligently Route Across Origins and Data Centers
+			- Bot Mitigation at the Edge
+			- Real-time Image Transformation
+			- A/B Testing
+			- User Authentication and Authorization
+			- User Prioritization
+			- User Tracking and Analytics
+			
+		• A Cloud Front "kettévágja" a tipikus requestet.
+			
+			Lépések: 
+				1, Elindul a Clien-től a request, és a CloudFront már el is kapja. Ez eddig a "Viewer Request".
+				2, A CloudFront továbbküldi az eredeti cél felé (szerverünk - origin): "Origin Request".
+				3, Origin válaszol a CloudFront-nak: "Origin Response".
+				4, CloudFront válaszol a Client-nek: "Viewer Response".
+		
+	Két fajtája van:
+	
+		• CloudFront Functions:
+		
+			‣ Lightweight functions written in JavaScript. Megváltoztatják a Viewer Requestet és a Viewer Response-t (Tehát az 1-es és 4-es phase-ben van szerepük).
+			‣ High-scale, latency sensitive CDN customizations
+			‣ Millions of request/second
+			‣ Nem fér hozzá a Request Body-hoz
+			‣ Nem fér hozz a hálózathoz, filerendszerhez
+			‣ Max execution time < 1ms
+			‣ Max memory 2 MB
+				
+				Célok:
+					- Cache key normalization: A headerek, cookie-k, query stringek, URL-ek alapján létrehozni egy optimális Cache Key-t.
+					- Header manipulation: Insert/Modify/Delete HTTP headers
+					- URL rewrite/redirect
+					- Request authentication/authorization
+					- Create/validate JWT tokens => allow/deny requests
+					
+		• Lambda@Edge:
+			‣ Az összes pházisban operálhatnak (1,2,3,4)
+			‣ λ functions, amik NodeJS-ben, vagy Pythonban vannak írva.
+			‣ Scales 1000s of requests/second
+			‣ Egy Regioban kell megírni és a CF átviszi a többibe.	
+			‣ Hozzá fér a Request Body-hoz
+			‣ Hálózat, filerendszer hozzáférés
+			‣ Max execution time 5-10 sec
+			‣ Max memory 128 MB - 10 GB 
+	
+				Célok:
+					Bármi
+	
+	
+♦ Lambda by default:	
+	Nem a mi VPC-nkben élnek, hanem az AWS, saját VPC-jében. Tehát nem tudnak hozzáférni a mi erőforrásainkhoz
+		Ő hozzáférhet bármilyen publikus weboldalhoz, API-hoz, DynamoDB-hez
+	Ahhoz h a λ -nk hozzá tudjon férni az erőforrásainkhoz, meg kell adni h melyik VPC-nkben jöjjön létre (VPC-id), a Subnetet és SecurityGroup-ot
+	 	A háttérben létre fog jönni egy ENI (Elastic Network Interface) a saját security group-jában
+	 	A λ-nek rendelkeznie kell egy "AWSLambdaVPCAccessExecutionRole"-lal.
+	 		Meg egy AWSLambdaENIManagementAccess policy-vel
+	 	Meg kell bizonyosodni h mondjuk a saját RDS SG-nk beenged-e connection-t a λ SG-jéből.
+	 	
+	 Mi ennek a hátránya?
+	 	Mivel a λ -nkat privát VPC-ben hoztuk létre, az most nem lát ki a public netre.
+	 	Az EC2-vel ellentétben ha egy λ-t deployolunk public subnetre az nem fog kilátni és public IP-t sem kap.
+	 		Szóval egy public SG-ben űlő NAT Gateway-t, vagy Nat Instance-ot kell használnunk, ami rámutat egy InternetGateWay-re.
+	 			Ezzel igy DynamoDB-hez is hozzá tudunk férni.
+	 				De DynamoDB-hez privát kapcsolattal IS hozzáférhatünk:
+	 					Ilyenkor kell egy VPC Endpoint (VPC Endpoint GW)
+	 	
+	 	CloudWatch logok akkor is rögzítésre kerülnek, ha ezeket mind nem konfiguráltuk össze.
+	 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+				
+	
+	
+	
+	
+	
+	
+	
+			

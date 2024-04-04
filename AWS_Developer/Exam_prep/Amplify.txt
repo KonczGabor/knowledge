@@ -1,0 +1,28 @@
+Amplify is a set of tools to get started with creating mobile and web applications
+	Gyakorlatilag egy Elasitc Beanstalk for mobile and web applications
+	
+	Ezekre épül:
+		Backend:
+			DynamoDB
+			AWS Appsync
+			Cognito
+			S3
+			
+		Frontend:
+			React, Vue, Angular, JS, Andoird, Flutter
+			
+	Unit and E2E testing		
+			Cypress testing framework
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

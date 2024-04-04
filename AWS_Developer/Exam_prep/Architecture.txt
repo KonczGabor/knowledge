@@ -1,0 +1,32 @@
+A Régiókban vannak az Availability Zónák.
+	A minimum az 3, a maximum az 6, de általában 3 AZ van egy Regióban. 
+	Az AWS Console View Regio-kba tömörít, aszerint listáz.
+
+
+	Availability Zone: Fault Isolation kiküszöbölésére szolgáló redundancia.
+		Az AZkban vannak a diszkrét Data Centerek. Ezeknek a pontos számát nem tudjuk.
+		Az AZk el vannak szeparálva egymástól
+		
+	Edge Location (Points of Presenence):	
+	
+	
+	
+	Egy VPC jelen lehet több AZ-ban.
+	Egy AZ-ban az EC2 instancok Subnetekben ülnek.
+	Tehát az AZ-knak ebben az esetben van 1-1 Subnetük
+	A lényeg h ez az 1-1 Subnet egy VPC alá vonhatók az AZ-k között
+	
+	Az Edge Zone olyan location amire közvetlen ráhatásunk nincs, csak az AWS tudja ondemand managelni, pl ha az adatainket közelebb szeretnénk vinni a kliensekhez.
+	
+
+	Subnet to Subnet kapcsoalthoz kell egy összekötő router (rout table)
+	
+	
+Region: Cluster of data Centers		
+	Néha a governance colpiance meghatározza h hol tárolhatjuk az adatainkat.
+	
+	Latency a gyakorlati irányelv h mi miatt válasszunk egy adott Regiot.
+	
+	Vannak olyan Regiok, amikbne csak bizonyos szolgáltatások érhetők el.
+	
+	Pricing is eltérhet Regiónkét.

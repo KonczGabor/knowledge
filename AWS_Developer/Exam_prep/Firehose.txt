@@ -1,0 +1,2 @@
+Firehose:
+	Loada data streams into AWS data stores. Data-Times based folders

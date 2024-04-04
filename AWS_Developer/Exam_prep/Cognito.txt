@@ -1,0 +1,55 @@
+
+
+Cognito User Pool vs Cognito Identity Pool 
+
+	User Pool:
+		For authentication = identity verification	
+		Database of users for web and mobile application
+		Allows federeated logins through Public Soical, SAML,
+		Customizable UI
+		Has Lambda Triggers
+		Adaptive sign-in risk level check
+		
+	Identity Pool:
+		For authorization
+		Exchange token for authorization
+		Obtain (Temporary) AWS credentials for users	
+		Allows federeated logins through Public Soical, SAML, Cognito User Pool	
+		The users can be unauthenticated (guests)
+
+ CUP + CIP = authentication + authorization
+
+A Cognitot több irányból lehet belépíteni az alkalmazásunkba:
+	API Gateway
+	Application Load Balancer
+		Leveszi a terhet magáról az appunkról, és már csak az üzleti logikával kell foglalkoznia.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
