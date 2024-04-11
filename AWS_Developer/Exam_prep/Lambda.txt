@@ -1,11 +1,16 @@
 Lambda:
-	• FAAS: Function as a Service
+	• FAAS: Function as a Service. U just have to deploy functions. Vrtual functions - no servers to manage.
 	
-	• Serverless executional environment(Containerized-Amazon linux, no reused guarantee )
+	• Short Execution -uu to 15 minutes. 
+	
+	• Serverless executional environment(Containerized-Amazon linux, no reused guarantee ). Léteznek szerverek továbbra is, csak a felhasználó szemszügéből nézve nem neki kell manage-elni (provision).
 	
 	• Minden λ-nek lennie kell egy IAM-Role-nak és azoknak is akik hívni akarják direktbe.
 		
-	• Run code in Response to Events	
+	• Run code in Response to Events.
+	
+	• Egy λ-nak maximum 10GM RAM-ot dedikálhatunk.	
+		Minél több a RAM-ot dedikálunk, autómatikusan a háttérben annált több CPU-t és Networkot dedikál magának.
 	
 	• Auto Scale. Egészen 10 GB RAM-ig dedikálhatunk erőforrást egy function-nek.
 		Ha növejük a RAM-ot, akkor indirect a CPU és Network teljesítményt is húzzuk.
@@ -17,9 +22,36 @@ Lambda:
 		Paying for just the used computing-time (nem fizetünk ha nem fut a kód)
 		Free tier of 1,000,000 AWS Lambda requests and 400,000 GBs of compute time
 			‣ Fizetünk h mennyiszer lett meghívva
-			‣ Fizetünk h mennyi idei futott a function (milisec)
+			‣ Fizetünk h mennyi ideig futott a function (milisec)
+			
+			
+			
+♦ Mire jó úgy általában?:
+	• Készíthetünk vele egy REST API-it, ami meghívja a λ-inkat.			
+	• Kinesis használhat λ-t data transformation-ra on the fly.
+	• DynamoDB: ha elsül egy trigger, az meghívhat egy λ-t.
+	• S3: gyakorlatilag bármi, pl ha létrejön a egy file.
+	• CloudFront 
+	• CloudWatch Evenets / EventBridge: Ha az infrastruktúránkban változás áll be. 
+	• CloudWatch Logs 
+	• SNS: to react Notifications
+	• SQS: to process messages from SQS queues
+	• Cognito: to react if some login to your database.
+	• CRON Job
 	
-	Easy Monitoring by CloudWatch.
+	Követlenül ALB is hívhatja, de akkor egy TargetGroupban kell lennie (Ez egy szinkron hívás, mert a user a HTTP/S végén várakozik).
+		Ez úgy lehetséges h a HTTP request egy JSON-t ad át a λ-nak és a végeredmény JSON-t is az ALB visszalakítja HTTP-response-zá.
+			return {"statusCode": 200, 
+				"headers": {
+					"Content-Type": "text/html"
+				},
+				"body": "<h1>Sajt!</h1>"
+			}
+		//Nyilván az ALB-nek rendelkeznie kell policy-val h meghívhassa a λ-t. 	
+		
+	
+	
+Easy Monitoring by CloudWatch.
 	
 	Logging
 	
@@ -33,14 +65,17 @@ Lambda:
 	1 Lambda function csak egy 1 VPC-hez csatlakozhat.
 	
 	Language support:
-		Node
+		Node.js (JavaScript)
 		Java
 		Go
 		Python
 		C#
+		Ruby
+		Custom Runtime API (Community supported: Rust)
 	
 	A container image-nek implementálnia kell a Lambda Runtime API-t.
 		ECS/Fargate image-ek en futnak a λ-k.
+		//Docker is not for AWS Lambda, it's for ECS/Fargate
 	
 	Részei:
 		https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html
@@ -64,7 +99,7 @@ Lambda:
 	Delete Lambda functions that u are no longer using		
 	Bemenetként nem csak REST API, de SimpleQueueService is remek lehet
 	A külső dependenciákat szervezzük be lokális változókba,
-	Kerüljük a rekurzív kódot		
+	Kerüljük a rekurzív kódot! -> Végtelen pénz égetés.		
 	
 Az összes Lambda exacution log letárolásra kerül az AWS CloudWatch Logs-ba.	
 
@@ -92,7 +127,7 @@ X-Ray is nagyon könnyen beköthető.
 				A Target Group/Attribute-s ban lehet beállítani.
 	
 	
-		Aszinkron kommunikácó esetén (a result nem jön vissza hozzánk):
+		Aszinkron kommunikácó esetén (a result nem jön vissza hozzánk, ez a lényeg, a cél, mert vagy sok van belőle[batch processing], vagy az adott API csak úgy hívható):
 			Pl: SNS, S3, CW Events, CodePipeline (elindult, failelt, végzett)
 			Az események egy EventQueue-ra kerülnel
 				Ebből dolgoznak a λ -k.
@@ -101,6 +136,8 @@ X-Ray is nagyon könnyen beköthető.
 					ha harmadjára is akkor beteszi egy DLQ (DeadLetterQueue) -ra  //Max 3 retry attempt létezik tehát.
 						
 			S3 bucket létrehozásánál van EventNotification block-ott lehet hivatkozni a λ-ra.
+			//Ha negedélyezni akarjuk h egy λ SNS q-ba írjon, akkor meg kell kereseni a λ execution role-ját 
+			és ahhoz csatolni kell egy SQS type policy-t.
 	
 		• Event Source Mappging (A λ-nak kell pullolnia a source-ról és válaszolni is fog, tehát szinkron):
 			Kinesis Data Streams

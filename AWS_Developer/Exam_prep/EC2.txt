@@ -1,4 +1,4 @@
-EC2: Elastic Compute Cloud: Run and manage Virtual Servers. EC2 Container Service is able to manage Docker containers. 
+EC2: Elastic Compute Cloud: Run and manage Virtual Servers. EC2 Container Service is able to manage Docker containers. Elastic Virtual Servers in the Cloud.
 	
 	Scaling:
 		Vertical: Minőség (általában adatbázisok méretnövelése miatt)

@@ -15,3 +15,5 @@ API Gateway:
 			Mock
 
 		Cognito: Mobil userek autentikációjára without IAM users.
+		
+	Készíthetünk vele egy REST API-it, ami meghívja a λ-inkat.
