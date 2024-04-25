@@ -44,8 +44,13 @@ CloudWatch Metrics:
 			- GUI Workflow Builder: megbizonyosodhatunk róla h az action valójában megtörtént-e.
 			
 			 
-	A CW Api-jának PutMetricData endpointján teszünk be adatokat.
+	A CW Api-jának PutMetricData endpointján teszünk be adatokat (CLI, API).
 		Az adatott metrikát beküldhetjük h elmúlt 2 hét és a következő 2 óra között történt. //(Hogy ennek mi értelme?)
+		
+			Standard resolution: percenkénti adatküldés
+			
+			High resolution: másodpercenkénti adatküldés	
+					
 	
 	A Metrika egy custom absztrakció, ami egy változó monitorozása (CPU, Network felhasználás).
 		‣ A Dimenzió ennek a metrikának egy attribútuma, pl az instanceID, environment, ...
@@ -60,7 +65,13 @@ CloudWatch Metrics:
 		
 		
 		//A free tier 10 metrikát enged.
-				
+
+Alpavetően kétféle monitorozási stratégia létezik:
+
+	- Basic monitoring:
+	
+	- Detailed monitoring:
+		Ez változik annak függvényében h melyik service-en értjük és nem is mindegyik tudja.				
 	
 	• Hogyan monitorozzunk EC2-t?
 		//alapból 5 percenként fut, de additional
@@ -84,10 +95,11 @@ CloudWatch Metrics:
 		
 		- Hová tud exportolni? 
 			‣ S3: Nem real time, 12 órán belül lenyom egy API-CreateExportTask batch processt. 
+				Ezeken az adatokon később analízisket futathatunk, vagy betölthetjük más rendszerekbe. Csak AES-256 os titkosítás engedélyezett az export során, SSE-KMS nem támogatott.
 			
 			Ha real time-ot akarunk, akkor a Logs Subscriptions-t kell használni helyette.
 		
-			‣ Kines
+			‣ Kinesis
 		
 			
 		
@@ -268,8 +280,7 @@ CloudWatch Metrics:
 					
 					
 					
-					
-					
+
 					
 					
 					

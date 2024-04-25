@@ -22,3 +22,27 @@ Amazon EC2 Container Instances: These instances, which are part of the ECS, can 
 Egy erőforrást több Security Groupba-is be lehet tenni, ilyenkor azok metszetét kapja, a legkevésbé megengedőt.	
 
 //inbound = ingress, outbound = egress
+
+
+Security groups are stateful, so allowing inbound traffic to the necessary ports enables the connection. 
+Network ACLs are stateless, so you must allow both inbound and outbound traffic. By default, each custom Network ACL denies all inbound and outbound traffic until you add rules.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

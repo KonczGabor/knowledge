@@ -9,9 +9,22 @@ EBS: Elastic Block Store: Hálózati meghajtó amit hozzá lehet csatolni a fut�
 	Nem a felhasznált, hanem az igényelt méret utén fizetünk.
 	Előnye az EC2 Instace Store-hoz képest h az EBS permanens.
 	//Hasonló mint egy hálózati USB stick, ez is az előnye h ide-oda lehet dugdosni, de mivel network drive, ezért a latency-vel számolni kell.
-	Az EC2 Root volume-hoz csatolt EBS-t be lehet állítani h az ec2i törlése esetén az ebs-e megmaradjon-e.
-	
-	Aalapból az EC2-höz csatolt EBS törlődik az EC2 terminálása során, de ha mi kézzel hozzáadunk az intancehoz további EBS volume-oket, azok már nem fognak default törlődni az instance-szal együtt.
+	Az EC2 Root volume-hoz csatolt EBS-t be lehet állítani h az ec2 törlése esetén az ebs-e megmaradjon-e.
+		Ezt ha elfelejtettük se kell összefosni a bokánk:
+			Identify the Instance and Volume:
+				First, identify the instance ID and the volume ID of the EBS volume that you want to modify. 
+				You can find this information in the AWS Management Console or by using the AWS CLI.
+				Modify the Volume Attribute:
+				Use the AWS CLI or SDK to modify the DeleteOnTermination attribute for the volume.
+				You can use the modify-volume command to achieve this. Set the --no-delete-on-termination flag to disable deletion on termination.
+				Here's an example AWS CLI command:
+					aws ec2 modify-volume --volume-id your-volume-id --no-delete-on-termination
+					
+				Így nem kell sem lestroppolni, sem terminálni az EC2-t.	
+
+
+
+	Alapból az EC2-höz csatolt EBS törlődik az EC2 terminálása során, de ha mi kézzel hozzáadunk az intancehoz további EBS volume-oket, azok már nem fognak default törlődni az instance-szal együtt.
 	
 	Attributes:
 		Size
@@ -20,23 +33,18 @@ EBS: Elastic Block Store: Hálózati meghajtó amit hozzá lehet csatolni a fut�
 		
 
 	EFS is a Network File System azt érhetjük el vele, mint a az EBS Multi Instance-szal, de ez még jobb.
+	
+	EBS volumes support both in-flight encryption and encryption at rest using KMS. 
+Encryption operations occur on the servers that host EC2 instances, ensuring the security of both data-at-rest and data-in-transit between an instance and its attached EBS storage.
 		
 	
 AWS Instance Storage offers high-performance, low-latency storage directly attached to the host computer for temporary data storage needs. While it offers significant performance benefits for specific use cases, its ephemeral nature means that it's important to use it judiciously and in conjunction with other AWS storage services for data that needs to be persisted.
 
 
-♦ .ebextensions directory there is a loggin.config where we can adjust the logging policy, env variables, ...
-	‣ minden itt lévő config file-nak YAML/JSON kell lennie
-	‣ .config-ra kell végződjön
-
-♦ To shift envs: EBS -> Actions -> Swap environment Domain
-
-♦ Minden verzió immutable, 1000 a limit. 
-	Life cycle policy: Törlődhetnek a verziók kapacitás, vagy cron szerint, de az éppen futó soha.
 
 
-♦ Eleve S3 ba töltődik fel egy zip ben a becsomagolt alkalmazásunk, abból lesz CloudFormation template.
-	Minden verziónk megmarad S3-ban még ha maga az EBS lifecylcle policy a version-t törölte is. Ezt kikapcsolhatjuk és akkor S3-bül is törlődni fog.
+
+
 
 
 

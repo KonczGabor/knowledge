@@ -11,15 +11,18 @@ SQS:
 		
 		Delivery Types:
 			Standard: 
-				Legalább egyszer mergérkezik, néha több másolat is létrejöhet belőle.
+				Garantálja h Legalább egyszer mergérkezik, néha több másolat is létrejöhet belőle.
 				A Sorrend nem garantált
 				"Unlimited" átfolyás
-			FIFO
+			
+			FIFO:
 				Batchelve 3,000MPS
 					Anélkül 300
-				Biztos h csak egyszer lesz feldolgozva
+				Garantálja h Biztosan csak egyszer lesz feldolgozva
 				A sorrend szigorúan tartott.
 				A queue neve csak .fifo-ra végződhet.
+				
+			Mindkettőt lehet titkosítani MKS-sel.	
 				
 		Dead Letter Queue: 
 			Azon üzenetek sora, amiket addott próbálkozás szám szerint senki sem tudott feldolgozni
@@ -31,6 +34,8 @@ SQS:
 			Ha nem törli ki, akkor újra ő lesz az aktuális.
 			A Consumer extendálhatja az időablakot, ha még midnig processzál.
 			Ha egy Consumer egy adott időablakon belül nem tudja feldolgozni(nem muszáj) és törölni, akkor egy másik Consumer még elérheti.
+			Alapból 30 másodperc. 
+				Range: 0 sec - 12 h.
 			
 		Messange Retention period (Meddig maradnak élve az üzenetek a q-ban)
 			Min 1 min
@@ -41,6 +46,8 @@ SQS:
 			Min 1KB
 			Def 256KB
 			Max 256KB
+				Ha ennél is nagyobbat szeretnénk (max 2 GB) akkor használni kell az Amazon SQS Extended Client Library for Java -t.
+					Ezzel S3 -ba kerül a message és egy referenciát passzolunk át a róla a Messageg-ben. 
 		
 		FIFO q ban nincs üzenet késleltetsésére opció. Simple-ben 15 perc a max.	
 			
@@ -65,9 +72,11 @@ SQS:
 					
 	Long Polling:
 		
-		Long polling in Amazon Simple Queue Service (SQS) is a feature that allows consumers of SQS messages to retrieve messages from a queue with reduced cost and lower latency compared to short polling.
+		Long polling in Amazon Simple Queue Service (SQS) is a feature that allows consumers of SQS messages to retrieve messages from a queue 
+		with reduced cost and lower latency compared to short polling.
 
-		In short polling, when a consumer requests messages from a queue, if there are no messages available, SQS returns an empty response immediately. This can lead to increased costs and latency as the consumer might need to repeatedly poll the queue.
+		In short polling, when a consumer requests messages from a queue, if there are no messages available, SQS returns an empty response immediately. 
+		This can lead to increased costs and latency as the consumer might need to repeatedly poll the queue.
 
 		On the other hand, long polling allows the consumer to request messages from the queue for a longer duration (up to a maximum of 20 seconds) before the request times out. If there are no messages available in the queue when the request is made, SQS will wait up to the specified duration for messages to become available. Once a message is available or the request times out, SQS returns the response to the consumer.
 
@@ -75,13 +84,21 @@ SQS:
 		
 		
 		
+FIFO q-nak FIFO a dead letter q-ja, standard q-nak standard a dead letter q-ja. It's a must.		
 		
 		
 		
 		
 		
-		
-		
+DeleteQueue - Deletes the queue specified by the QueueUrl, regardless of the queue's contents. When you delete a queue, any messages in the queue are no longer available.
+
+When you delete a queue, the deletion process takes up to 60 seconds. Requests you send involving that queue during the 60 seconds might succeed. 
+For example, a SendMessage request might succeed, but after 60 seconds the queue and the message you sent no longer exist.
+
+When you delete a queue, you must wait at least 60 seconds before creating a queue with the same name.
+
+
+PurgeQueue - Deletes the messages in a queue specified by the QueueURL parameter. When you use the PurgeQueue action, you can't retrieve any messages deleted from a queue. The queue however remains.		
 		
 		
 		

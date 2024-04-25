@@ -1,8 +1,15 @@
 EFS: (Elastic Filye System) 
+
+	 EFS volumes provide a simple, scalable, and persistent file storage for use with your Amazon ECS tasks. 
+	 With Amazon EFS, storage capacity is elastic, growing and shrinking automatically as you add and remove files. 
+	 Your applications can have the storage they need, when they need it. Amazon EFS volumes are supported for tasks hosted on Fargate or Amazon EC2 instances.
+
+
+
 	Az EBS-sel ellentétben ez az instance nem kötött Availability Zone-hoz, az EC2 instancok, amiket kiszolgál több AZ-ban is lehetnek egyszerre.	
 	Nagyon drága (3x)
 	CSAK Linux EC2 instance-okra csatolható fel.
-	De csak a haszálatért fizetünk (pay-per use)
+	De csak a használatért fizetünk (pay-per use)
 	Különböző módokban tud üzemelni:
 		Performace:
 			-General purpose(default): latency-sensitive use cases(web server, CMS, ..)

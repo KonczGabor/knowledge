@@ -1,0 +1,4 @@
+AWS Serverless Application Model (AWS SAM) 
+	- You use the AWS SAM specification to define your serverless application. 
+	AWS SAM templates are an extension of AWS CloudFormation templates, with some additional components that make them easier to work with.
+	AWS SAM needs CloudFormation templates as a basis for its configuration.

@@ -1,10 +1,12 @@
-API Gateway:
-		To expose your services to the world
-		Auto scaling	
-		Monitoring
-		Maintain
-		Secure
+API Gateway: egy olyan szolgáltatás amivel 
+	létrehozhatunk,
+	publikálhatunk (elérhetővé tehetünk),
+	karbantarthatunk,
+	scale-elhetünk,
+	biztonságossá tehetünk
+	REST, HTTP és WebSocket API-kat.
 
+	
 		Mint egy országút, amin a lehajtók az APIk, amik APPokhoz vezetnek.
 
 		Integration Types:
@@ -17,3 +19,112 @@ API Gateway:
 		Cognito: Mobil userek autentikációjára without IAM users.
 		
 	Készíthetünk vele egy REST API-it, ami meghívja a λ-inkat.
+	
+	Az API Gateway kétféle módban üzemelhet (mindekettő RESTful):
+		- REST API
+		- HTTP API	
+	
+	
+	
+	REST API:
+		API keys, 
+		per-client throttling, 
+		request validation, 
+		AWS WAF integration, 
+		private API endpoints	
+		
+	A HTTP API jóval fapadosabb mint a REST, ezért jóval olcsóbb is. 	
+		
+		
+	WebSocket:
+			Stateful: állapottartó
+			full-duplex:
+				Simplex: Adott egy Adó és egy Vevő: Csak az Adó küld a Vevőnek.
+				Half-Duplex: A Csatornát az Adó és a Vevő felváltva használják.
+				Full-Duplex. Valójában a felek közt 2 Csatorna van és egy adott fél egyszerre képviseli az Adó és a Vevő felet. Így egy időben mehet át különböző üzenet különböző irányba. 
+		kapcsolat, mely kliens - szerver között jön létre.	
+		
+	
+	
+A csel hogy a rövidítés megtévesztő a RESTful application-ben:
+	Mert valójában STATE-LESS és a REST(ful) -ban a ful nem azt jelenti h STATE-ful, hanem hogy megfelel a REST követelményeinek, és abból az egyik a STATELESSNESS.
+	Mi a többi kritiérima a REST-nek?
+		Erőforrások gyűjteményét reprezentálja, amiket HTTP metódusokkal érünk el.
+		Az erőforrások által nyújtott szolgáltatás egy egysége az endpointon keresztül érhető el. Az interfész egy lába.
+		Szinkron kommunikáció. Elküldöm a választ és várok rá. Ez egy egység, ebben együtt mozgunk. Aszinkron akkor lenne ha szabadon küldözgethetnénk egymásnak. Egyoldalu kommunikáció:
+			valaki csak küld, vagy kevesebbet küld / fogad. Gyakorlatilag a kért és kapott üzenetek számának egyenlősége (-1) mondja meg h egy kapcsolatban kötlezően előírt-e a kérés-válasz arány.
+		
+	
+	
+	
+	
+An API can only be deployed to a stage. Hence, it is not possible to deploy an API without choosing a stage.
+
+Ahhoz hogy a userek által is elérhető legyen az új API verziónk, deployolni kell.
+
+Deployhoz muszáj h létezzen egy stage, amire kitesszük (kvázi commitolunk).
+
+A stage gyakorlatilag a git-ben a branch. Ahhoz h egy API-t egyértelműen azonosítsunk tudni kell a stage nevét és az API ID-t (?Miért nem elég az API ID, lehet több API-nak is ugyanaz az id-ja?)
+
+Ha új verziót akarunk "kirakni" azt kétféle képpen is megtehetjük.
+	- Az új verziót rátesszük a prod tetjére.
+	- A teszteken átment új verzió dev tetején ül és a dev stage-et átnevezzük prod-nak.
+	
+	
+
+A stage-ekhez tudunk különböző performance beállításokat rendelni (throttling, caching). Eezeket bármikor tudjuk updatelni, nem kell hozzá újradeployolni.	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

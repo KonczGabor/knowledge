@@ -47,6 +47,8 @@ EC2: Elastic Compute Cloud: Run and manage Virtual Servers. EC2 Container Servic
 	Bootstrap script(configure at first launch)
 		Bootstrapping: launching commands when the machine starts	
 		Configure Instance->(Advanced details) User data alatt érhető el(!)
+			A user datában adott utasítások alapból root joggal futnak és alapból (felesleges tehát a sudo) csak az adott instance legelső indításakor futnak meg.
+				Ezt a viselkedés tudjuk módosítani explicitly, hogy minden újraindulásnál megfussanak.
 		
 	EC2 purchasing options:
 		Reserved (1 year OR 3 //not between, just these two options are available)	
@@ -71,4 +73,72 @@ EC2: Elastic Compute Cloud: Run and manage Virtual Servers. EC2 Container Servic
 		Dedicated instances: Soft version of Dedicated Hosts
 			PHYSICAL server
 			Per instance billing	
+			
+			
+CPU Credits: 
+	Bursting is managed through a system of "CPU credits." Each instance earns credits at a set rate when running under its baseline CPU utilization. These credits accumulate in the CPU credit balance.			
+			
+Burst Balance:
+
+	Azt mutatja meg hogy az eredeti 100% CPU teljesítményhez képest, amit az AMI garantál, az adott instance hány %-ot halmozott fel a jövőre nézve.			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			

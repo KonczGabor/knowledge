@@ -1,4 +1,8 @@
-
+programmatically / programmatic access means =  minden hozzéférés ami nem a web GUI-n keresztül történik. 
+	Ilyen pl.: sdk, cli, aws api-k.
+	
+	
+fully managed means: Az AWS átvállalja (vagy nagytöbbségét) egy Service üzemeltetésének (futtatás, rendelkezésre állás, karbantartás, scaling, security), így a fókusz megmaradhat annak használatán. 	
 	    
 	
 Network Services

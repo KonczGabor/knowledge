@@ -2,7 +2,30 @@ Content Delivery Network.
 Minél közelebb kihelyezni a client-hez, csökkentve a Latency-t.
 Annyi van, ahány Edge Location.
 
-AZ EL-ek és az AWS resourceok (S3 pl) a kapcsolat Priwate AWS
+
+Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users. 
+CloudFront delivers your content through a worldwide network of data centers called edge locations.
+When a user requests content that you're serving with CloudFront, the request is routed to the edge location that provides the lowest latency (time delay), 
+so that content is delivered with the best possible performance.
+
+You can configure a single CloudFront web distribution to serve different types of requests from multiple origins.
+
+
+When you create a signer, the public key is with CloudFront and private key is used to sign a portion of URL - Each signer that you use to create CloudFront signed URLs or 
+signed cookies must have a public–private key pair. 
+The signer uses its private key to sign the URL or cookies, and CloudFront uses the public key to verify the signature.
+
+When you create signed URLs or signed cookies, you use the private key from the signer’s key pair to sign a portion of the URL or the cookie. 
+When someone requests a restricted file, CloudFront compares the signature in the URL or cookie with the unsigned URL or cookie, to verify that it hasn’t been tampered with. 
+CloudFront also verifies that the URL or cookie is valid, meaning, for example, that the expiration date and time haven’t passed.
+
+When you use the root user to manage CloudFront key pairs, you can only have up to two active CloudFront key pairs per AWS account 
+	- When you use the root user to manage CloudFront key pairs, you can only have up to two active CloudFront key pairs per AWS account.
+
+	Whereas, with CloudFront key groups, you can associate a higher number of public keys with your CloudFront distribution, giving you more flexibility in how you use and manage the public keys. 
+	By default, you can associate up to four key groups with a single distribution, and you can have up to five public keys in a key group.
+
+AZ EL-ek és az AWS resourceok (S3 pl) a kapcsolat Private AWS
 
 	• Az Origin az Eredeti forrás, amit kitolunk az Edgekre (Los Angeles, Mumbai, ..)
 	
@@ -97,9 +120,9 @@ AZ EL-ek és az AWS resourceok (S3 pl) a kapcsolat Priwate AWS
 	
 	
 	• Field Level Encryption:
-		Már az Edge Location-re kiteszünk public key-eket, amik sensitive információkat (feiledeket) eltitkosítanak, és csak backenden fordítjuk vissza a private key-jel.
+		Már az Edge Location-re kiteszünk public key-eket, amik sensitive információkat (fieldeket) eltitkosítanak, és csak backenden fordítjuk vissza a private key-jel.
 	
-	
+	• HTTPS kapcsolatot ki tudunk eszközölni a Client és a CloudForont, illetve a CloudFront és Backend között is.
 	
 	
 	

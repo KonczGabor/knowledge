@@ -1,0 +1,53 @@
+Amazon Web Services Systems Manager (SSM):
+
+	 Is a collection of capabilities that helps you automate management tasks across your AWS resources. It provides a unified user interface that allows you to view operational data from multiple AWS services and automate tasks across your AWS resources.
+	
+	Parameter Store:
+		AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. 
+		You can store sensitive data such as passwords, database strings, and API keys securely in Parameter Store and access them programmatically or through the AWS Management Console.
+	
+		Plaintext parameters are not secure and shouldn't be used to store secrets.
+			A titkosításhoz a KMS-t CMK-jait (Customer Master Key)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

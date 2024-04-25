@@ -30,3 +30,38 @@ EFS (Elastic File System) mindkettőhöz csatolható.
 //Service is long running, Task is standalone, and terminatas (.:batch job)
 
 IAM Role-okat az ECS-nek, annak TAskDefinitionjében hozunk létre.
+
+
+Itt lehet bekonfigurálni a container agentet:
+ /etc/ecs/ecs.config
+
+
+Deployment:
+
+	When processing a batch, Elastic Beanstalk detaches all instances in the batch from the load balancer, deploys the new application version, and then reattaches the instances. 
+	If you enable connection draining, Elastic Beanstalk drains existing connections from the Amazon EC2 instances in each batch before beginning the deployment.
+
+	If a deployment fails after one or more batches completed successfully, the completed batches run the new version of your application while any pending batches continue to run the old version.
+	You can identify the version running on the instances in your environment on the health page in the console. 
+	This page displays the deployment ID of the most recent deployment that was executed on each instance in your environment. 
+	If you terminate instances from the failed deployment, Elastic Beanstalk replaces them with instances running the application version from the most recent successful deployment.
+
+
+
+Ha egy container példányt lestoppolunk és ebben a (STOPPED) stateben terminálunk, az még nem veszi ki a clusterből, ha viszont valóban el szeretnénk távolítani, akkor deregisztálni kell a STOPPED state-ben.
+Ha futás közben termináljuk akkor removeolódik és deregisztrálódik a clusterből. Miért van ez? Mert nem az agenten keresztül történt a termináció, mert az nem futott, le volt állítva a container.	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+Immutable deployments: 
+
+	perform an immutable update to launch a full set of new instances running the new version of the application in a separate Auto Scaling group, alongside the instances running the old version. 
+	Immutable deployments can prevent issues caused by partially completed rolling deployments.
+	
+	
+	
+	
+Traffic-splitting deployments:
+	 let you perform canary testing as part of your application deployment. 
+	 In a traffic-splitting deployment, Elastic Beanstalk launches a full set of new instances just like during an immutable deployment. 
+	 It then forwards a specified percentage of incoming client traffic to the new application version for a specified evaluation period.	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

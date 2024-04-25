@@ -14,8 +14,19 @@ Elastic Beanstalk: Ez egy orchestraion service
 		Létrehozni mégegy environmentet, arra rárakni a frissebb platformot, arra ugyanazt az applicationt, maj az url-t átirányítani a még futó régiről az új platformra
 		
 		
-	Két Tier közül kell vűlasztani:
+	Két Tier közül kell választani:
 		WebServer (Http requestek handle-ölés leginkább)
 		Worker environment (háttérben fut és mondjuk adatokat húz ki SQS-queue-ból)	
 		
-		
+♦ .ebextensions directory there is a loggin.config where we can adjust the logging policy, env variables, ...
+	‣ minden itt lévő config file-nak YAML/JSON kell lennie
+	‣ .config-ra kell végződjön
+
+♦ To shift envs: EBS -> Actions -> Swap environment Domain
+
+♦ Minden verzió immutable, 1000 a limit. 
+	Life cycle policy: Törlődhetnek a verziók kapacitás, vagy cron szerint, de az éppen futó soha.
+
+
+♦ Eleve S3 ba töltődik fel egy zip ben a becsomagolt alkalmazásunk, abból lesz CloudFormation template.
+	Minden verziónk megmarad S3-ban még ha maga az EBS lifecylcle policy a version-t törölte is. Ezt kikapcsolhatjuk és akkor S3-ből is törlődni fog.

@@ -5,6 +5,8 @@ S3:
 			Egy objekt mérete ami nem haladhatja meg az 5TB-ot.
 			Ha 5 GB-nál nagyobb file-t szeretnénk feltölteni, azt "multi-part" uploaddal kell megtenni.
 				Valójában már 100 megánál nagyobb fileok esetén is ajánlott.
+				Ilyenkor az adott file több darabra lesz bontva és párhuzamosan lesz feltolva a szerverre, ahol az S3 újra összerakja.
+				Ha nem stabil a kapcsolat, akkor is megér használni, mert nem kell elökről kezdeni a másolást.
 			
 		
 		Egy bucket nem tartalmazhat más bucketeket, gyakorlatilag maga a koncepció az h flat legyen a struktúra.
@@ -146,7 +148,9 @@ S3 Access Point:
 	
 	
 	CORS:
-		To enable, we have to attach a JSON configuration file into the bucket.
+		Akkor is felléphet ha ugyanazon Account más bucketjei akarnak beszélni egymással, pl. Egy website statikus elemei nem férnek hozzá a másik bucket-hez, amiben a videó filkeok, képek vannak.
+		To enable, we have to attach a XML configuration file into the bucket.
+		
 	
 	
 	
@@ -159,7 +163,9 @@ S3 Access Point:
 	
 	Pre-Signed URL-s: Ha valamilyen temporaly jogosultságokat akarunk adni:
 		File feltöltési lehetőség ideiglenesen
-		Hozzáférés prémium tartalmakhoz ideiglenesen
+		Hozzáférés prémium tartalmakhoz ideiglenesen:
+			A signed URL (Uniform Resource Locator) is a URL that includes authentication information in its query parameters. 
+			It is commonly used for providing temporary access to protected resources on the web, such as files stored in cloud storage services like Amazon S3 or Google Cloud Storage.	
 		
 		Hogyan?
 			Az Owner legenerálja a pre-signed url-t és odaadja a usernek.
@@ -196,6 +202,133 @@ S3 Access Point:
 		This approach decouples the management of access policies from the S3 buckets themselves, enabling more scalable and manageable access configurations.
 	
 		A VPC Endpoint is needed for to the Access point to be accessable from the internet 
+	
+	
+Bucket Policy:	
+	
+Use bucket policies to manage cross-account control and audit the S3 object's permissions. 
+If you apply a bucket policy at the bucket level, you can define who can access (Principal element), which objects they can access (Resource element), and how they can access (Action element). 
+Applying a bucket policy at the bucket level allows you to define granular access to different objects inside the bucket by using multiple policies to control access. 
+You can also review the bucket policy to see who can access objects in an S3 bucket.	
+	
+	
+S3 Bucket Key: 
+	An "S3 bucket key" specifically relates to a cost-saving feature 
+	used in conjunction with Amazon S3's server-side encryption (SSE) with AWS Key Management Service (AWS KMS) known as the S3 Bucket Keys feature. 
+	This feature reduces the costs of server-side encryption using AWS KMS by decreasing the request traffic from Amazon S3 to AWS KMS.	
+	
+		Purpose: The S3 bucket key reduces the need for AWS KMS to decrypt or encrypt each object individually within the bucket every time an S3 operation occurs. 
+		Instead, it enables a bucket-level key that AWS KMS encrypts. This encrypted bucket key then encrypts data keys for individual objects.
+		
+		Performance and Cost: By reducing the number of calls made to AWS KMS, S3 bucket keys not only help improve performance but also lower the costs associated
+		with the use of KMS keys for encryption operations.
+
+		Security: The S3 bucket key itself is protected under your configured AWS KMS key and helps maintain robust security standards without compromising performance.
+	
+		How They Work Together in S3
+			When you use Amazon S3 with server-side encryption enabled using AWS KMS (SSE-KMS) along with S3 bucket keys:
+
+				- AWS KMS generates a unique data key for each object when it is written to S3.
+				- This data key is then used to encrypt the data of the object.
+				- The data key itself is encrypted (often referred to as the encrypted data key) using the S3 bucket key.
+				- The S3 bucket key is an additional layer that uses the CMK from AWS KMS but reduces the number of direct interactions needed between S3 and KMS, 
+				thus improving efficiency and reducing cost.
+
+		Summary
+			S3 Bucket Key: A feature to optimize the use of AWS KMS with S3 by reducing the number of necessary encryption and decryption calls for objects within a bucket, 
+			thereby saving costs and potentially improving performance.
+			
+			Data Key: Part of the envelope encryption strategy used to encrypt the data itself, with the key being managed and protected by a master key (CMK).
+
+	
+	
+	
+Transfer Acceleration:
+	Nagy mennyiségű adatot tudunk a hozzánk legközelebb lévő Edge Location-re feltölteni, és utána már az AWS saját hálózatán sokkal gyorsabban célba ér.
+	Routing optimalizálással éri el.
+	Hasznos on-premise adatok migrálására.	
+	Csak engedélyezni kell a bucketen és kapunk egy új endpointot.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

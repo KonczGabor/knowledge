@@ -1,0 +1,4 @@
+AppSync egy fully managgelt service, aminek segítségével könyebb GraphQL API-t fejleszteni, mert átvállaja a nehezét a fejlesztőtöl azzal hogy biztonságosan összeköt adatforrásokat mint a Dynamo,
+Lambda, stb. .
+Előnye h gyorsan lehet lefejleszteni az applikációt, mert lehetőséget adunk a frontend fejlesztők számára hogy különböző db-kből, microservice-ekből, API-kból kérdezhessenek le, egy single GraphQL endpointon
+keresztül.

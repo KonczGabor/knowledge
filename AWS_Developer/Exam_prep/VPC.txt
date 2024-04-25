@@ -4,7 +4,7 @@ Vpc:
 		Region-hoz kötött.
 		Egy logikai konstrukció.
 			Subnetek tartoznak alá.
-			Egy subnet et AZ(Data Center)-hoz kötött.
+			Egy subnet az AZ(Data Center)-hoz kötött.
 			Egy AZ-hoz több subnet is tartozhat.
 		VPC is a virtual network that is dedicated to your account. 
 		So you can't spread a VPC across multiple accounts, and it's yours to do with what you please, and that includes IP addressing. 

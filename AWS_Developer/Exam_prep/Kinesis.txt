@@ -1,5 +1,5 @@
-Kinesis:
-	Valós idejú adat(video, adat stream) gyűjtő, feldolgozó, transzformáló és analizáló(machine learning) service brutál sávszéllel, valós időben (on-the-fly).
+Kinesis: (A az Apache Kafka alternatívája)
+ 	Valós idejú adat(video, adat stream) gyűjtő, feldolgozó, transzformáló és analizáló(machine learning) service brutál sávszéllel, valós időben (on-the-fly).
 	Store, encrypt, index data
 	Serverless
 	Csak FIFO
@@ -20,9 +20,19 @@ Kinesis:
 	With Kinesis you can have 2 consumers of the same data at the same time, so that's another good example. Also the ability to consume data many hours later. 
 	Kinesis can store data so you can retrieve that later.
 	
+	Amazon Kinesis Data Streams (KDS) is a massively scalable and durable real-time data streaming service. 
+	KDS can continuously capture gigabytes of data per second from hundreds of thousands of sources such as website clickstreams, database event streams, 
+	financial transactions, social media feeds, IT logs, and location-tracking events. 
+	The data collected is available in milliseconds to enable real-time analytics use cases such as real-time dashboards, real-time anomaly detection, dynamic pricing, and more.
 
-SQS és Kinesis közt az a különbség h Kinesis esetén garantált h a feldolgozó mindig ugyanaz az adott Consumer lesz.
-Kinesis ugyanazt a producert tudja concurrent processzálni. SQS FIFO szerint a Visibility Timeout kizárólagosságot biztosít egy comsumer számára.
+	Kinesis Data Streams enables real-time processing of streaming big data. 
+	It provides ordering of records, as well as the ability to read and/or replay records in the same order to multiple Amazon Kinesis Applications. 
+	The Amazon Kinesis Client Library (KCL) delivers all records for a given partition key to the same record processor, making it easier to build multiple applications 
+	reading from the same Amazon Kinesis data stream (for example, to perform counting, aggregation, and filtering).
+	
+
+	SQS és Kinesis közt az a különbség h Kinesis esetén garantált h a feldolgozó mindig ugyanaz az adott Consumer lesz.
+	Kinesis ugyanazt a producert tudja concurrent processzálni. SQS FIFO szerint a Visibility Timeout kizárólagosságot biztosít egy comsumer számára.
 
 Kinesis Data Analytics:
 	Analyze data streams with SQL.
@@ -33,6 +43,11 @@ Kinesis Data Analytics:
 Firehose:
 
 	General aim: transformation (általában Lambda áll a háttérben) and provide batch output at near real time.
+	
+	Amazon Kinesis Data Firehose is the easiest way to load streaming data into data stores and analytics tools. 
+	It can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, 
+	enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today. 
+	It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration.
 		
 	Auto scale,
 	
@@ -48,3 +63,86 @@ Firehose:
 		HTTP endpoint
 		
 	Nem visszajátszható	
+	
+	
+	
+	
+	
+DataStreams VS Firehose:
+
+	Amazon Kinesis Data Streams:
+	
+		Kinesis Data Streams is a service for real-time processing of streaming data at scale.
+		It allows you to build custom applications that can continuously ingest, process, and analyze streaming data in real time.
+		With Data Streams, you have more control over the data processing pipeline. You can build custom applications or use pre-built applications to process and analyze the data.
+		It is highly scalable, allowing you to handle large volumes of streaming data with ease.
+		You can integrate Kinesis Data Streams with other AWS services such as Lambda, Kinesis Data Analytics, and Kinesis Data Firehose for further processing or storage.
+
+
+	Amazon Kinesis Data Firehose:
+	
+		Kinesis Data Firehose is a service for loading streaming data into data lakes, data stores, and analytics services.
+		It is designed to simplify the process of ingesting streaming data and delivering it reliably to destinations such as Amazon S3, Amazon Redshift, 
+		Amazon Elasticsearch Service, and Splunk, among others.
+		With Firehose, you don't need to write custom applications for data processing. 
+		Instead, you configure Firehose to automatically deliver data to the desired destination with options for data transformation and compression.
+		Firehose is fully managed, meaning AWS takes care of scaling, monitoring, and managing the infrastructure for you.
+		It is suitable for use cases where you need to reliably ingest streaming data into data stores or analytics services without worrying about infrastructure management.
+
+
+	In summary, if you need fine-grained control over your streaming data processing pipeline and want to build custom applications for real-time analytics, 
+	Amazon Kinesis Data Streams is the preferred choice. 
+	On the other hand, if you need a managed service to reliably ingest streaming data into data stores or analytics services without managing infrastructure, Amazon Kinesis Data Firehose is a better fit.
+
+	
+	
+MSK: (Managed Service Kafka)
+	To stream data.
+	Serverless.
+	Multi AZ (3ig)
+	Az edatot EBS-en tárolja, ameddig tartjuk ameddig csak szeretnénk.
+
+	Egy MSK Clusterben élnek a Brokerek. 
+	Brokers manage the storage and replication of records, producers publish records to Kafka topics, and consumers subscribe to topics and process records. 
+	Together, these components form the backbone of the Kafka messaging system, enabling real-time data processing and stream processing at scale.
+		Honnan jöhetnek az adatok, ki lehet Producer?
+			Kinesis
+			IoT
+			RDS
+		A Producerek a Topicra írnak, amik a brokerek közt replikálva vannak	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	

@@ -274,7 +274,7 @@ X-Ray is nagyon könnyen beköthető.
 	
 	
 ♦ Lambda by default:	
-	Nem a mi VPC-nkben élnek, hanem az AWS, saját VPC-jében. Tehát nem tudnak hozzáférni a mi erőforrásainkhoz
+	Nem a mi VPC-nkben élnek, hanem az AWS, saját VPC-jében. Tehát nem tudnak hozzáférni a mi erőforrásainkhoz by default.
 		Ő hozzáférhet bármilyen publikus weboldalhoz, API-hoz, DynamoDB-hez
 	Ahhoz h a λ -nk hozzá tudjon férni az erőforrásainkhoz, meg kell adni h melyik VPC-nkben jöjjön létre (VPC-id), a Subnetet és SecurityGroup-ot
 	 	A háttérben létre fog jönni egy ENI (Elastic Network Interface) a saját security group-jában
@@ -294,16 +294,49 @@ X-Ray is nagyon könnyen beköthető.
 	 
 	
 	
+Alias: Egy alias csak egy functionnek egy adott verziójára mutathat, más aliasokra nem. Egy verzióra mutathat több alias is.
+	Ugyannanak a functiönnek különböző verziójára mutathatnak az aliasok. A legújabb lehet a dev, "alatta" a prod.
+	A probléma, amit megoldanak, h nem kell direktbe egy esemény forrásból (S3) adott verzióra mutatni, elég az aliasra, a verzió úgyis elmászik.	
 	
 	
 	
 	
+♦ Concurrency is the number of requests your function can handle at the same time. There are two types of concurrency controls available:
+
+	Reserved concurrency – guarantees the maximum number of concurrent instances for the function.
+	When a function has reserved concurrency, no other function can use that concurrency. There is no charge for configuring reserved concurrency for a function.
+
+	Provisioned concurrency – initializes a requested number of execution environments so that they are prepared to respond immediately to your function's invocations. 
+	Note that configuring provisioned concurrency incurs charges to your AWS account.	
 	
 	
+
+Ha egy RDB-hez akarunk csatlakozni akkor a λ-kat bele kell tenni egy privát VPC-be, saját subnettel. 
+	Ezen belül minden λ egy elastic network interface-szel fog csatlakozni az RDH-hez. 
+	
+
+Function URL: ennek az a célja h teljesen közvetlenül, full direktbe HTTP-n keresztül meghívhassunk egy λ-t.
+	Csak akkor lehet hozzárendelni egy λ-hot Function URL-t, ha még a λ nem lett kideployolva.	
 	
 	
+Layer:	
+	A λ function dependenciáit és külső library-jait külön layer-ekbe szervezzük, mert ezek soha, vagy csak nagyon ritkán változnak.	
+	További előnye h más λ is hivatkozhat ezekre a "már kész" layerekre.
+		Hivatkozhatunk 
+			- official AWS layerekre
+			- saját layerekre
+			- bárki layerére ARN segítségel.
 	
+			
+Filerendszerek λ -hoz:
 	
+	Lambdához filerendszert 			 
+		EFS:
+			Ez kicsit trükkös.
+			Egy EFS egy VPC-hez kötött.
+				Egy VPC-n belül több AZ van. 
+					Egy AZ-ban több private/piblic subnet
+						EFS Acces pointot kell létrehozni amin keresztül a λ már meghívható, viszont így az Acces point lesz a bottleneck
 	
 	
 	

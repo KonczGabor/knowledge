@@ -81,6 +81,11 @@ Lehetséges kérdések:
 		
 		
 		
+Átnézni: 
+
+	Cloud Formation Template format.
+	S3 Bucket policies and ACL-s.		
+		
 		
 		
 		

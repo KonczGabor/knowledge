@@ -1,5 +1,7 @@
 KMS: Key management service		
-S3 objectek NEM DEFAULT titkosítása, theát egyedi KMS -szervice által történő kódolás pénzbe kerül.
+S3 objectek NEM DEFAULT titkosítása, tehát egyedi KMS -szervice által történő kódolás pénzbe kerül.
+
+CMK: Customer Master Key
 
 Region-höz kötött a KEY, de lehet létrehozni olyat is ami több Region közt is működik.
 
@@ -13,6 +15,52 @@ TLS
 		Az üzenet több szerveren áthaladhat és fontos h csak a végső cél állomás legyen képes visszafejteni az üzeneteünk.
 		
 		
+Server Side Encryption:
+	Az adat tisztán érkezik be, tegyük fel HTTPS-en.
+	Beérkezás után az adatot a szerver azt a saját kulcsával titkosítja.
+	Mikor a szerver veisszaküld (mondjuk HTTPS-en), akkor szerver a sját kulcsával visszafejt.
+	Tehát a kulcsokat a szerver maga menedzseli és minden munka(encrypt/decrypt) a szerver oldalon történik. 	
+	
+Client Side Encrypton:
+	Min a titkosítás, mind a fejtés a client oldalán történik.
+	A szerver soha nem kapja meg a nyers adatot, az mindig kódolt formában van csak nála.		
 		
 		
+A CloudTrail minden API hívást tud auditálni a KMS Key-ek segítségével.		
 		
+	A kulcsoknak 2 fajtája van:
+		- Symmetric (AES-256): Ezzel kódolni és fejteni is lehet egyben.	
+		- Asymmetric (RSA & ECC kulcs párok)
+			Public: a titkosításra.
+			Private: a fejtésre.
+	
+	Kié lehet a kulcs?:
+		AWS sajátja (AWS Owned):
+			Ezek ingyenesek 
+			
+Evelop Encryption esetén a nagy méret miatt mind az kódolás, mind a fejtés kliens oldalon történik. 			
+
+
+Key Policy: Azt jelenti h ki jogosult használni a kulcsainkat.
+	A Default szerint mindenki amíg meg vannak a megfelelő IAM permissionjei.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

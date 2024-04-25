@@ -1,6 +1,6 @@
 Minden amit lelogol a CloudTrail, az az EventBridge-en is átmegy.
 	Az eventekre filtereket építhetünk, amiket rule-oknak hívnak. Ha a filter pattern-e matchel, akkor létrejön az alert, amit tovább lehet küldeni más service-eknek, pl.: SNS.
-		Pl.: Meghívódik az IAM service AssumeRole endpointja, amivel egy Role-t delegálunk egy usernek, ebból log születik a CloudTrailen, ami átmegy az EventBridge-en, aminek van erre egy alartje,
+		Pl.: Meghívódik az IAM service AssumeRole endpointja, amivel egy Role-t delegálunk egy usernek, ebből log születik a CloudTrailen, ami átmegy az EventBridge-en, aminek van erre egy alartje,
 		 és SNS fan-outolja a SES-nek (Simple Email-service)
 		 Vagy megváltozik egy SG indounRule-ja.
 

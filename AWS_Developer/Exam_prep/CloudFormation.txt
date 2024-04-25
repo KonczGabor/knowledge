@@ -16,3 +16,91 @@ CloudFormation: provides you with an easy to use language and method to provisio
 				Milyen kérések lettek deny-olva permission-ök hiányában?	
 		
 		RevisionControl: A templatek history-ját manageli.
+
+Resources - 
+	Resources section describes the resources that you want to provision in your AWS CloudFormation stacks. You can associate conditions with the resources that you want to conditionally create.
+
+Outputs - 
+	The optional Outputs section declares output values that you can import into other stacks (to create cross-stack references), 
+	return in response (to describe stack calls), or view on the AWS CloudFormation console. For example, you can output the S3 bucket name for a stack to make the bucket easier to find. 
+	You can associate conditions with the outputs that you want to conditionally create.		
+		
+	
+Parameters enable you to input custom values to your CloudFormation template each time you create or update a stack. 
+		
+The optional Conditions section contains statements that define the circumstances under which entities are created or configured.		
+For example, you can create a Condition and then associate it with a resource or Output so that AWS CloudFormation only creates the resource or Output if the condition is true.		
+		You might use conditions when you want to reuse a template that can create resources in different contexts, such as a test environment versus a production environment.
+		
+		A Parameters-ben nem lehet Condition blokk. Előbbkérjük be a paramétereket, és utána hasonlítgassuk a Conditions-ban. Pl. Dev-e a környezet?
+		
+		Miután minden Condition-t definiáltunk, csak azután használhatjuk a Resources ás Resource properties és Output section (blokk) -ökben.
+		
+		
+		
+Van a Conditions blokk. Ezen belül lehet létrehozni az előre gyártott Condition-okat (gyakorlatilag ide szervezzük ki őket).
+	Conditions:
+	  CreateProdResources: !Equals [ !Ref Environment, "prod" ]
+
+Utána ha adott egy bizonyos Resource, akkor azon belül a Condition attribute-nál csak hivatkozni kell a Condition-ra.		
+	Resources:
+	  MyResource:
+	    Type: AWS::Some::Resource
+	    Condition: CreateProdResources
+	    Properties:
+	      ...
+	      
+Csak azután lehet használni egy Condition-t miután az összes már definiálva lett.
+
+Condition csak Resources és Outputs- on belül lehet. Tehát a Paramaters-en belül nem.
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

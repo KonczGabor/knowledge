@@ -35,6 +35,7 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 			
 			
 		-Application(v2 new gen-2016)	
+			Az OSI réteg 7.(legmagasabb, application layer) szintjén operál.
 			HTTP, HTTPS, WebSocket
 			Great for containers and micro services.
 			Különböző routok közt is tud irányítani:
@@ -56,21 +57,30 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 			
 			Amit nem tud: Client's location (Geography) 			
 				
-				
+			Ha nem regisztrálunk be egyetlen targetet sem az Application Load Balancer Target groupjába, akkor 503-Service unavailable-t kapunk vissza.
 				
 				
 		-Network(v2 new gen-2017)
 			Network Load Balancers expose a public static IP (1 per AZ), whereas an Application or Classic Load Balancer exposes a static DNS (URL)
-			TCP, TLS(Secure TCP), UDP
 			Cross LB between AZ is disabled by default. Fizetős.
 			Tud SNI-t: Server Name Indication
+			Milló request/sec -et is tud kezelni mert az OSI model 4-es szintján van (TCP/UDP)
+			A bejövő kapcsolatot mindenféle módosítás nélkül lesz összekötve a target grupban ülő konténerrel, így 
+				NEM tudja támogatni az X-Forwarded-For -t, ami arra szolgál h a kliens mire eljut a szerverhez több routeren keresztül mehet,
+				és as szerve alapból csak a legutolsó hívót látja a sorban. Az X-Forwarded-For egy olyan Header, ami balról->jobbra feltölti az állomásokat.
+			
 			
 		
 		
 		
 		
 		-Gateway (Internet Gateway and Gateway Load Bancer are different things.):
-			operates at the third layer of the Open Systems Interconnection (OSI) model, the network layer. It listens for all IP packets across all ports and forwards traffic to the target group that's specified in the listener rule. It is able to maintains stickiness.
+			operates at the third layer of the Open Systems Interconnection (OSI) model, the network layer. 
+			It listens for all IP packets across all ports and forwards traffic to the target group that's specified in the listener rule. It is able to maintains stickiness.
+				Sticky cookie:
+					Amikor a loadbalancer elsőként eldönti h a client melyik nodehoz csatlakozzon (több vásárlást megvalósító példány is fut, mely tárolja a kosarat),
+					akkor a response esetén a válaszhoz hozzáfűződik ennek az instance-nak az id-ja és mikor újbol requestel a client akkor már nem kell az lb-nek
+					roundrobin-olni, vagy megnézni melyik példány a legkevésbé terhelt, hanem direktbe oda tudja irányítani az adott instancehoz.
 		
 		
 			GENEVE protocol: Generic Network Virtualization Encapsulation (Geneve) is a network encapsulation protocol created by the IETF in order to unify the efforts made by other initiatives like VXLAN and NVGRE, with the intent to eliminate the wild growth of encapsulation protocols.
@@ -84,3 +94,75 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 		5XX Erroers: Application miatt
 	
 	Monitoring: Minden requestet monitoroz az LB, amiről a CloudWatch könnyedén tud metrikát generálni
+	
+	
+	
+Egy Target Groupba, amikor megadom a típusát (Target Group Type) akkor eldől h a node-okat hogyan regisztrálom be:
+	- Instance ID
+	- Static IP
+	alapján.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

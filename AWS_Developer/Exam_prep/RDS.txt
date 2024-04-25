@@ -10,7 +10,7 @@ RDS:
 			Több ReadReplicát is tud kezelni, autoscale-eli őket.
 			Writer (to Master) és Reader(from read replicas) Endpointon keresztül lehet kommunikálni veleű
 			
-			• Automatic fail-over
+			• Automatic fail-over: Ha a standyby instanceok autómatikusan előtérbe kerülnek, amikor a primary database elfailel.
 			• Backup and Recovery
 			• Isolation and security
 			• Industry compliance
@@ -36,7 +36,7 @@ RDS:
 				• Allows apps to pool and share DB connections established with the database
 				• Improving database efficiency by reducing the stress on database resources (e.g., CPU, RAM) and minimize open connections (and timeouts)
 				• Serverless, autoscaling, highly available (multi-AZ)
-				• Reduced RDS & Aurora failover time by up 66%
+				• Reduced RDS & Aurora failover time by up 66% //failover means = feladatátvétel.
 				• Supports RDS (MySQL, PostgreSQL, MariaDB, MS SQL Server) and Aurora (MySQL, PostgreSQL)
 				• No code changes required for most apps
 				• Enforce IAM Authentication for DB, and securely store credentials in AWS Secrets Manager
@@ -76,7 +76,8 @@ RDS:
 		Snapshot is manually triggered by the user, Backup is automated.	
 		
 	Read repilcas: for read scalability (They are only for reads = sql SELECT)
-		Van egy Main instance és read replicák. A main és a replikák közt async szinkronizáció történik, így az alakalmazás szemszögépből egy READ eventually-consistent-nek számít, mert elő állhat olyan állapot h a mainbe beíródott, az adott read replikába pedig még pont nem. 
+		Van egy Main instance és read replicák. A main és a replikák közt async szinkronizáció történik, így az alakalmazás szemszögépből egy READ eventually-consistent-nek számít, 
+		mert elő állhat olyan állapot h a mainbe beíródott, az adott read replikába pedig még pont nem. 
 		
 		Ha a Read Replicák különböző AZ-kban is vannak, de egy azon Region-ön belül, a köztük történő szinkronizáció ingyenes.
 		Region-ok közt pedig már fizetős.
@@ -104,6 +105,9 @@ RDS:
 		Cross Region replikák közti szinkronizációért már kell fizetni.
 		
 		Read replikák közt a frissítés aszinkron, Multi AZ esetén szinkron!
+			A multi AZ-kban lévő standby-ok nem teljesítenek szolgálatot mint Read or WriteReplica, tényleg csak backupnak vannak. 
+		
+		AZ RDS-operációs rendszere úgy kerül frissítésre, h először a standby instanceokon fut meg, azokat primary-vé léptetik és az eredeti primary-ket standby-já degradálják, majd azokon is megfut.
 		
 		RDS Security - Network & IAM
 			Általában privát subnetekbe tesszük a a db-t. 
@@ -129,7 +133,11 @@ RDS:
 
 
 
-
+Storage autoscale akkor történik, ha engedélyeztük és:
+	Az elérhető szabad terület a max 10%-a alá csökkent.
+	A low-storage kondíciók leglább 5perce fenn álnak.
+	(?legalább 6 óra eltelt az előző módosítás óta?)
+	
 
 
 
