@@ -4,6 +4,11 @@ The output of one step acts as an input to the next. Each step in your applicati
 
 AWS Step Functions enables you to implement a business process as a series of steps that make up a workflow. The individual steps in the workflow can invoke a Lambda function or a container that has some business logic, update a database such as DynamoDB or publish a message to a queue once that step or the entire workflow completes execution.
 
+
+AWS Step Functions is a service provided by Amazon Web Services that allows you to coordinate multiple AWS services into serverless workflows. 
+You can build complex business processes and workflows using a JSON-based, state machine format to define the sequence of actions, decisions, and parallel tasks. 
+
+
 Benefits of Step Functions:
 	Build and update apps quickly: AWS Step Functions lets you build visual workflows that enable the fast translation of business requirements into technical requirements. 
 	You can build applications in a matter of minutes, and when needs change, you can swap or reorganize components without customizing any code.
@@ -15,6 +20,66 @@ Benefits of Step Functions:
 	This removes extra code that may be repeated in your microservices and functions.
 
 
+
+States of the control flow:
+
+	• Task State: 
+		Description: Represents a single unit of work performed by a state machine.
+		Function: Tasks perform work by using activity or Lambda functions, or by interacting with other supported AWS services.
+		Example Use: Invoking a Lambda function to process data or interact with other AWS services like S3 or DynamoDB.
+		Resource field is a required parameter 
+
+
+	• Choice State - Test for a condition to send to a branch (or default branch)
+		Description: Enables conditional branching within the state machine based on the input data.
+		Function: Routes the execution path to different states based on the values of the input.
+		Example Use: Directing workflow decisions, such as checking if an input value meets certain criteria and branching accordingly.
+	
+	
+	• Success State:
+		Description: A terminal state that stops the state machine execution and marks it as successful.
+		Function: Indicates that the state machine has completed successfully.
+		Example Use: Ending the workflow after successfully completing all tasks.
+		
+	• Succeed State:
+		Description: Similar to the Success state, but used directly to represent a successful end point and does not require any output.
+		Function: Immediately ends the workflow successfully.
+		Example Use: Useful in branches of execution where successful completion does not require further actions.
+	
+	
+	• Fail State:
+		Description: A terminal state that stops the execution and marks it as a failure.
+		Function: Used to end the state machine in failure based on errors or conditions that are met.
+		Example Use: Terminating the workflow if errors occur or if certain conditions that denote failure are satisfied.
+	
+	
+	• Pass State:
+		Description: Passes its input to its output, without performing work. Can optionally inject fixed data.
+		Function: Useful for injecting configuration or reformatting the input data without actual processing.
+		Example Use: Transforming input format or adding additional information to the workflow context.
+	
+	
+	
+	• Wait State - Provide a delay for a certain amount of time or until a specified time/date.
+		Description: Delays the state machine from transitioning to the next state for a certain amount of time or until a specified timestamp.
+		Function: Useful for pauses or delays between tasks, especially when waiting for a specific time or event.
+		Example Use: Pausing the workflow until a specific time or until certain conditions are met (e.g., waiting for a file to be uploaded).
+	
+	
+	• Map State - Dynamically iterate steps.’
+		Description: Processes a set of inputs individually by iterating through an array in the input data.
+		Function: Allows you to run a number of steps for each item in an array of input data.
+		Example Use: Performing operations on each item of an input array independently, such as processing a list of orders or tasks.
+	
+	
+	• Parallel State - Begin parallel branches of execution.
+		Description: Initiates and manages parallel branches of execution.
+		Function: Allows multiple branches of tasks to execute in parallel, and then aggregates the results.
+		Example Use: Running several tasks concurrently to reduce overall execution time and then combining the results.
+
+
+	These states allows to build robust, flexible, and scalable workflows tailored to automate processes and orchestrate AWS services. 
+	AWS Step Functions integrates deeply with AWS Lambda, making it an ideal tool for deploying complex serverless applications.
 
 
 
@@ -51,7 +116,7 @@ Benefits of Step Functions:
  	Code
  	Config	
  	
- 	Minden errort magában a StepFunction-ben kell lekezelni logikával, nem a kiszervezett taskban (Application Code), mert az olyan, mintha minden jó lett volna.
+ 	Minden errort magában a StepFunction-ben kell lekezelni logikával, nem a kiszervezett taskban (Application Code), mert az olyan a step function szemszögéből, mintha minden jó lett volna.
  		Retry
  		Catch 
  	

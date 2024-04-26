@@ -1,6 +1,7 @@
 EFS: (Elastic Filye System) 
 
-	 EFS volumes provide a simple, scalable, and persistent file storage for use with your Amazon ECS tasks. 
+	Skálázható file storage service, amit felcsatolhatunk EC2 instanceok és containerek, ECS taskok alá.
+
 	 With Amazon EFS, storage capacity is elastic, growing and shrinking automatically as you add and remove files. 
 	 Your applications can have the storage they need, when they need it. Amazon EFS volumes are supported for tasks hosted on Fargate or Amazon EC2 instances.
 
@@ -18,5 +19,5 @@ EFS: (Elastic Filye System)
 			-Bursting: throughput scales with file system size
 			-Provisioned: throughput fixed with a specified amount
 	Storage Tiers:
-		Standard: for frequently accessed files
-		Infrequent access: cost to retrieve files, lower price to store
+		Standard: hétköznapi, azaz folyamatos, de kitett használatra is ez javasolt.
+		Infrequent access: ha ritkán és teljesen random pillanatokban akarunk írni/olvasni.

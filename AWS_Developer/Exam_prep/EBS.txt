@@ -1,6 +1,7 @@
 EBS: Elastic Block Store: Hálózati meghajtó amit hozzá lehet csatolni a futó instance-okhoz (Egyikről le, másikra rá) (Egy instancehoz akár többet is lehet, de egy EBS csak egy instancehoz 		csatlakozhat. 1:N //Kivéve ha io1, vagy io2 type EBS).
 
 	A Multi Instance azt jelenti hogy ugyanazt az EBS volume-ot több EC2-re is felcsattinthatjuk, de azoknak még mindig ugyanazon AZ-n belül kell lenniük.
+		De semmiképp sem arra találták ki h több száz EC2 csatlakozzon hozzá egyszerre. Arra inákbb ott van az EFS.
 
 	Availability Zone-hoz kötött (Nem Regionhoz, tehát szűkebb). Ha mégis át akarjuk mozgatni, snapshotolni kell. 
 	Snapshotról is lehet Snapshotot készíteni.  

@@ -8,7 +8,7 @@ EC2: Elastic Compute Cloud: Run and manage Virtual Servers. EC2 Container Servic
 			
 			Nem lehet őket Region-ök közt megosztani, mindegyik adott Region-höz kötött.
 			
-			The ElasticBlockStore volumes are constrained to an availability zone, you cannot share an EBS volume across zones. 
+			Egy EBS egy AZ-hoz kötött, az alaptípust nem lehet megosztani másik AZ-val. 
 			
 			To log in
 				$ssh -i privateKeyFile.pem ec2-user@publicIPv4address
