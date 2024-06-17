@@ -77,7 +77,7 @@ kubectl: command line utilities to k8s.
 		pv	Persistent Volumes
 		pvc 	PersistentVolumeClaims
 		sa	service accounts
-		cm	configmap
+		cm	configmap //pl NGINX-et konfiguráló külön file.
 		rc	replicationcontroller
 		ds	demonset
 		sts	statefulset
@@ -322,6 +322,26 @@ A Kubernetes-ben (K8s) az alkalmazásokat konfigurálni lehet különböző fáj
 							name:
 						spec:
 
+
+		Get all ingress in all ns:	
+			kubectl get ingress -A
+
+
+	ConfigMap:
+		kubectl create configmap nginx-configuration -n ingress-space
+
+
+	ServiceAccount:
+		Minden namespace-ben van egy default sa
+		
+		kubectl create serviceaccount ingress-serviceaccount -n ingress-space
+
+
+	NetworkPolicy:
+		Pod-okhoz lehet csatolni, h ingress és egress forgalmat engedélyezzen különböző portokon. 
+		Először ráadjuk egy podra, h kit vegyen körbe (védelmezzen)
+		Másodszor pedig egyértelműsítjuk h mely podok számára adjon hozzáférsét (selector)
+
 	ReplicaSet:
 		Ez egy halmaz, ami podokat tartalmaz. 
 
@@ -387,6 +407,8 @@ A Kubernetes-ben (K8s) az alkalmazásokat konfigurálni lehet különböző fáj
 							 	 image: reporting-tool
 							restartPolicy: Never
 	Namespace:
+		//Csel: Ha előrehozzuk a ns egyértelműsítését, akkor már felajánlja az autocomlplete-et:
+			kubectl describe ingress -n <namespace> <ingress-name> //Az <ingress-name> már elérhető lesz tab-bal.
 		kubectl get ns
 		
 		kubectl create namespace dev
