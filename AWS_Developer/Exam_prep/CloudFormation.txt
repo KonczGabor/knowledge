@@ -3,10 +3,19 @@ CloudFormation: provides you with an easy to use language and method to provisio
 	CloudFormation allows you to instantiate all of these things with a template all at once.
 	AWS CloudFormation enables you to create and provision AWS infrastructure deployments predictably and repeatedly.
 	Terms:
-		Template: az environment leírása(Blueprint for the Stack h hogy nézzen ki) Json v YAML
+		Template: az environment leírása(Blueprint for the Stack h hogy nézzen ki) JSON v YAML
 		Stack: Collection of resources
 		Change Set: its a plan h hogy fog kinézni az új instance a bevezetendő válzotások hatására.
-		Stack set: in case of cross-region related operations, use a set of stacks
+		Stack set: in case of cross-region related operations, use a set of stacks:
+			 extends the capability of stacks by enabling you to create, update, or delete stacks across multiple accounts and AWS Regions with a single operation. 
+			 Using an administrator account, you define and manage an AWS CloudFormation template, 
+			 and use the template as the basis for provisioning stacks into selected target accounts across specified AWS Regions.
+			 
+			A stack egy gyűjteménye az összetartozó AWS erőforrásoknak, amelyeket egyetlen egységként kezelhetünk és irányíthatunk.
+			Egy stack lényegében egy felhőinfrastruktúra-specifikus modell, amely leírja, hogy az egyes erőforrások hogyan kapcsolódnak egymáshoz és hogyan konfigurálódnak.
+			A stackek lehetővé teszik az AWS erőforrások egyszerű létrehozását, frissítését és törlését konzisztens módon, scriptek vagy programozási interfészek használatával.
+			
+			
 		
 		AWS CloudTrail: ezzel lehet logolni a CloudFormation hívásokat.
 			Ezekre adhat választ:
@@ -19,6 +28,7 @@ CloudFormation: provides you with an easy to use language and method to provisio
 
 Resources - 
 	Resources section describes the resources that you want to provision in your AWS CloudFormation stacks. You can associate conditions with the resources that you want to conditionally create.
+	This is a MUST to be reperesented in a template.
 
 Outputs - 
 	The optional Outputs section declares output values that you can import into other stacks (to create cross-stack references), 
@@ -56,15 +66,59 @@ Condition csak Resources és Outputs- on belül lehet. Tehát a Paramaters-en be
 		
 		
 		
+Exported Output Values in CloudFormation must have unique names within a single Region. Nem kell tehát hogy az összes Region között is egyedi legyen:
+	A CloudFormation template has an optional Outputs section which declares output values that you can import into other stacks (to create cross-stack references), 
+	return in response (to describe stack calls), or view on the AWS CloudFormation console. For example, you can output the S3 bucket name for a stack to make the bucket easier to find.
+
+	You can use the Export Output Values to export the name of the resource output for a cross-stack reference. For each AWS account, export names must be unique within a region.	
+	
+		
+Template sections (anatomy):
+	AWSTemplateFormatVersion: "version date"
+	
+	Description:
+	
+	Metadata:
+	
+	Parameters: Ez a bemenet, ez gyakorlatilag a template constructora.
+		A paraméterekre késöbb hivatkozhatunk a Resource, vagy Outputs-ból.
+		
+		Types:		
+			String – A literal string
+			Number – An integer or float
+			List<Number> – An array of integers or floats
+			CommaDelimitedList – An array of literal strings that are separated by commas
+			AWS::EC2::KeyPair::KeyName – An Amazon EC2 key pair name
+			AWS::EC2::SecurityGroup::Id – A security group ID
+			AWS::EC2::Subnet::Id – A subnet ID
+			AWS::EC2::VPC::Id – A VPC ID
+			List<AWS::EC2::VPC::Id> – An array of VPC IDs
+			List<AWS::EC2::SecurityGroup::Id> – An array of security group IDs
+			List<AWS::EC2::Subnet::Id> – An array of subnet IDs
+		
+	Mapping:
+	
+	Conditions:
+		Itt tudjuk például megadni hogy egy resource annak függvényében jöjjön létre h most mire van állítve egy változó: dev/prod
+	
+	Transform:  specifies one or more macros that AWS CloudFormation uses to process your template.
+	
+	Resources:
+		Ez az egyetlen kötelező elem.
+		
+	Outputs:		
 		
 		
+WAF: 
+	is a web application firewall that lets you monitor the HTTP and HTTPS requests that are forwarded to CloudFront, and lets you control access to your content. 
+	Based on conditions that you specify, such as the values of query strings or the IP addresses that requests originate from, CloudFront responds to requests either with the requested content 
+	or with an HTTP status code 403 (Forbidden). A firewall is optimal for broader use cases than restricted access to a single file.		
 		
 		
-		
-		
-		
-		
-		
+Field-Level Encryption:
+	to help protect sensitive data - CloudFront's field-level encryption further encrypts sensitive data in an HTTPS form 
+	using field-specific encryption keys (which you supply) before a POST request is forwarded to your origin. 
+	This ensures that sensitive data can only be decrypted and viewed by certain components or services in your application stack. 		
 		
 		
 		

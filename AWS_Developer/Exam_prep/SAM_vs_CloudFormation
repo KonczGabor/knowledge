@@ -1,0 +1,76 @@
+AWS CloudFormation and AWS Serverless Application Model (SAM) are both AWS services designed to manage infrastructure as code, allowing you to define and provision AWS infrastructure using configuration files.
+While they share some similarities, there are key differences in their focus and capabilities.
+
+AWS CloudFormation:
+
+	is a comprehensive service that allows you to manage almost any AWS resource. It provides a common language for you to describe and provision all the infrastructure resources in your cloud environment.
+
+	Scope: CloudFormation supports a wide range of AWS services and resources, making it suitable for managing complex applications that involve multiple types of resources.
+
+	Templates: CloudFormation templates can be written in JSON or YAML. These templates define the AWS resources and their relationships so that you can manage your infrastructure as a single unit.
+
+	Capabilities: It includes detailed control over resource creation, updates, and deletion. It also supports nested stacks, which allow for more complex deployments by referencing other templates.
+
+
+
+AWS SAM (Serverless Application Model):
+	is an extension of AWS CloudFormation designed specifically for simplifying the creation, management, and deployment of serverless applications on AWS. 
+	It provides shorthand syntax to express functions, APIs, databases, and event source mappings.
+
+	Focus: SAM is focused exclusively on serverless resources, such as AWS Lambda, Amazon API Gateway, Amazon DynamoDB, and other services that are commonly used in serverless architectures.
+	
+
+	Templates: SAM templates are an extension of CloudFormation syntax and offer additional simplicity and succinctness for defining serverless resources. These can also be written in YAML or JSON.
+
+	Deployment: SAM provides built-in commands through the SAM CLI (Command Line Interface) that simplify building your application, local testing, and deployments.
+
+
+
+Key Differences:
+
+	Specificity vs. Generality:
+
+		CloudFormation is a generic tool that can manage a broad array of AWS services and resources.
+		
+		SAM is specialized for serverless applications, providing features and shortcuts that are specifically useful for the serverless architecture.
+	
+	
+	Template Syntax:
+
+		CloudFormation uses a more verbose syntax which can describe any AWS resource.
+
+		SAM templates are syntactically simpler when it comes to defining serverless resources, reducing boilerplate code required to define a Lambda function, API Gateway, etc.
+	
+	
+	Tooling:
+
+		CloudFormation integrates with other AWS services and can be used through the AWS Management Console, AWS CLI, or SDKs.
+		
+		SAM has the SAM CLI, which adds additional commands specifically for serverless applications, such as sam build, sam deploy, and sam local for local testing.
+
+
+	Deployment Capabilities:
+
+		CloudFormation requires manual setup of deployment pipelines or integration with AWS CodePipeline for CI/CD.
+
+
+		SAM integrates more seamlessly with serverless CI/CD practices and simplifies the deployment process for serverless applications 
+		with commands directly targeting common serverless development tasks.
+
+
+Conclusion:
+
+	If your projects are centered around serverless applications, AWS SAM is likely the better choice due to its specialized nature and simplified syntax. 
+	If you need to manage a diverse set of resources or a more complex infrastructure, AWS CloudFormation provides the necessary capabilities and flexibility. 
+	It's also worth noting that you can use SAM and CloudFormation together in the same project, leveraging SAM for the serverless components while managing other resources with CloudFormation.
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 Elastic Beanstalk: Ez egy orchestraion service
 
-		De gyakorlatilag csak egy eye-candy a Clod Formation fölött, mert minden oda kerül letárolásra, egy template-be, amiből eventek feedelődnek egymás után.
+		De gyakorlatilag csak egy eye-candy a Cloud Formation fölött, mert minden oda kerül letárolásra, egy template-be, amiből eventek feedelődnek egymás után.
 		Run code
 		Run and manage web apps
 		Ez egy olyan absztrakciós réteg, melynek az a feladata hogy összeköttetést biztosítson az oprendszer, vagy szerver és az alkalmazásod között.
@@ -18,9 +18,13 @@ Elastic Beanstalk: Ez egy orchestraion service
 		WebServer (Http requestek handle-ölés leginkább)
 		Worker environment (háttérben fut és mondjuk adatokat húz ki SQS-queue-ból)	
 		
-♦ .ebextensions directory there is a loggin.config where we can adjust the logging policy, env variables, ...
+♦ .ebextensions directory there is a loggin.config where we can adjust the logging policy, env variables, ... 
 	‣ minden itt lévő config file-nak YAML/JSON kell lennie
 	‣ .config-ra kell végződjön
+	
+	like: .ebextensions/<mysettings>.config
+	
+	 Any resources created as part of your .ebextensions is part of your Elastic Beanstalk template and will get deleted if the environment is terminated. 
 
 ♦ To shift envs: EBS -> Actions -> Swap environment Domain
 
@@ -30,3 +34,48 @@ Elastic Beanstalk: Ez egy orchestraion service
 
 ♦ Eleve S3 ba töltődik fel egy zip ben a becsomagolt alkalmazásunk, abból lesz CloudFormation template.
 	Minden verziónk megmarad S3-ban még ha maga az EBS lifecylcle policy a version-t törölte is. Ezt kikapcsolhatjuk és akkor S3-ből is törlődni fog.
+	
+	
+Hooks:
+
+
+
+Deployment strategies:
+	
+	- All at Once(Default): Downtime, mert minden példányt egyszerre leállít és egyidejűleg frissít. Risky. Gyors.
+	- Rolling: Egy egységnyi instancot leállít, azokat frissíti. Veszi a következő csomagot, és így tobább. Lassú, de nincs hozzáadott költség.
+	- Rolling with Additional Batch: Pár új példányt létrehoz ez eredeti mennyiségen felül és lebont ugyanannyit a meglévőkböl. Így a rendelkezésre állás minősége állandó, csak van ami már újabb verzió.
+	- Immutable: teljesen új instancokra kirakjuk az új verziót miközben futa régi. Ha ok, átállunk, ha nem, marad minden a régiben.
+	- Blue/Grren: Ugyanaz mint az immutable, csak az újra(Green) folyamatosan engedjük rá a traffic-ot.	
+	
+	
+SSM parameter is still not supported for Elastic Beanstalk. 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

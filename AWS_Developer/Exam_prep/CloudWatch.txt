@@ -97,7 +97,7 @@ Alpavetően kétféle monitorozási stratégia létezik:
 			‣ S3: Nem real time, 12 órán belül lenyom egy API-CreateExportTask batch processt. 
 				Ezeken az adatokon később analízisket futathatunk, vagy betölthetjük más rendszerekbe. Csak AES-256 os titkosítás engedélyezett az export során, SSE-KMS nem támogatott.
 			
-			Ha real time-ot akarunk, akkor a Logs Subscriptions-t kell használni helyette.
+			Ha real time-ot akarunk, akkor a ClodWatch Logs Insights-ot, vagy Logs Subscriptions-t kell használni helyette.
 		
 			‣ Kinesis
 		
@@ -279,7 +279,9 @@ Alpavetően kétféle monitorozási stratégia létezik:
 					
 					
 					
-					
+CloudWatch logokat S3-ba csak AES-256 titkosítással tudunk, SSE-KMS nem támogatott.
+	Egy ugyanazon Bucketbe tudunk küldeni több Log Groub-ból, vagy több Time Range-ből.	
+	Az exportokat key prefix mentén tudjuk custom csoportokba szervezni.				
 
 					
 					

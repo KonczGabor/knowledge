@@ -26,8 +26,15 @@ A Cognitot több irányból lehet belépíteni az alkalmazásunkba:
 
 
 
+Munkamenet:
 
-
+	Először bejelentkezünk a UserPool-ba
+		Az vissza ad egy UserPoolTokent
+	Ezzel a UserPoolToken-nel az IdentityPool-hoz fordulunk
+		Az vissza ad egy AWS credentials tokent (ez egy token exchange volt)
+	Ezzel az AWS credentials tokennel már fordulhatunk a többi AWS service-hez (S3, Dynamo).
+	
+	De anonymous guest userek esetén is hasznos lehet.	
 
 
 

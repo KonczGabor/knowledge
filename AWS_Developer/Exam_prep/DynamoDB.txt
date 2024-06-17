@@ -2,13 +2,34 @@ DynamoDB:
 	Best Practices:
 		https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html
 		
+	DynamoDB is a fully managed, serverless, key-value NoSQL database designed to run high-performance applications at any scale. 
+	DynamoDB offers built-in security, continuous backups, automated multi-Region replication, in-memory caching, and data import and export tools. 
+	On-demand backup and restore allows you to create full backups of your DynamoDB. 
+	Point-in-time recovery (PITR) helps protect your DynamoDB tables from accidental write or delete operations. 
+	PITR provides continuous backups of your DynamoDB table data, and you can restore that table to any point in time up to the second during the preceding 35 days.	
+	
+	You can monitor the performance of your DynamoDB Standard-IA tables using Amazon CloudWatch, use AWS CloudFormation templates to provision and manage your DynamoDB Standard-IA tables, 
+	add a cache with DynamoDB Accelerator (DAX) to accelerate performance, stream your change data records to Amazon Kinesis Data Streams, 
+	and export your DynamoDB Standard-IA tables data to S3
+		
 	NoSql databse, similar to Mongo	
 	Key-Value similar to JSon dictionary
 	Nem kell méretet allokálni neki, csak Read Capacity Unitot és Write Capacity Unitot
-	Fault tolerant between AZs
+	Fault tolerant between AZs 
 	Scale upDown without downtime
-	Eventually consistent reads
 	
+		DynamoDB supports eventually consistent and strongly consistent reads.
+
+		Eventually Consistent Reads (ez a default):
+
+			When you read data from a DynamoDB table, the response might not reflect the results of a recently completed write operation. 
+			The response might include some stale data. If you repeat your read request after a short time, the response should return the latest data.
+
+		Strongly Consistent Reads:
+
+			When you request a strongly consistent read, DynamoDB returns a response with the most up-to-date data, reflecting the updates from all prior write operations that were successful.
+
+			  
 	MATEK:
 		https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html
 	
@@ -31,3 +52,61 @@ DynamoDB:
 		https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/learn/lecture/15300318#reviews
 		Transactional costs
 			
+			
+TTL:
+
+	Time To Live (TTL) for DynamoDB allows you to define when items in a table expire so that they can be automatically deleted from the database. 
+	TTL is provided at no extra cost as a way to reduce storage usage and reduce the cost of storing irrelevant data without using provisioned throughput. 
+	With TTL enabled on a table, you can set a timestamp for deletion on a per-item basis, allowing you to limit storage usage to only those records that are relevant.			
+	
+	
+
+DAX
+	Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available, in-memory cache for DynamoDB that delivers up to a 10x performance improvement: 
+	from milliseconds to microseconds: even at millions of requests per second. This is a caching technology for your DynamoDB tables.	
+	
+	
+	
+Pricing:
+
+	
+	Kétféle árképzési stratégia létezik:
+		♦ Od-demand: 
+			- Nem tudjuk mekkora lesz az igény.
+			- Vagy tudjuk róla hogy folyton változik.
+			- Az után fizetünk amit használtunk.
+			
+		
+		
+		♦ Provisioned:
+	 		- Definiált írás/olvasási sebességé * futott óra és a tábla típusa (Infrequent Access, ..)
+	 		- Autoscaling
+	 		- Tervezhető mert (Állandó,vagy mert Megjósolhtó)
+	 		 	
+	
+ DynamoDB Accelerator (DAX): 
+ 	Cache (for read heavy apps like social media)	
+	
+	
+API:
+	PutItem, UpdateItem (Upsert -adds item if don't exist), DeleteItem, and GetItem 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

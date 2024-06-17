@@ -1,0 +1,780 @@
+A legkisebb egység a POD. Ez kvázi a konténer, de konténerek nem léteznek a K8s nevezéktanában, mert a pod bewrappeli a konténert, teljesen "ráfeszül".
+	DE némely esetben még lehetnek egy POD-on belül különböző konténerek, bizonyos helper konténerek. Ez összes konténer egy podon belül egyszerre jön létre/hal meg.
+
+node: woker machine: Legyen az bare-metal vagy virtual. 
+
+cluster: set of nodes grouped together.
+	Egy clusterben lehet több speicális node is, a master, ami a többi node-ért felel.
+
+Components:
+	API server (master):
+		The API server acts as the front end for Kubernetes.
+		The users, management devices, command-line interfaces, all talk to the API server to interact with the Kubernetes cluster. 
+
+	etcd (master): 
+		A distributed key-value store that holds the cluster state.
+		When you have multiple nodes and multiple masters in your cluster, etcd stores all that information on all the nodes in the cluster in a distributed manner.
+		Etcd is responsible for implementing locks within the cluster to ensure that there are no conflicts between the masters.
+
+	Controller Manager (master):
+		Runs controller processes that regulate the state of the cluster.
+		The controllers are the brain behind orchestration.
+		They're responsible for noticing and responding when nodes, containers or endpoints goes down.
+		The controllers make decisions to bring up new containers in such cases.	
+
+	Scheduler (master):
+		Assigns workloads to nodes.
+		The scheduler is responsible for distributing work or containers across multiple nodes.
+		It looks for newly created containers and assigns them to nodes.		
+		Ez dönti el h melyik node-ban jöjjön létre a pod -különböző dolgok alapján pl. szükséges ram, cpu.. , .
+		Ha nincs elég node-akkor a pod pending state-be kerül.
+			Ha elfogy a CPU, akkor THROTTLE lesz, ha elfogy a RAM, akkor OOM(Out Of Memory) és Terminálódik a node.
+
+	Container runtime (worker):
+		is the underlying software that is used to run containers.
+		In our case, it happens to be Docker, but there are other options as well.
+
+	kubelet (worker):
+		is the agent that runs on each node in the cluster. 
+		The agent is responsible for making sure that the containers are running on the nodes as expected.
+			Az egyik szubkomponense a cAdvisor (containerAdvisior)
+				Metrikákat gyűjt a podokról és kiteszi a KubeletAPI-ra
+
+ CRI: Container Runtume Interface: ennek az imnterésznek az impelementációin keresztül tud a k8s kontérekkel kommunikálni.
+ 	         Ezek a container runtimeok: rkt.. . A csel az h a Docker nem ezt valósítja meg, hanem a dockershim-et.
+  
+          A Docker nem csak egy container runtime, hanem több tool összessége:
+	        Docker CLI
+                Docker API
+		Build tools
+                  ...
+              	 Container Runtime, amit "Run C" -nek hívnak, és amelyik daemon ezt vezérli az a containerd.
+	
+	
+	
+kubectl: command line utilities to k8s.
+	run: deploy an application on the cluster.
+
+	cluster-info
+	
+	get podes:
+		displays the pods in the cluster.
+	get nodes
+
+	Ha egy "lekérdezésben" nem akarjuk látni a címsort:
+		kubectl get nodes --no-headers | wc -l  És a sorokat is megszámolja: wordcount line
+	 
+
+	kubectl run(issue) --help
+
+	Shortcuts/aliases:
+		po	POD
+		rs	ResplicaSets
+		deploy	Deployments
+		svc	Services
+		ns	Namespaces
+		netpol	Newtork policies
+		pv	Persistent Volumes
+		pvc 	PersistentVolumeClaims
+		sa	service accounts
+		cm	configmap
+		rc	replicationcontroller
+		ds	demonset
+		sts	statefulset
+		cj	cronjob
+		alias k = kubectl
+		
+
+	Create vs Apply:
+		Create: új objemtumokra
+		Apply: létrehozásra ÉS updatere:
+			Hogy egy objektum elpusztul-e és újonnan létrejön az új attribútumok mentén, az az attribútum típusától függ.
+
+A Kubernetes-ben (K8s) az alkalmazásokat konfigurálni lehet különböző fájltípusok (kind) és imperatív utasítások segítségével. 
+	Ezekből K8s objektumok jönnek létre.
+
+
+	kirakni fileba egy objektumot:
+		kubectl get deployment <deployment name> -o yaml > filename.yaml
+
+	A Kubernetes konfiguráció alapvető fájltípusai a következők:
+
+
+	Node:
+		kubectl get nodes
+
+
+	Pod: A Pod egy vagy több konténert tartalmazó alapvető egység a Kubernetes-ben.
+		
+		A Podokat a Kubernetes API segítségével YAML fájlokban lehet definiálni. 
+		
+		Ezek a fájlok tartalmazzák a Pod specifikációját, beleértve a konténerek leírását, a hálózati beállításokat, a környezeti változókat és egyebeket.
+		Minden podnak saját belső hálózata van.		
+
+
+		Create a pod by line in a finance namespace:
+			kubectl run redis(this is the pod name) --image=redis -n=finance
+
+		Pod létrehozása: Új Pod létrehozása egy YAML fájl alapján:
+			kubectl create -f <pod-definition.yaml>
+
+		Hajtsd meg az öszes file-t a mappában create commanddal:
+			kubectl create -f .		
+
+		Összes Pod listázása: Az összes Pod listázása a klaszteren:
+			kubectl get pods
+			kubectl get pods --watch	//monitorozza az állapotaikat  -w
+			kubectl get pods -o wide	//Additional info like IP, NODE, ...
+
+		Egy adott Pod részleteinek megtekintése: Egy adott Pod részletes információinak lekérdezése:
+			kubectl describe pod <pod-name>
+
+		Podok logjainak megtekintése: A Pod logjainak megjelenítése:
+			kubectl logs <pod-name>
+
+		Pod belépés: Belépés egy Pod konténerébe interaktív módban:
+			kubectl exec -it <pod-name> -- /bin/bash
+
+		Pod törlése: Egy adott Pod törlése a klaszterből:
+			kubectl delete pod <pod-name>
+	
+
+		Podok törlése:
+			kubectl delete pod --all
+
+		Pod update: 
+			kubectl apply -f <pod-definition.yaml>
+			kubectl edit pod <pod-name> 
+				Only the properties listed below are editable:
+
+					spec.containers[*].image
+
+					spec.initContainers[*].image
+
+					spec.activeDeadlineSeconds
+
+					spec.tolerations
+
+					spec.terminationGracePeriodSeconds
+
+			Ilyenkor ha olyan attribútumot updatelünk, ami nem a fennt felsoroltak közé tartozik, akkor a file a /tmp folder alatt jön létre
+				kubectl replace --force -f /tmp/edited-file.yaml
+				Ez törli és recreateli a podot.
+
+				Vagy:
+					Kiiratjuk az objektumot egy file-ba:
+						kubectl get pod <podname> - o yaml > myFile.yaml
+
+					És kitöröljök az eredeti podot:
+						kubectl delete pod <podname>
+
+					Majd módosítjuk a kimentett filet és elindítjuk:
+						kubectl apply -f myFile.yaml	
+							
+			kubectl set image deployment/my-deployment my-container=my-image:new-tag --namespace my-namespace
+				//This command updates the container image for my-container in the my-deployment deployment to my-image:new-tag.
+
+	Deployment YAML fájl: A Deployment egy Kubernetes erőforrás, amely lehetővé teszi az alkalmazások folyamatos működését és skálázását. 
+	A Deployment YAML fájlokban határozzák meg, amelyek tartalmazzák a Deployment specifikációját, például a replikák számát, a konténerek leírását, a frissítési stratégiát stb.
+		
+		Mindig amikor egy deployment létrejön v updatelődik létrejön egy új rollout.
+			A rollout meg az a processz, amikor létrehozzuk az új konténereket.
+		Amikor egy rollout létrejön, az új deployment revision is létrejön.
+			Ha azt akarjuk h ennek a deploymentnek legyen logja, akkor be kell állítani a revision record-ot:
+				kubectl create -f <deployment-filename> --record
+
+		Deploymentek listázása:
+			kubectl get deploy		
+
+		Deploymentek és servicek listázása egyben:
+			kubectl get deploy, svc
+
+		Deployment létrehozása: Új Deployment létrehozása egy YAML fájl alapján:
+			kubectl create -f <deployment-definition.yaml>
+			kubectl apply -f <deployment-definition.yaml>
+			kubectl create deploy myDeployment --image=nginx --replicas=3
+
+		Összes Deployment listázása: Az összes Deployment listázása a klaszteren:
+			kubectl get deployments
+
+		Egy adott Deployment részleteinek megtekintése: Egy adott Deployment részletes információinak lekérdezése:
+			kubectl describe deploy <deployment-name>
+
+		Deployment frissítése: Egy Deployment frissítése egy új verzióra:
+			kubectl set image deployment/<deployment-name> <container-name>=<new-image>
+
+		Deployment skálázása: A Deployment skálázása, azaz a replikák számának módosítása (ilyenkor maga a file is módosul és bekerül a deployment eventjei közé a log):
+			kubectl scale deployment <deployment-name> --replicas=<num-replicas>
+
+		Deployment törlése: Egy adott Deployment törlése a klaszterből:
+			kubectl delete deployment <deployment-name>
+
+		Editálása:
+			kubectl edit deployment deploymentName
+	
+		Change image (gyorsba, ha nem akarom megnyitni magát a deployment file-t módosításra. De bele fog kerülni az új verzió a deployments fileba):
+			kubectl set image deploy <deployment-name> <container-name> <image>
+			kubectl set image deploy frontend simple-webapp=new-image 		//Azért kell megadni, mert egy deploymentben több container is lehet. 
+
+		Get status of the rollout:
+			kubectl	rollout status <deployment-name>
+
+		To see the history(the revisions):
+			kubect rollout history <deployment-name>
+
+ 		Rollback:
+			kubectl rollout undo <deployment-name>		
+
+	Service: A Service egy Kubernetes erőforrás, amely lehetővé teszi a belső hálózati elérés biztosítását a Podokhoz. 
+		Lehetővé teszi a kommunikációt különböző komponensek között az alkalmazáson belül és az alkalmazáson kívűl
+		Lehetővé teszi hogy appokat kössünk össze egymással és usereket appokkal.
+		A svc-ek segítségével tudjuk megvalósítani a loose coupling-ot a microservice-eink között.
+		Alapvető cél hogy a podokat csoportokba szervezve (selector[defined in the service]->label[defined in the pod]),
+			 közös interfészt képezzen és podok ezeken kereszetűl kommunkáljanak, nem tudva egymás statikus címét.
+			 Elég a ClusterIp címe, vagy a neve service-nek.
+
+		Service típusok:
+			NodePort:
+				A service lehetővé teszi egy belső(node-on belüli) port elérhetőségét a node-on (kiajánlja).
+					3 portot különböztetünk meg ez ezestben:
+						TargetPort:
+							A pod portja, a végső cél, amit el szeretnénk érni.
+						ServicePort:
+							Gyakorlatilag egy virtuális szerver és az ő portja.
+						NodePort:
+
+			ClusterIP:
+				A service létrehoz egy Virtuális IP-t a clusteren belül, hogy ezen keresztül tudjanak kommunkálni különböző servicek. 
+
+			LoadBalancer:
+				Terheléseloszlás	
+
+	A Service YAML fájlokban definiálhatók, és tartalmazhatják a szolgáltatás specifikációját, például a szolgáltatás típusát (ClusterIP, NodePort, LoadBalancer), a célportot, a címkelemekeket stb.
+
+		Az összes szolgáltatás listázása a default namespace-ben:
+			kubectl get services
+			kubectl get svc
+
+		Az összes ns listázása:
+			kubectl get ns
+
+		Az összes pod listázása egy adott ns -ben:
+			kubectl get pods -n elastic-stack
+
+		Az összes szolgáltatás listázása minden namespace-ben:
+			kubectl get services --all-namespaces
+			kubectl get svc --all-namespaces
+
+		Egy adott szolgáltatás részleteinek megtekintése:
+			kubectl describe service <service-name>
+
+		Szolgáltatás létrehozása YAML fájl alapján:
+			kubectl apply -f <service-definition.yaml>
+
+		Egyszerű ClusterIP szolgáltatás létrehozása parancssorból:	
+			kubectl expose deployment <deployment-name> --type=ClusterIP --port=80 --target-port=8080
+
+		Szolgáltatás frissítése YAML fájl alapján:
+			kubectl apply -f <updated-service-definition.yaml>
+
+		Egy adott szolgáltatás törlése:
+			kubectl delete service <service-name>
+
+		Szolgáltatás törlése YAML fájl alapján:
+			kubectl delete -f <service-definition.yaml>
+
+		Egy adott szolgáltatáshoz tartozó endpointok megtekintése:
+			kubectl get endpoints <service-name>
+
+		NodePort Szolgáltatás Létrehozása:
+			kubectl expose deployment <deployment-name> --type=NodePort --port=80 --target-port=8080
+
+		LoadBalancer Szolgáltatás Létrehozása:
+			kubectl expose deployment <deployment-name> --type=LoadBalancer --port=80 --target-port=8080
+
+
+	Ingress: A dns proxy server és a NodePort service között áll. Erre kell rámutatnia a prxy server-nek, ez meg tovább irányít a NodePortra.
+		ByDefault nincs Ingress Controllere a k8s-nek, nekünk kell deployolni (ilyenek lehetnek: NGinx, traefik, Istio, HAProxy, Contour, ...)
+			5 dologra van szükségünk:
+				Deployment:
+					Beletesszük mondjuk a speciális NGINX-et egy podba:
+						apiVersion: extensions/v1beta1
+						kind: Deployment
+				
+				ConfigMap:
+					Hozzácsatolhassunk egy konfigurációs file-t az Nginx-hez
+
+				Service:
+					Szükség van egy service-re, ami kiadja az IngressControllert az internetre
+				
+				ServiceAccount:
+					Hogy az IngressController saját jogkörrel rendelkezzen
+
+				Ingress Resource:
+					Szabályok és konfigurációk gyűjteménye, amik definiálják hogy egy Ingress Controller hogyan:
+						- traffic forwarding
+						- route by URL
+						- by domain name
+					definition file:
+						apiVersion: extensions/v1beta1
+						kind: Ingress
+						metadata:
+							name:
+						spec:
+
+	ReplicaSet:
+		Ez egy halmaz, ami podokat tartalmaz. 
+
+		//A Replication Controllerrel nem tudunk már meglévő podokat monitorozni.
+		
+		kubectl create -f replicaset.defintion.yaml
+
+		kubectl get replicaset
+		kubectl get rs
+
+		kubectl delete replicaset myapp-replicaset //A podokat is törli
+
+		Felül akarjuk definiálni a replicasetet > bemegyünk a fileba és áírtjuk, majd aktualizáljuk:
+			kubectl replace -f replicaset-definition.yml
+	
+		Ha a scale-lel aktualizájuk, nem updatelődik maga a defintion file:	
+			kubectl scale --replicas=6 -f replicaset-definition.yml
+			kubectl scale rs new-replica-set --replicas=5
+	
+		A replicaset-ben 3 helyen is szereplhet label, mind a 3 helyen mást jelent.
+			Első magánara a replica-set-nek a label-je, 
+			A második:
+				spec:
+					matchLabels:  //Hogy kiket gyűtjsön össze
+			A harmadik:
+				spec:
+					template:
+						metadata:
+							labels:  //A létrehozandó konténerek labeljei, akiket elkap a matchLabels
+	
+	Job: 		
+		apiVersion: batch/v1 
+		kind: Job 
+		metadata: 
+		  name: throw-dice-job 
+		spec: 
+		  completions: 3 
+		  parallelism: 3  Egyszerre 3 szálon futtassa 
+		  backoffLimit: 35 # This is so the job does not quit before it succeeds. 
+		  template: 
+		    spec: 
+		      containers: 
+		      - name: throw-dice 
+			image: kodekloud/throw-dice 
+		      restartPolicy: Never 
+
+
+	CronJob (Egy sima Job egy Cron wrapperben) (Összesen 3 spec van: egy a Cron-nak, egy a Job-nak, egy a Container-nek):
+		apiVersion: batch/v1
+		kind: CronJob
+		metadata:
+			name: reporting-cron-job
+		spec:
+			schedule: "*/1 * * * *"		#minute hour day month dayOfTheWeek
+			jobTemplate:
+				spec:
+					completions: 3
+					parallelism: 3
+					template:
+						spec:
+							containers:
+								-name: reporting-tool
+							 	 image: reporting-tool
+							restartPolicy: Never
+	Namespace:
+		kubectl get ns
+		
+		kubectl create namespace dev
+		kubectl create -f namespace-dev.yaml
+
+		kubectl get pods --namespace=prod
+		kubectl get pods -n=prod
+
+		kubectl get svc -n=marketing
+
+		kubectl config set-context $(kubectl config current-context) --namespace=dev
+
+		kubectl get pods --all-namespaces
+		kubectl get pods -A
+
+
+	Imperatív utasítások:
+
+		Deploy a pod named nginx-pod using the nginx:alpine image :
+			kubectl run nginx-pod --image=nginx:alpine		
+
+		Deploy a redis pod using the redis:alpine image with the labels set to tier=db :
+			kubectl run redis --image=redis:alpine -l='tier=db'
+
+		Create a service redis-service to expose the redis application within the cluster on port 6379 :
+			A redis pod már létezik, és egy service-t kell rárakni:
+				kubectl expose pod redis --port 6379 --name redis-service
+			
+		Create a deployment named webapp using the image kodekloud/webapp-color with 3 replicas :
+			kubectl create deploy webapp --image=kodekloud/webapp-color --replicas=3	
+
+		Create a new pod called custom-nginx using the nginx image and run it on container port 8080 :
+			kubectl run custom-nginx --image=nginx --port=8080
+
+		Create a new namespace called dev-ns :
+			kubectl create ns dev-ns
+
+		Create a new deployment called redis-deploy in the dev-ns namespace with the redis image. It should have 2 replicas :
+			 kubectl create deploy redis-deploy --image=redis --replicas=2 -n=dev-ns
+
+		Create a pod called httpd using the image httpd:alpine in the default namespace.Next,create a service of type ClusterIP by the same name (httpd).The target port for the service should be 80 :
+			kubectl run httpd --image=httpd:alpine --port=80 --expose
+
+		Dry run: print the corresponding API objects without creating them
+			kubectl run nginx --image=nginx --dry-run=client 
+			kubectl run nginx --image=nginx --dry-run=client -o yaml > myFile.yaml	//hasznos egy séma létrehozásához és konfiguráláshoz.
+
+		Create a Job using an imperative command and write into a file:
+			kubectl create job throw-dice-job --image=kodekloud/throw-dice --dry-run=client -o yaml  > throw-dice-job.yaml
+
+	ConnfigMaps (env variable-k kiszervezésére):
+		kubectl create configmap <name> --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=yellow  // --from-literal lehet ez egy kötelező elem
+			Imperatív style (commandline):
+			Deklaratív style (file)	
+
+		kubectl get configmaps
+		kubectl  describe  configmaps
+		kubectl  describe  cm <configmap>
+
+
+	Secrets szenzitív adatok tárolására(Secrets ARE NOT ENCRYPTED, ONLY ENCODED!!!):
+		kubectl get secret
+		
+		kubectl create secret generic mysecret --from-literal=key1=valami 	//A generic valamiért kell
+	
+		Igy lehet kiiratni a tartalmát:
+			kubectl get secret mysecret -o yaml
+			Igy pedig visszafejteni:
+				echo "randomString" | base64 --decode	
+
+
+	Resources:
+
+		Resource Request:
+			Ennyi Ram vagy CPU szükséges h egyáltalán elinduljon a POD.
+
+		Resource Limit:
+			Ennél tönn CPU-t, vagy RAM-ot nem használhat a POD.		
+
+			Ezen objektum a LimitRange:
+
+				kind:LimitRange
+		
+		Egy applikáció resource limitje, a node-okon átívelő Resource Quota, ami namespace-ekhez kötődik.
+			kind: ReqourceQuota
+
+
+	A cm és secrets saját template-t használnak:
+		apiVersion:v1
+	        kind: Secret or ConfigMap
+		metadate:
+			name: myName
+		data:
+			city: myCity
+			state: my State
+
+
+
+
+Ingress YAML fájl: Az Ingress egy Kubernetes erőforrás, amely külső hozzáférést biztosít a szolgáltatásokhoz a klaszteren belül. 
+Az Ingress YAML fájlokban definiálhatók, és tartalmazhatják az Ingress specifikációját, például az útvonalakat, a szolgáltatásokhoz való irányítást, a TLS beállításokat stb.
+
+Ezenkívül számos más Kubernetes erőforrás van, amelyekkel az alkalmazások konfigurálhatók és kezelhetők, például ConfigMap, Secret, StatefulSet stb. 
+A fenti fájltípusok segítségével lehetőség van az alkalmazások részletes konfigurálására és azok viselkedésének irányítására a Kubernetes környezetben.
+
+
+Az endpointok a servicek által megtalált podok ipcímei
+
+
+expose-olt port megtalálása service alapján:
+	minikube service <service-name> --url
+
+//Docker containerek függvény futtatás az ENTRYPOINT-ban, paraméterek átadása a CMD-ben történik.
+	A pod-definition.yaml
+		spec:
+			containers:
+				-command:["myFgvNév"]		//->ez az ENTRYPOINT
+				-args:["myParam"]		//->ez a CMD a docker image-ben
+
+
+		apiVersion: v1 
+		kind: Pod 
+		metadata:
+		  name: ubuntu-sleeper-2 
+		spec:
+		  containers:
+		  - name: ubuntu
+		    image: ubuntu
+		    command:					//Vagy igy: command: ["sleep", "5000"]   (command is always an array )  //Vagy igy:  command: ["sleep"]
+		      - "sleep"															     args: ["5000"]	
+		      - "5000"
+
+
+
+To run a command in a container:
+	kubectl exec <podname> -- command  		// igen, van egy space a -- után, ez azt jelzi h nem az eredei parancsnak egy paramétere, hanem a containerben futó utasítás következik 
+
+
+
+
+Security:
+		Accounts:
+			User:
+				Admin
+				Developer
+			Servive:
+				For machines
+					Prometheus: monitoring application
+					Jenkins: Automated build tool
+
+
+
+
+		kubectl create serviceaccount dashboard-sa 		
+			Ilyenkor nem csak az SA object, hanem egy token is létrejön, ami egy SecretObjectbe kerül. 
+			Ez a SecretObject van hozzálinke ServiceAccounthoz
+			1.22- óta ez már nem így működik, jobban utána kell nézni, 58-as videó. A lényeg h már van expiry date-je a tokeneknek
+	
+		kubectl get sa
+		
+
+		Change the deployment's service account to a new one:
+			kubectl set serviceaccount deploy/web-dashboard dashboard-sa			//A deploy itt az h a deploymentek közt keresse a web-dashboard-ot és csatolja hozzá a dashboard-sa t.
+
+
+
+	Secret(Object -ami a tokent tárolja):
+		kubectl describe secret dashboard-sa-token-kbbdm  (authentication bearer token)  //Szóval amikor k8s API-thívjuk, ezt átadhatjuk a header-ben, mint "Authorization: Bearer <token>"	
+
+
+	Token:
+		kubectl create token dashboard-sa
+
+		
+
+ServiceAccount:
+	Minden namespace-ben van egy default sa
+	
+
+
+Taints and Toleration:
+
+	A Taint a "fertőzöttség" a node-on, a Tolerance a védekezőképesség a fertőzöttség ellen a pod-on. 
+	Ez egy deployment use-case:
+		A Node-ot "megfertőzzük és csak azokat a pod-okat rakhatjuk bele, amelyek ellenállóak.
+	
+		Taintek típusai (tain-effect):
+			NoSchedule:
+				Nem tehet bele pod-ot a scheduler
+			
+			PreferNoSchedule:
+				Inkább ne tegyen bele, de nem garantált
+
+			NoExecute:
+				Nem tehet bele, és akik már benne vannak azok közül kerüljenek ki, akik ezt nem tolerálják.
+
+
+			kubectl taint nodes <nodename> key=value:taint-effect
+			kubectl taint nodes node1 color=blue:NoSchedule
+			
+			Ha le akarjuk szedni a taintet, akkor adjuk ki ugyanazt a parancsot, amivel rátettük, csak tegyünk a végére egy "-" -t:
+				kubectl taint nodes node1 color=blue:NoSchedule-
+			A toleration-t a pod-ba rakjuk:
+				spec:
+					tolerations:
+						- key:"color"
+					   	  operator:"Equal"  //Mert "=" szerepel a color és a blue között
+						  value: "blue"
+						  effect: "NoSchedule"
+
+	Tehát a stratégia az h nem mi delegáljuk a po-okat a node-okhoz, hanem a scheduler, mi csak megmondjuk h mely node-ok mit fogadhatnak el.
+	//A Master node-ba nem pakol podokat a scheduler by default.
+
+	A tolerations attribútum nem a containerre, hanem a pod-ra vonatkozik, vigyázzunk az indentation-nel! Tehát a spec gyermeke, a container testvére.
+	
+
+Node Selector:
+	
+	Ez a taint "ellentéte", itt direktbe megadhatjuk h mely node-ba kerüljenek a pod-ok.
+
+		A címkék limitáltak
+		Először fel kell címkézni a node-ot:
+			kubectl label nodes <node-name> label-key=labe-value
+			kubectl label nodes myNode size=large
+
+		Utána meg a pod specbe:
+			nodeSelector:
+				size: Large
+
+
+Node Affinity: 
+
+	A Selectorok kifinomultabb fajtái, itt logikai kifejezéseket is meg lehet adni:
+		 
+
+
+Logs (of a pod): 
+
+	//Már a kubectl get pods STATUS-a is hasznos lehet
+
+	kubectl logs <pod-name>
+	kubectl logs -f <pod-name> // trailing logs
+	kubectl logs <pod-name> <container-name> // Ha egy podban több konténer is van, akkor egyértelműsíteni kell h melyik konténer logjait akarjuk olvasni.
+	
+	
+
+	kubectl -n elastic-stack logs kibana	 //Itt a -n a namespace az elastick-stack
+	ugyanaz, mint:
+	kubectl logs app -n elastic-stack	 //Annyi, hogy a log és a ns meg van cserélve	
+	De úgy is elkérhetjük a logokat, ha belépünk a koncénerbe és annak a filerendszeréről kiíratjuk (mannual way):
+		kubectl -n <name-of-namespace> exec -it <pod-name> -- cat /log/app.log
+
+	
+
+Multi container PODs:
+
+	Több KÜLÖNBÖZŐ container is lehet egy podban.
+
+	A containereknek lehetnek funkcionális típusai:
+
+
+	Lehet elindításuk közt sorrrendet felállítani (~dependencia): 
+
+		a podban az initContainers: array alá kell tenni őket, és deklarálási sorrend szerint jönnek létre, majd a sima kontérek következnek.
+			Ha az egyik init kontainer pendinggel, az megakasztja a többit, ez egy queue.
+
+		
+
+Container LifeCycle:
+	Pending: 
+		The Scheduler tries to find out which pod is available, where to place the container
+
+	ContainerCreating:
+		Pulls the image
+
+	Running
+
+
+
+
+POD Conditions (true/false) (fentről halad lefelé, ha true):
+	PodScheduled
+	Initialized
+	ContainersReady
+	Ready		//Itt lehet szofisztikáltan definiálni h mikor is áll készen a pod. Pl: Ha már maga az alkalmazások is felálltak a kontéren belül.
+		Ez az adott container-re vonatkozó readinessProbe
+			By default 3szor fut meg a probe, ezt ki lehet tolni: 
+				failureThreshold:8
+
+			El lehet tolni időben:
+				initialDelaySeconds
+
+			Mennyit várjon a próbálkozások között:
+				periodSeconds
+
+		Van pár készre sütött probe:
+			Socketekre:
+				readinessProbe:
+					tcpSocket:
+						port: 3306
+
+			HTTP-re:
+				readinessProbe:
+					httpGet:
+						path: /api/ready
+						port: 8080
+
+
+	Liveness (miután az applikáció felállt, csekkoljuk h kívánalmainknak megfelelően funkcionál-e):
+		
+		containers:
+			-name: random
+			-image: random
+			 livenessProbe: 
+				httpGet:
+					path: /api/healthy
+					port: 8080
+
+
+Labels, Seclector and Annotations (az objektumok filterezésére):
+
+	kubectl get pods --selector key=value
+
+
+	Annotations: While labels and selectors are used to group and select objects, annotations are used to record other details for informatory purpose.
+
+	How many PODs are in the finance business unit (bu)?
+		kubectl get pods --selector bu=finance --no-headers | wc -l
+
+
+	How many objects are in the prod environment including PODs, ReplicaSets and any other objects?
+		kubectl get all --selector env=prod --no-headers | wc -l // Itt a kulcs az "all" amivel minden típusból le tudunk kérni.
+
+	Identify the POD which is part of the prod environment, the finance BU and of frontend tier?
+		kubectl get pod --selector env=prod,bu=finance,tier=frontend 	//A labelek között nem szabad h legyen szóköz!	
+
+
+
+Deployment:
+
+	kubectl get rs
+
+	Strategies:
+		Recreate: Delete all, create new ones
+			Warning: Application downtime
+
+
+		Rolling Update (default): Egyet podot leszedünk, egyet elkészítünk, amíg mind új nem lesz.
+
+
+	Az új containerek egy új replicaset-be kerülnek a háttérben, ezért könnyű visszállni az előző verzióra:
+		kubectl rollout undo <deployment-name>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

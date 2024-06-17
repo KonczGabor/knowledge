@@ -12,28 +12,37 @@ SQS:
 		Delivery Types:
 			Standard: 
 				Garantálja h Legalább egyszer mergérkezik, néha több másolat is létrejöhet belőle.
-				A Sorrend nem garantált
-				"Unlimited" átfolyás
+				A Sorrend nem garantált, de igyekszik megtartani.
+				"Unlimited" átfolyás: bármennyi message-et be lehet tolni a q-ba, az egyetlen megkötés h egyszerre max kb. 120 ezren dolgozhat a consumer.
 			
 			FIFO:
 				Batchelve 3,000MPS
 					Anélkül 300
-				Garantálja h Biztosan csak egyszer lesz feldolgozva
+				Garantálja h Biztosan CSAK egyszer lesz feldolgozva.
 				A sorrend szigorúan tartott.
 				A queue neve csak .fifo-ra végződhet.
 				
 			Mindkettőt lehet titkosítani MKS-sel.	
 				
 		Dead Letter Queue: 
-			Azon üzenetek sora, amiket addott próbálkozás szám szerint senki sem tudott feldolgozni
-			Debuggolásnál hasznos.
+			Azon üzenetek sora, amiket addott próbálkozás szám szerint senki sem tudott feldolgozni. Ez egy teljesen más önálló entitás és más Q-k is használhatják.
+			A problémás ünezetek izolálására szolgál. Debuggolásnál hasznos.
+			
+		Delay queues let you postpone the delivery of new messages to a queue for several seconds, for example, when your consumer application needs additional time to process messages. 
+		If you create a delay queue, any messages that you send to the queue remain invisible to consumers for the duration of the delay period. 
+		The default (minimum) delay for a queue is 0 seconds. The maximum is 15 minutes.
 		
-		Visibility Timeout:
+		Maga ilyen struktúra, mint "Delay queue" nem létezik, azáltal lesz valami az, h egy Standard, vagy FIFO q-nak megadjuk h eleve ha ráérkezik egy messege az mennyi ideig legyen láthatatlan,
+			tehát delayed.
+				$ aws sqs create-queue --queue-name YourQueueName --attributes DelaySeconds=10
+
+		
+		Visibility Timeout (egy időben történp kizárólsagos feldolgozás):
 			Akkor kezdődik, amikor az előző message-t kivettük(Pull strategy) a sorból.
 			A Consumernek kell processzálnia és törölni a Timeout időablakon belül.
 			Ha nem törli ki, akkor újra ő lesz az aktuális.
 			A Consumer extendálhatja az időablakot, ha még midnig processzál.
-			Ha egy Consumer egy adott időablakon belül nem tudja feldolgozni(nem muszáj) és törölni, akkor egy másik Consumer még elérheti.
+			Ha egy Consumer egy adott időablakon belül nem tudja feldolgozni(nem muszáj) és törölni, akkor egy másik Consumer még elérheti később.
 			Alapból 30 másodperc. 
 				Range: 0 sec - 12 h.
 			

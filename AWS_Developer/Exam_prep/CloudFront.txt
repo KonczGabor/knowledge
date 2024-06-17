@@ -72,6 +72,9 @@ AZ EL-ek és az AWS resourceok (S3 pl) a kapcsolat Private AWS
 		‣ Signed URL = access to individual files (one signed URL per file)
 		‣ Signed Cookies = access to multiple files (one signed cookie for many files)
 		
+		Signed URLs take precedence over signed cookies. If you use both signed URLs and signed cookies to control access to the same files and a viewer uses a signed URL to request a file, 
+		CloudFront determines whether to return the file to the viewer based only on the signed URL.
+		
 		Attach Policy:
 			‣ Includes URL expiration
 			‣ Includes IP ranges to access the data from
@@ -82,7 +85,7 @@ AZ EL-ek és az AWS resourceok (S3 pl) a kapcsolat Private AWS
 	
 		CloudFront Signed URL:
 			‣ Allow access to a path, no matter the origin
-			‣ Account wide key-pair, only the root can manage it
+			‣ Account wide key-pair, only the root can manage it!
 			‣ Can filter by IP, path, date, expiration
 			‣ Can leverage caching features
 	
@@ -122,12 +125,15 @@ AZ EL-ek és az AWS resourceok (S3 pl) a kapcsolat Private AWS
 	• Field Level Encryption:
 		Már az Edge Location-re kiteszünk public key-eket, amik sensitive információkat (fieldeket) eltitkosítanak, és csak backenden fordítjuk vissza a private key-jel.
 	
-	• HTTPS kapcsolatot ki tudunk eszközölni a Client és a CloudForont, illetve a CloudFront és Backend között is.
+	• HTTPS kapcsolatot ki tudunk eszközölni a Client és a CloudFront, illetve a CloudFront és Backend között is.
 	
 	
 	
 	
-	
+When you use the root user to manage CloudFront key pairs, you can only have up to two active CloudFront key pairs per AWS account.
+
+Whereas, with CloudFront key groups, you can associate a higher number of public keys with your CloudFront distribution, giving you more flexibility in how you use and manage the public keys.
+By default, you can associate up to four key groups with a single distribution, and you can have up to five public keys in a key group.	
 	
 	
 	

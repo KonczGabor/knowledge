@@ -3,7 +3,8 @@ Immutable deployments:
 	perform an immutable update to launch a full set of new instances running the new version of the application in a separate Auto Scaling group, alongside the instances running the old version. 
 	Immutable deployments can prevent issues caused by partially completed rolling deployments.
 	
-	
+All-at-once: Itt az új verzió kitelepítése az immutable-lel ellentétben helyben történik.
+	Bár ez a leggyorsabb deployment strategy, a userek egy ideig nem fogják tudni elérni a szolgáltatást.
 	
 	
 Traffic-splitting deployments:

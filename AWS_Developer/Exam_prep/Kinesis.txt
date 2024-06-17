@@ -1,18 +1,23 @@
 Kinesis: (A az Apache Kafka alternatívája)
- 	Valós idejú adat(video, adat stream) gyűjtő, feldolgozó, transzformáló és analizáló(machine learning) service brutál sávszéllel, valós időben (on-the-fly).
+ 	Valós idejú adat(video, adat stream) gyűjtő, feldolgozó, transzformáló, tároló (alapból 24h, max 365 nap) és analizáló(machine learning) service brutál sávszéllel, valós időben (on-the-fly).
 	Store, encrypt, index data
 	Serverless
 	Csak FIFO
-	Nem ingyenes, de csak annyit fizetünk amennnyit használjuk.
+	Nem ingyenes, de csak annyit fizetünk amennyit használjuk.
 	Shard: Egyértelműen azonosított adatok sorozata(sequence) egy streamen. Gyakorlatilag az adatfolyam egy blokkja.
 		Egy vagy több shard alkot egy stream-et
+		
 	Maximum Read:
 		1MB/sec
 	Maximum Write:
 		2MB/sec		
+		
+	Enhanced fan-out: Opcioális feature a Data Stream-el számára, ami 2MB/sec átviteli sebességet biztosít a consumerek és a shardok közt. Ezzel a párhuzomos feldolgozást tudjuk növelni.	
+		
 	Partition key:
 		Ez a kulcs határozza meg h mely adatok tartoznak egy shardba
-	one mebibyte limit	
+		one mebibyte limit	
+	
 	These particular use cases all came from there's an Amazon frequently asked questions, document that talks about Kinesis versus SQS. 
 	And these are some of the examples that they gave. So Kinesis give you FIFO order of data that is received, and if you want to maintain the order of log files, Kinesis is the way to go. 
 	SQS FIFO could do it as well, now. Next up, ability for multiple applications to consume the same stream concurrently. 
@@ -30,6 +35,9 @@ Kinesis: (A az Apache Kafka alternatívája)
 	The Amazon Kinesis Client Library (KCL) delivers all records for a given partition key to the same record processor, making it easier to build multiple applications 
 	reading from the same Amazon Kinesis data stream (for example, to perform counting, aggregation, and filtering).
 	
+	The capacity limits of an Amazon Kinesis data stream are defined by the number of shards within the data stream. 
+	The limits can be exceeded by either data throughput or the number of PUT records. 
+	While the capacity limits are exceeded, the put data call will be rejected with a ProvisionedThroughputExceeded exception.
 
 	SQS és Kinesis közt az a különbség h Kinesis esetén garantált h a feldolgozó mindig ugyanaz az adott Consumer lesz.
 	Kinesis ugyanazt a producert tudja concurrent processzálni. SQS FIFO szerint a Visibility Timeout kizárólagosságot biztosít egy comsumer számára.
@@ -113,6 +121,18 @@ MSK: (Managed Service Kafka)
 
 	
 
+The AWS Kinesis Agent:
+	is a standalone Java software application that offers an efficient and reliable way to load data into AWS Kinesis services, including Kinesis Streams, Kinesis Firehose, and Kinesis Analytics. 
+	It is designed to simplify the process of collecting, processing, and streaming data in real time. 
+	
+	Data Collection: Kinesis Agent can monitor log files and automatically load new data as it's written to the logs. 
+	It's commonly used to collect data like web server logs, application logs, and other time-variant data.
+
+	Data Processing: Before sending data to AWS Kinesis, the agent can preprocess the data. 
+	This preprocessing can include tasks like adding metadata, transforming formats, filtering, and appending newline characters if necessary.
+
+	Data Streaming: After processing, the agent streams this data to the configured AWS Kinesis service. 
+	This real-time streaming capability is crucial for applications that require immediate data processing and analysis.
 
 
 

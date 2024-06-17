@@ -27,10 +27,22 @@ SSE-KMS:
 	
 	
 	
+Secret Manager:
+		
+	enables you to easily rotate, manage, and retrieve database credentials, API keys, and other secrets throughout their lifecycle. 
+	Users and applications retrieve secrets with a call to Secrets Manager APIs, eliminating the need to hardcode sensitive information in plain text. 
+	Secrets Manager offers secret rotation with built-in integration for Amazon RDS, Amazon Redshift, and Amazon DocumentDB.
 	
 	
-	
-	
+SSM Parameter Store - AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. 
+	You can store data such as passwords, database strings, and license codes as parameter values. SSM Parameter Store cannot be used to automatically rotate the database credentials.
+
+Systems Manager - gives you visibility and control of your infrastructure on AWS. 
+	Systems Manager provides a unified user interface so you can view operational data from multiple AWS services and allows you to automate operational tasks across your AWS resources. 
+	Systems Manager cannot be used to store your secrets securely and automatically rotate the database credentials.
+
+	KMS - AWS Key Management Service (KMS) makes it easy for you to create and manage cryptographic keys and control their use across a wide range of AWS services and in your applications. 
+	KMS cannot be used to store your secrets securely and automatically rotate the database credentials.	
 	
 	
 	

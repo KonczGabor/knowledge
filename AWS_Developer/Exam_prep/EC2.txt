@@ -1,4 +1,6 @@
 EC2: Elastic Compute Cloud: Run and manage Virtual Servers. Elastic Virtual Servers in the Cloud.
+	Az adatok alapból EBS-en tárolódnak. //Az EBS és az EFS Network-attached, míg az Instance Store hardware-attached.
+	
 	
 	Scaling:
 		Vertical: Minőség (általában adatbázisok méretnövelése miatt)
@@ -19,6 +21,7 @@ EC2: Elastic Compute Cloud: Run and manage Virtual Servers. Elastic Virtual Serv
 			Csak a deltát, a többletet kell hozzáadni az újhoz.	
 				
 	Pricing:
+		Az után fizetünk h hány másodpercig futott a példány.
 		Region-ként	
 		Nem minden Régió egyenlő költségű			
 	
@@ -67,7 +70,7 @@ EC2: Elastic Compute Cloud: Run and manage Virtual Servers. Elastic Virtual Serv
 				
 		Dedicated Hosts: book an entire PHYSICAL server, control instance placement.
 			3 year preiod reservation
-			BYOL: Bring Your Own License
+			BYOL: Bring Your Own License. Az adott hardwarre van konfigurálva a szokftver, vagy fordítva. Ez költségmegtakarítást eredményez.
 			Per host billing
 			
 		Dedicated instances: Soft version of Dedicated Hosts
@@ -84,7 +87,9 @@ Burst Balance:
 			
 			
 			
-			
+	EC2 (Local)Instance Store: Az EC2 virtuális gép megkapja a annak a vasnak a hard drive-ját, amin fut	
+		Legjobb I/O
+		Elveszíti az allapotát ha leállítjuk (ephemeral)		
 			
 			
 			

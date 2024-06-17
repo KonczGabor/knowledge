@@ -43,6 +43,10 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 				other.example.com
 			Cross load balancing between AZ is always enabled
 				Maga subneteket kell kiválasztani az Availability Zone-okokn belül.
+				Regiók között deployolt EC2-ket nem lát. 
+				
+			Csak 1 Regióban működik.
+				
 			Tud SNI-t: Server Name Indication
 			Target grouppok közt is tud iránítani:
 			
@@ -58,6 +62,16 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 			Amit nem tud: Client's location (Geography) 			
 				
 			Ha nem regisztrálunk be egyetlen targetet sem az Application Load Balancer Target groupjába, akkor 503-Service unavailable-t kapunk vissza.
+			
+			Separate public traffic from private traffic - The nodes of an internet-facing load balancer have public IP addresses. 
+			Load balancers route requests to your targets using private IP addresses. Therefore, your targets do not need public IP addresses to receive requests from users over the internet.
+			The Load Balancer communicates with the underlying EC2 instances using their private IPs.
+			
+			ALB access logs - Elastic Load Balancing provides access logs that capture detailed information about requests sent to your load balancer. 
+			Each log contains information such as the time the request was received, the client's IP address, latencies, request paths, and server responses. 
+			You can use these access logs to analyze traffic patterns and troubleshoot issues. Access logging is an optional feature of Elastic Load Balancing that is disabled by default.
+
+Access logs for your Application Load Balancer:
 				
 				
 		-Network(v2 new gen-2017)
@@ -70,8 +84,6 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 				és as szerve alapból csak a legutolsó hívót látja a sorban. Az X-Forwarded-For egy olyan Header, ami balról->jobbra feltölti az állomásokat.
 			
 			
-		
-		
 		
 		
 		-Gateway (Internet Gateway and Gateway Load Bancer are different things.):
@@ -98,17 +110,21 @@ LoadBalancer: Olyan szerver amely irányítja az internet felöl jövő forgalma
 	
 	
 Egy Target Groupba, amikor megadom a típusát (Target Group Type) akkor eldől h a node-okat hogyan regisztrálom be:
-	- Instance ID
+	- Instance ID	
 	- Static IP
 	alapján.
 	
 	
 	
+
+ALB request tracing - You can use request tracing to track HTTP requests. 
+	The load balancer adds a header with a trace identifier to each request it receives. Request tracing will not help you to analyze latency specific data.	
 	
 	
-	
-	
-	
+ Elastic Load Balancing is integrated with AWS CloudTrail, a service that provides a record of actions taken by a user, role, or an AWS service in Elastic Load Balancing. 
+ CloudTrail captures all API calls for Elastic Load Balancing as events. 
+ You can use AWS CloudTrail to capture detailed information about the calls made to the Elastic Load Balancing API and store them as log files in Amazon S3.
+ You can use these CloudTrail logs to determine which API calls were made, the source IP address where the API call came from, who made the call, when the call was made, and so on.	
 	
 	
 	

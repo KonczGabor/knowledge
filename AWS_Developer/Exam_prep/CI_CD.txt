@@ -11,3 +11,86 @@
 		Loadbalancer, Autoscaleing
 	To Manage infrastructure: AWS OpsWorks (Chef recipes)
 	To Define infrastructure: AWS CloudFormation
+	
+	
+	
+CodeCommit:
+
+	Hogyan érhetjük el?
+	
+		Git credentials - These are IAM -generated user name and password pair you can use to communicate with CodeCommit repositories over HTTPS.
+
+		SSH Keys - Are locally generated public-private key pair that you can associate with your IAM user to communicate with CodeCommit repositories over SSH.
+
+		AWS access keys - You can use these keys with the credential helper included with the AWS CLI to communicate with CodeCommit repositories over HTTPS. 	
+
+		És mivel nem: IAM username and password
+
+
+CodeBuild:
+	
+	Builddel, 
+	Teszteket futtat,
+	Csomagokat készít
+	
+	Egyszerre több build is mehet.
+	
+	A buildeket lehet q-ba is rakni, de csőben lévőő buildek száma nem lehet több, mint a párhuzamosan futtatható buildek maximumának 5-szöröse.
+	
+	
+	Timeout:
+		Ha egy build túl sokáig fut és nem akar elkészülni, akkor megy a force shoutdown. Ez a time window a Timeout.
+		Alapból 8 óra.
+		A Max 8 óra.
+		A min 5 perc.
+		
+	Buildspec File:
+		You can also specify a timeout in the buildspec.yml file. 
+		
+		
+		
+		
+CodeDeploy:
+	is a fully managed deployment service that automates software deployments to a variety of compute services such as Amazon EC2, AWS Fargate, AWS Lambda, and your on-premises servers.
+	AWS CodeDeploy makes it easier for you to rapidly release new features, helps you avoid downtime during application deployment, and handles the complexity of updating your applications. 
+	CodeDeploy can be used with AWS CDK for deployments.
+
+	Alkalmazásokat telepít ki
+		- EC2-be
+		- on-premise instanceokra
+		- λ -kra (?)
+		
+					
+	Blue-Green deployment:
+		A régi a Blue, az új a Green.
+		
+		Az in-palce deployment-tel szemben az az előnye h minimalizálja a downtime-risket, mert azonnal fallbackelhetünk az előző verzióra, cserébe drágább is.
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

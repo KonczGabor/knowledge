@@ -2,3 +2,57 @@ AWS Serverless Application Model (AWS SAM)
 	- You use the AWS SAM specification to define your serverless application. 
 	AWS SAM templates are an extension of AWS CloudFormation templates, with some additional components that make them easier to work with.
 	AWS SAM needs CloudFormation templates as a basis for its configuration.
+	
+	
+	
+	
+AWS Serverless Application Model and AWS CDK both abstract AWS infrastructure as code making it easier for you to define your cloud infrastructure. 
+If you prefer defining your serverless infrastructure in concise declarative templates, SAM is the better fit. 
+If you want to define your AWS infrastructure in a familiar programming language, as is the requirement in the current use case, AWS CDK is the right fit.	
+	
+	
+A section-ök deklarálásának sorrendje nem számít.
+	
+Két section kötelező a templateben:
+	- Transform
+	- Resources
+	
+
+	További elemek:
+		Globals
+		Description: Magát a template-et írja le
+		Metadata
+		Parameters: a bemenő adatok számára. Hivatkozhatunk rájuk a Resources-ból és az Outputs-ból.
+		Mappings 
+		Conditioins	
+		Outputs
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

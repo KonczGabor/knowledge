@@ -4,11 +4,17 @@ EBS: Elastic Block Store: Hálózati meghajtó amit hozzá lehet csatolni a fut�
 		De semmiképp sem arra találták ki h több száz EC2 csatlakozzon hozzá egyszerre. Arra inákbb ott van az EFS.
 
 	Availability Zone-hoz kötött (Nem Regionhoz, tehát szűkebb). Ha mégis át akarjuk mozgatni, snapshotolni kell. 
+	
 	Snapshotról is lehet Snapshotot készíteni.  
+	
 	Snapshotból készítjük el az új Volume-ot, ami az EBS instance. 
+	
 	Az adott EC2 instance és az EBS-nak azonos Region-ben kell lenniük.
+	
 	Nem a felhasznált, hanem az igényelt méret utén fizetünk.
+	
 	Előnye az EC2 Instace Store-hoz képest h az EBS permanens.
+	
 	//Hasonló mint egy hálózati USB stick, ez is az előnye h ide-oda lehet dugdosni, de mivel network drive, ezért a latency-vel számolni kell.
 	Az EC2 Root volume-hoz csatolt EBS-t be lehet állítani h az ec2 törlése esetén az ebs-e megmaradjon-e.
 		Ezt ha elfelejtettük se kell összefosni a bokánk:
@@ -40,6 +46,7 @@ Encryption operations occur on the servers that host EC2 instances, ensuring the
 		
 	
 AWS Instance Storage offers high-performance, low-latency storage directly attached to the host computer for temporary data storage needs. While it offers significant performance benefits for specific use cases, its ephemeral nature means that it's important to use it judiciously and in conjunction with other AWS storage services for data that needs to be persisted.
+
 
 
 

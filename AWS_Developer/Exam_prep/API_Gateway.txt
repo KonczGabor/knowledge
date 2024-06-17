@@ -75,16 +75,29 @@ Ha új verziót akarunk "kirakni" azt kétféle képpen is megtehetjük.
 A stage-ekhez tudunk különböző performance beállításokat rendelni (throttling, caching). Eezeket bármikor tudjuk updatelni, nem kell hozzá újradeployolni.	
 	
 	
+Performancia:
+
+	- API caching: Hogy ne kelljen annyiszor az endpointhoz fordulni.
+	- Payload compression	
+	
+Stage variables are name-value pairs that you can define as configuration attributes associated with a deployment stage of a REST API. 
+They act like environment variables and can be used in your API setup and mapping templates. 	
+	
+API Gateway Mapping Templates - In API Gateway, an API's method request can take a payload in a different format from the corresponding integration request payload, as required in the backend.
+Similarly, vice versa is also possible. 
+API Gateway lets you use mapping templates to map the payload from a method request to the corresponding integration request and from an integration response to the corresponding method response.
 	
 	
 	
+Usage plan:
+	specifies who can access one or more deployed API stages and methods—and also how much and how fast they can access them. 
+	The plan uses API keys to identify API clients and meters access to the associated API stages for each key.
+	You can configure usage plans and API keys to allow customers to access selected APIs at agreed-upon request rates and quotas that meet their business requirements and budget constraints.	
 	
-	
-	
-	
-	
-	
-	
+	API Key: alphanumeric string values that you distribute to application developers customers to grant accesss to your API. You can use API key together with usage plans or Lambda authorizers
+	to control access to your API. API Gateway can generate API keys on your behalf, or you can import them from a CSV file. 
+		- Throttling limit is a request rate limit that is applied to  each API key that is added to the usage plan.
+		- Quota limit is the maximum number of request with a given API key that can be submitted within a specified time interval.
 	
 	
 	

@@ -21,6 +21,7 @@ Route 53:
 		Egy domain alá recordsetek tartozhatnak.
 		Record types:
 			• A: maps a Hostname to IPv4
+				Used to point a domain or subdomain to an IP address. 'A record' cannot be used to map one domain name to anotherdomain name.
 			
 			• AAAA: maps a Hostname to IPv6
 			

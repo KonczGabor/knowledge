@@ -15,8 +15,9 @@ Auto Scaling Group
 			
 Cooldown period: Defaultból 300 sec. Ha létrehoztunk vagy töröltünk instancot akkot az ASG nem hoz létre és nem is terminál instancokat ennyi ideig.	
 		
+	A Desired capacity azt jelenti h alapból mennyivel induljon el. Ha menet közben egy kihal, de még a minimum fölött vagyunk, akkor nem történik semmi, nem fogja magát visszaállítani a desired-re.
 		
-		
+Az ASG magát az instance-okon futó applikációt nem indítja újra ha baj van, vagy lelövi az instance-ot, v lelövi és csinál egy újat, amin elindítja az appot. Gyakorlatilag konténer "szinten" dolgozik.	
 		
 		
 		

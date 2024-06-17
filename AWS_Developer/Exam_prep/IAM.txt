@@ -80,6 +80,15 @@ IAM:
 					Resource: Amilyen erőforrásra vontakozik: Itt s3
 					Conditon(optional)-if feltétel: mikor legyen maga ez az egész vonatkozás igaz.
 					
+					
+			Trust policy - define which principal entities (accounts, users, roles, and federated users) can assume the role. 
+			An IAM role is both an identity and a resource that supports resource-based policies. For this reason, you must attach both a trust policy and an identity-based policy to an IAM role.
+			The IAM service supports only one type of resource-based policy called a role trust policy, which is attached to an IAM role.
+
+			Access control list (ACL) - are service policies that allow you to control which principals in another account can access a resource. 
+			ACLs cannot be used to control access for a principal within the same account. Amazon S3, AWS WAF, and Amazon VPC are examples of services that support ACLs.	
+			
+			s	
 	MFA: Multi Factor Authentication:
 		Via 
 			Virtual MFA device:
@@ -102,4 +111,104 @@ IAM:
 			Adott userek számára milyen service jogok lettek kiosztva és azok a servicek mikor kerültek használatra.	
 			Könnyen meg lehet találni a nem jól testre szabott permissionöket.	
 			
-	Magának a root user-ben kell engedélyezni h adhassunk ki más usereknek jogot a Billing & Cost Dashboard-hoz.	
+	Magának a root user-ben kell engedélyezni h adhassunk ki más usereknek jogot a Billing & Cost Dashboard-hoz:
+		Alapból az IAM usereknek nincs hozzáférésük a Billing and Cost Management console-hoz.
+		Ezért egy IAM policy-t kell rendelni az adott userhez. 
+		És ezután el kell fogadnia magának a usernek is as policyt:
+			 Under “IAM User and Role Access to Billing Information”, click “Edit”, check the box to “Activate IAM Access”, and then click “Update”. 	
+	
+	
+IAM Access Analyzer: 
+	helps you identify the resources in your organization and accounts, such as Amazon S3 buckets or IAM roles, that are shared with an external entity. 
+	This lets you identify unintended access to your resources and data, which is a security risk.
+
+	You can set the scope for the analyzer to an organization or an AWS account. This is your zone of trust. The analyzer scans all of the supported resources within your zone of trust. 
+	When Access Analyzer finds a policy that allows access to a resource from outside of your zone of trust, it generates an active finding.
+	
+
+Access Advisor feature on IAM console - To help identify the unused roles, IAM reports the last-used timestamp that represents when a role was last used to make an AWS request. 
+	Your security team can use this information to identify, analyze, and then confidently remove unused roles. 
+	This helps improve the security posture of your AWS environments. This does not provide information about non-IAM entities such as S3.	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

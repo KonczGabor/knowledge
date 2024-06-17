@@ -6,6 +6,10 @@ Elastic Container Service
 	EC2
 		Launch Docker Containers on AWS = Launc ECS Tasks on ECS Cluster
 		
+		A task is the instantiation of a task definition within a cluster. 
+		The task definition is a text file, in JSON format, that describes one or more containers, up to a maximum of ten.
+		After you create a task definition for your application within Amazon ECS, you can specify the number of tasks to run on your cluster.
+		
 		A Cluster tartralmazza az EC2 instanceokat
 		
 		Minden EC2 instance tartalmaz egy Docker Agent-et, ami az ECS Service-szel és egy Clusterrel kommunikál
@@ -16,10 +20,12 @@ Elastic Container Service
 	Fargate	
 		There are no EC2 instances to manage
 		It's all serverless
-		We just have to create task definitions
+		We just have to create task definitions - can be thought of as a blueprint for your application. 
+			
+			 	 
 		Autoscales by default and number of tasks we define
 
-S3 nem csatolható fel ECS Taskekhez.
+S3 nem csatolható fel ECS Taskokhoz.
 		
 
 
@@ -27,9 +33,9 @@ S3 nem csatolható fel ECS Taskekhez.
 EFS (Elastic File System) mindkettőhöz csatolható.
 
 
-//Service is long running, Task is standalone, and terminatas (.:batch job)
+//Service is long running, Task is standalone, and terminates (.:batch job)
 
-IAM Role-okat az ECS-nek, annak TAskDefinitionjében hozunk létre.
+IAM Role-okat az ECS-nek, annak TaskDefinitionjében hozunk létre.
 
 
 Itt lehet bekonfigurálni a container agentet:
@@ -48,7 +54,7 @@ Deployment:
 
 
 
-Ha egy container példányt lestoppolunk és ebben a (STOPPED) stateben terminálunk, az még nem veszi ki a clusterből, ha viszont valóban el szeretnénk távolítani, akkor deregisztálni kell a STOPPED state-ben.
+Ha egy container példányt lestoppolunk és ebben a (STOPPED) stateben terminálunk, az még nem veszi ki a clusterből, ha viszont valóban el szeretnénk távolítani, akkor deregisztrálni kell a STOPPED state-ben.
 Ha futás közben termináljuk akkor removeolódik és deregisztrálódik a clusterből. Miért van ez? Mert nem az agenten keresztül történt a termináció, mert az nem futott, le volt állítva a container.	
 
 

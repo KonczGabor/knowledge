@@ -250,10 +250,12 @@ Transfer Acceleration:
 	Csak engedélyezni kell a bucketen és kapunk egy új endpointot.
 	
 	
+S3 Object Lock: 
+	enables you to store objects using a "Write Once Read Many" (WORM) model. S3 Object Lock can help prevent accidental or inappropriate deletion of data.
 	
 	
-	
-	
+S3 Analytics: By using Amazon S3 analytics Storage Class Analysis you can analyze storage access patterns to help you decide when to transition the right data to the right storage class. 
+	You cannot use S3 Analytics to identify unintended access to your S3 resources.	
 	
 	
 	

@@ -3,4 +3,4 @@ AWS Glue :
 	AWS Glue provides all of the capabilities needed for data integration so that you can start analyzing your data and putting it to use in minutes instead of months. 
 	Glue is not best suited to handle real-time data.
 	
-	AWS Glue is a fully managed extract, transform, and load (ETL) service that makes it easy for customers to prepare and load their data for analytics. Glue is not the right fit for the given use-case.
+	AWS Glue is a fully managed extract, transform, and load (ETL) service that makes it easy for customers to prepare and load their data for analytics.

@@ -1,0 +1,21 @@
+An AWS Organization is a feature of AWS that allows you to centrally manage and govern multiple AWS accounts within your organization. 
+With AWS Organizations, you can consolidate billing, control access to AWS services and resources, apply policies across accounts, and automate account management tasks.
+It provides a hierarchical structure for organizing and managing accounts, with support for multi-account strategies such as multi-tenancy, workload isolation, and security boundaries.
+
+Key features and benefits of AWS Organizations:
+
+	Consolidated Billing: AWS Organizations enables you to consolidate billing across multiple AWS accounts, making it easier to track costs and allocate expenses. 
+	You can have a single payer account that covers the charges for all linked accounts, simplifying financial management.
+
+	Centralized Governance: You can apply organizational policies and controls to enforce security, compliance, and operational standards across all accounts in your organization. 
+	This includes IAM policies, Service Control Policies (SCPs), and tagging policies to manage access, resource usage, and compliance requirements.
+
+	Account Management: AWS Organizations provides tools for automating account creation, management, and removal. 
+	You can create new accounts programmatically using AWS APIs or AWS CloudFormation templates, and apply predefined configurations and policies to newly created accounts.
+
+	Hierarchical Structure: You can organize your AWS accounts into a hierarchical structure known as an organizational unit (OU). 
+	OUs allow you to group accounts based on different criteria such as business units, departments, applications, or environments. 
+	This provides flexibility in managing resources and applying policies at different levels of your organization.
+
+	Cross-Account Resource Sharing: AWS Organizations facilitates resource sharing and collaboration across accounts by enabling cross-account access and resource sharing. 
+	You can share resources such as Amazon S3 buckets, AWS Lambda functions, and Amazon RDS databases securely across accounts within your organization.

@@ -11,11 +11,12 @@ Amazon Web Services Systems Manager (SSM):
 	
 	
 	
+AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. 
+You can store data such as passwords, database strings, Amazon Machine Image (AMI) IDs, and license codes as parameter values. You can store values as plain text or encrypted data.	
 	
 	
 	
-	
-	
+SSM parameter is still not supported for Elastic Beanstalk. 	
 	
 	
 	

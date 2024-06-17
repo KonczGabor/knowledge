@@ -4,6 +4,10 @@ Alapból be van állítva.
 	AWS CloudTrail is a service that enables governance, compliance, operational auditing, and risk auditing of your AWS account.
 	With CloudTrail, you can log, continuously monitor, and retain account activity related to actions across your AWS infrastructure. 
 	CloudTrail provides an event history of your AWS account activity, including actions taken through the AWS Management Console, AWS SDKs, command-line tools, and other AWS services.
+	
+	AWS CloudTrail provides a record of actions taken by a user, role, or an AWS service in Systems Manager. 
+	Using the information collected by AWS CloudTrail, you can determine the request that was made to Systems Manager, 
+	the IP address from which the request was made, who made the request, when it was made, and additional details.
 
 CloudTrail will allow you to see all API calls made to SSM and KMS.
 

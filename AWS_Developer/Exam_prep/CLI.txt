@@ -13,3 +13,22 @@ The CLI will look for credentials in this order
 	5, Container credentials – for ECS tasks
 	
 	6, Instance profile credentials – for EC2 Instance Profiles
+	
+	
+	
+	
+-region parameter: If the region parameter is not set, then the CLI command is executed against the default AWS region.vim	
+	
+	
+The --dry-run option checks whether you have the required permissions for the action, without actually making the request, and provides an error response. 
+If you have the required permissions, the error response is DryRunOperation, otherwise, it is UnauthorizedOperation.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

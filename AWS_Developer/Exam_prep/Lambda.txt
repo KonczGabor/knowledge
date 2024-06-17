@@ -1,9 +1,16 @@
 Lambda:
+
+	A cél a párhuzamos, izolált végrehajtás
+	Each request to an AWS Lambda function triggers a separate "instance" or "execution context" of that function. 
+	This means that multiple requests result in multiple concurrent executions. Each execution runs in isolation, with its own environment and resources. 
+	This architecture allows Lambda to handle many requests in parallel without the executions interfering with each other.
+
+
 	• FAAS: Function as a Service. U just have to deploy functions. Vrtual functions - no servers to manage.
 	
 	• Short Execution -uu to 15 minutes. 
 	
-	• Serverless executional environment(Containerized-Amazon linux, no reused guarantee ). Léteznek szerverek továbbra is, csak a felhasználó szemszügéből nézve nem neki kell manage-elni (provision).
+	• Serverless executional environment(Containerized-Amazon linux, no reused guarantee ). Léteznek szerverek továbbra is, csak a felhasználó szemszögéből nézve nem neki kell manage-elni (provision).
 	
 	• Minden λ-nek lennie kell egy IAM-Role-nak és azoknak is akik hívni akarják direktbe.
 		
@@ -14,7 +21,7 @@ Lambda:
 	
 	• Auto Scale. Egészen 10 GB RAM-ig dedikálhatunk erőforrást egy function-nek.
 		Ha növejük a RAM-ot, akkor indirect a CPU és Network teljesítményt is húzzuk.
-		128 MB-től Mb-onként egészen 10 GB-ig skálázhatunk egy λ-t.
+		128 MB-től egyesável(Mb-onként) egészen 10 GB-ig skálázhatunk egy λ-t.
 			A háttérben arányosan a CPU-t is húzza magával, azt nem konfigurálhatjuk directbe.
 			Minden elköltött 17
 	
@@ -27,7 +34,7 @@ Lambda:
 			
 			
 ♦ Mire jó úgy általában?:
-	• Készíthetünk vele egy REST API-it, ami meghívja a λ-inkat.			
+	• Készíthetünk egy REST API-t, ami meghívja a λ-inkat.			
 	• Kinesis használhat λ-t data transformation-ra on the fly.
 	• DynamoDB: ha elsül egy trigger, az meghívhat egy λ-t.
 	• S3: gyakorlatilag bármi, pl ha létrejön a egy file.
@@ -76,6 +83,7 @@ Easy Monitoring by CloudWatch.
 	A container image-nek implementálnia kell a Lambda Runtime API-t.
 		ECS/Fargate image-ek en futnak a λ-k.
 		//Docker is not for AWS Lambda, it's for ECS/Fargate
+		Egy container image max 10 GB méretű lehet.
 	
 	Részei:
 		https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html
@@ -201,7 +209,7 @@ X-Ray is nagyon könnyen beköthető.
 	
 ♦ Logging and monitoring:
 	CW Logs-ba kerülnek letárolásra, ha be van állítva a policy h írhasson oda.
-	CW Metrics-ben meg a Duration, Concurrent Execution, Invocations, Error countsm Success Rate, Throttles, Aysnc Delivery Failure, ... 
+	CW Metrics-ben meg a Duration, Concurrent Execution, Invocations, Error counts, Success Rate, Throttles, Aysnc Delivery Failure, ... 
 	
 	
 ♦ Enable X-Ray:
@@ -214,7 +222,7 @@ X-Ray is nagyon könnyen beköthető.
 		AWS_XRAY_DAEMON_ADDRESS: the X-Ray Daemon IP_ADDRESS:PORT
 	
 	
-♦Customization at the Edge:
+♦ Customization at the Edge:
 	Edge function: "Előre tolt" kódok, amiket a CloudFront disztibúciókra telepíthetünk ki. Az a célja h csökkentsük a userek számára a latency-t.
 		Pay for what we use
 		Ezeket a function-öket Globally kell deployolni
@@ -301,13 +309,24 @@ Alias: Egy alias csak egy functionnek egy adott verziójára mutathat, más alia
 	
 	
 	
-♦ Concurrency is the number of requests your function can handle at the same time. There are two types of concurrency controls available:
+♦ Concurrency is the number of requests your function can handle at the same time. There are three types of concurrency controls available:
 
-	Reserved concurrency – guarantees the maximum number of concurrent instances for the function.
+	Default (On-Demand) Execution: By default, AWS Lambda functions execute in an on-demand fashion where instances are dynamically created and scaled according to the incoming request rate. 
+	This model provides maximum flexibility but includes variability in start-up latency due to cold starts.
+	Provisioned Concurrency: Provides lower latency and more predictable performance by keeping a specific number of function instances always ready.
+	Compute Savings Plans: Offers a way to reduce costs on predictable compute usage across multiple AWS services, including Lambda.
+
+	Reserved concurrency (Compute Savings Plans)– guarantees the maximum number of concurrent instances for the function.
 	When a function has reserved concurrency, no other function can use that concurrency. There is no charge for configuring reserved concurrency for a function.
+	Reserved concurrency is ideal when you have critical applications that require immediate response times, and you cannot afford the latency that a cold start may introduce.
+	It's also useful during predictable traffic spikes where you know you'll need increased capacity.
+	
 
-	Provisioned concurrency – initializes a requested number of execution environments so that they are prepared to respond immediately to your function's invocations. 
-	Note that configuring provisioned concurrency incurs charges to your AWS account.	
+	Provisioned concurrency (preheated, ready to serve state)– initializes a requested number of execution environments so that they are prepared to respond immediately to your function's invocations. 
+	Note that configuring provisioned concurrency incurs charges to your AWS account.
+	Provisioned Concurrency is ideal when you have critical applications that require immediate response times, and you cannot afford the latency that a cold start may introduce. 
+	It's also useful during predictable traffic spikes where you know you'll need increased capacity.		
+	Gyakorlatilag azzonnal indítható példányok, amiért akkor is fizetünk, ha épp nem használjuk.
 	
 	
 
@@ -327,6 +346,10 @@ Layer:
 			- saját layerekre
 			- bárki layerére ARN segítségel.
 	
+	
+	A Lambda layer is a .zip file archive that can contain additional code or data. A layer can contain libraries, a custom runtime, data, or configuration files. 
+	Layers promote code sharing and separation of responsibilities so that you can iterate faster on writing business logic. Layers do not increase the computational capacity of Lambda.
+	
 			
 Filerendszerek λ -hoz:
 	
@@ -343,7 +366,17 @@ Filerendszerek λ -hoz:
 	 	
 	
 	
+Lambda Authorizer (formerly: custom authorizer //valljuk be ez jobb volt, mert így legalább ki lehet találni h mit akar):
+	Bearer token authentication strategy-t használ (OAUTH, SAML)
+	Validáció után visszaad egy IAM Policy-t
 	
+	2 fajtája van:
+		- Token based: JWT, OAuth
+		- request parameter-based (header, query string paramteres, stageVariables, vagy $context) Csak ez támogatja a WebSocketet.
+		
+		
+		
+			
 	
 	
 	

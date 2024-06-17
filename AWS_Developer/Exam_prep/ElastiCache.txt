@@ -2,10 +2,10 @@ ElastiCache: In-Memory db
 	High performance
 	Low latency	
 	Csökkenti a read intensive folyamatokat, amiket amúgy a db-nek kéne tűrnie.
+	Auto scaling
 	Működése:		
 		Először az app az in-memory db-hez fordul,
-		ha ott van a data, akkor "cache hit" történik, visszadjuk az app-nak.  
-		Ez a happy path.
+		ha ott van a data, akkor "cache hit" történik, visszadjuk az app-nak. Ez a happy path.
 		
 		Ha nincs ott a data ("cache miss"), akkor fodulunk a db-hez,
 		visszaadjuk az app-nak, majd beírja az app a cache-be.
