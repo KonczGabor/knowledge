@@ -310,19 +310,6 @@ A Kubernetes-ben (K8s) az alkalmazásokat konfigurálni lehet különböző fáj
 				ServiceAccount:
 					Hogy az IngressController saját jogkörrel rendelkezzen
 
-				Ingress Resource:
-					Szabályok és konfigurációk gyűjteménye, amik definiálják hogy egy Ingress Controller hogyan:
-						- traffic forwarding
-						- route by URL
-						- by domain name
-					definition file:
-						apiVersion: extensions/v1beta1
-						kind: Ingress
-						metadata:
-							name:
-						spec:
-
-
 		Get all ingress in all ns:	
 			kubectl get ingress -A
 
@@ -338,9 +325,24 @@ A Kubernetes-ben (K8s) az alkalmazásokat konfigurálni lehet különböző fáj
 
 
 	NetworkPolicy:
+		Alapból a k8s-ben minden pod és minden service hívhatja egymást. Ha ezen szigorítani szeretnénk, NetworkPolicy-ket kell használni.
 		Pod-okhoz lehet csatolni, h ingress és egress forgalmat engedélyezzen különböző portokon. 
+		Ha egy bejövő forgalmat engedélyezünk, akkor a respons-ra már nem kell direktbe írni egyress-t! 
 		Először ráadjuk egy podra, h kit vegyen körbe (védelmezzen)
 		Másodszor pedig egyértelműsítjuk h mely podok számára adjon hozzáférsét (selector)
+
+
+		kubectl get netpol 
+
+
+		apiVersion:networking.k8s.io/v1
+		kind: NetworkPolicy
+		metadata:
+			name: db-policy
+			spec:
+
+
+
 
 	ReplicaSet:
 		Ez egy halmaz, ami podokat tartalmaz. 
@@ -506,7 +508,81 @@ A Kubernetes-ben (K8s) az alkalmazásokat konfigurálni lehet különböző fáj
 			state: my State
 
 
+	RoleBinding:
+		Role:
+			Az erőforrásokat(resource) és a jogosultságokat(permission) köti össze.
+			Alapból minden tiltott, csak hozzáadni lehet engedélyt. Így, ezek keresztül.
+			namespace-hez kötött
 
+		ClusterRole:
+			namespacek között átívelő
+
+
+	Volumes:
+		A volume egy absztrakt fogalom a tárolóra. A storage a megvalósítása. A claim az igény a pod szemszögéből egy volum-ra.
+	
+		Kétféle képpen tudunk tartós storage-et biztosítani egy conténer számára:
+			Felcsatoljuk a node filerendszerének egy darabkáját:
+				volumes:
+					- name:
+					  persistentVolumeClaim:
+						claimName:
+
+			Létrehozunk sok-sok kisebb storage-et általában különböző node-okból kivágva, ezeket betesszük egy poolba és claim-eken keresztül a k8s odaadja a containereknek.
+
+
+		Persistent Volume és Persistent Volume Claims két külön objektum a k8s-ben.
+				kind: PersistentVolumeClaim
+				kind: PersistentVolume
+
+				kubectl get persistentvolumeclaims
+				kubectl get pvc
+
+				kind: PersistentVolume
+			Az adminisztrátorok kihasítják a Volumeokat a node-okból és belekerülnek a közös poolba, amikből a claim-eken keresztül a konténerek kivehetnek, ezt a társítást a k8s végzi.
+				selectorok és labelek segítségével mehet az egymásra találás, de kisebb volume-ot sosem adhat a k8s-mint amekkoraát a claims akar. Nagyobbat igen.
+				1 calimshez csak 1 volume tartozhat. Ha nincs elég volume, akkor a claims vár
+
+				Az hogy mi történjen egy Volum-mal miután a Claims-ét törölték a persistentVolumeReclaimPolicy dönti el:
+					defaultból: retain -ami azt jelenti h a volume nem törlődik, de más sem kaphatja meg.
+					delete: auto törlés
+					recycle: az adatok törlődnek, a volume maga nem. 
+
+			A megvalósításban hárman fociznak:
+				1, A pod definitionban 2 szekciót kell beállítani:
+					containers:
+						volumeMounts:
+							- mountPath: /opt 		// a konténeren belül itt lesz elérhető
+							  name: ezzelANevvelKotomOsszeEztAMountSlototMertTobbetIsFelcsatolhatokKülönbözőHelyekre
+					volumes:
+						- name: ezzelANevvelKotomOsszeEztAMountSlototMertTobbetIsFelcsatolhatokKülönbözőHelyekre
+						  persistentVolumeClaim:
+							claimName: myClaimName
+	
+				2, pvc-definition.yaml
+					apiVersion: v1
+					kind: PersistentVolumeClaim
+					metadata:
+						name: myClaimName
+					spec:
+						accessModes:
+							-ReadWriteOnce
+
+					resources:
+						requests:
+							storage: 500Mi	 
+			
+				3, pv-definition.yaml
+					apiVersion: v1
+					kind PersistentVolume
+					metadata:
+						name: pv-vol1 //Ennek nem kell megegyeznie semmivel
+					spec:
+						accessModes:
+							-ReadWriteOnce //Ennek meg kell egyeznie a Claims-szel
+						capacity:
+							storage: 500Mi //Ennek leglalább akkorának kell lennie, mint a Claims-nek
+									
 
 Ingress YAML fájl: Az Ingress egy Kubernetes erőforrás, amely külső hozzáférést biztosít a szolgáltatásokhoz a klaszteren belül. 
 Az Ingress YAML fájlokban definiálhatók, és tartalmazhatják az Ingress specifikációját, például az útvonalakat, a szolgáltatásokhoz való irányítást, a TLS beállításokat stb.
