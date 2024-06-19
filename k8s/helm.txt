@@ -1,0 +1,50 @@
+Ez egy Package Manager a K8s számára.
+
+A célja h egy k8s appot úgy tudjunk kezelni mint egy appot, ne csak mint konfigurációs fileok gyűjteménye.
+
+	Van nkei egy install/uninstall wizzardja
+	Relese managere
+
+A különböző k8s fielok(template-ek nek nevezzük őket) változókon keresztül hivatkoznak a map -value ikra. Ezek az értékek a values.yaml be kerülnek
+
+Szóvala Helm Chart koncepciója a következő:
+	Templatek
+	values.yaml
+	Chart.yaml
+
+
+A Chart.yaml:
+	Ez határozza meg a chart alapvető metaadatait. 
+	A Chart.yaml fájl tartalmazza a chart nevét, verzióját, leírását és más fontos információkat. Ez az információ elengedhetetlen a chart azonosításához és kezeléséhez.
+
+		Fontos Mezők:
+
+			apiVersion: Meghatározza a chart API verzióját. A Helm 3 esetében ez általában v2.
+
+			name: A chart neve. Ez a mező egyedi azonosítást biztosít a chart számára.
+
+			version: A chart verziója. Fontos, hogy ezt a verziószámot frissítsük minden új kiadáskor. A verziószámnak a SemVer szabványnak kell megfelelnie (pl. 1.0.0).
+
+			description: Rövid leírás a chart-ról és annak céljáról.
+
+			type: A chart típusa. Az alapértelmezett típus az application, de lehet library is, ha a chart más chartok által használt könyvtárakat definiál.
+
+			appVersion: Az alkalmazás verziója, amelyet a chart telepít. Ez az érték független a chart verziójától, és azt a verziót jelöli, amelyik az alkalmazásból telepítve lesz (pl. 1.0.0).
+
+			icon: (Opcionális) Az alkalmazás ikonjának URL-je, amely vizuálisan képviseli a chart-ot.
+
+			home: (Opcionális) Az alkalmazás vagy a projekt weboldala.
+
+			sources: (Opcionális) Az alkalmazás forráskódjának URL-je(i).
+
+			maintainers: (Opcionális) Azoknak a személyeknek vagy szervezeteknek a listája, akik karbantartják a chart-ot. Tartalmazza a nevüket és az e-mail címüket.
+
+			keywords: (Opcionális) Kulcsszavak listája, amelyek segítenek azonosítani a chart-ot.
+
+			dependencies: (Opcionális) Függőségek listája más chart-okhoz, amelyeket a chart igényel. Minden függőség neve, verziója és repository-ja szerepel itt.
+
+A Chart.yaml fájl tehát a Helm chart metaadatainak központi tárolója, és kritikus fontosságú a chart azonosítása, verziókövetése és függőségeinek kezelése szempontjából. 
+Ennek a fájlnak a helyes kitöltése biztosítja, hogy a Helm chart könnyen kezelhető és jól dokumentált legyen, ami megkönnyíti annak használatát és karbantartását a közösség vagy a fejlesztői csapat számára.
+
+
+ezeknek a chartoknak van repository-ja (artifakt/bitnami)
